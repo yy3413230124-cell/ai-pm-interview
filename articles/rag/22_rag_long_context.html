@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。">
+  <meta name="keywords" content="AI产品经理面试题,上下文窗口很大时为什么还需要 RAG？,RAG,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/22_rag_long_context.html">
+  <title>上下文窗口很大时为什么还需要 RAG？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="上下文窗口很大时为什么还需要 RAG？｜AI产品经理面试题">
+  <meta property="og:description" content="上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/22_rag_long_context.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="上下文窗口很大时为什么还需要 RAG？｜AI产品经理面试题">
+  <meta name="twitter:description" content="上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/22_rag_long_context.html#article","headline":"上下文窗口很大时为什么还需要 RAG？｜AI产品经理面试题","description":"上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。","articleSection":"RAG 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/22_rag_long_context.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"},{"@type":"ListItem","position":3,"name":"上下文窗口很大时为什么还需要 RAG？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/22_rag_long_context.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/rag.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> RAG 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#f08a24"></i>
+            <span>RAG</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="RAG 面试专题题目列表">
+            <a class="" href="./1_whatisrag.html"><span>01</span><strong>什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</strong></a><a class="" href="./2_rag_problems.html"><span>02</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a><a class="" href="./3_rag_vs_finetune.html"><span>03</span><strong>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</strong></a><a class="" href="./4_chunking.html"><span>04</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong></a><a class="" href="./5_semantic_cuts.html"><span>05</span><strong>怎么规避语义被切割掉的问题？</strong></a><a class="" href="./6_embedding.html"><span>06</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a><a class="" href="./7_embedding_algos.html"><span>07</span><strong>Embedding 有哪几种算法你了解过吗？</strong></a><a class="" href="./8_vectordb.html"><span>08</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong></a><a class="" href="./9_vectordb_practice.html"><span>09</span><strong>讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</strong></a><a class="" href="./10_online_workflow.html"><span>10</span><strong>你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</strong></a><a class="" href="./11_retrieval_types.html"><span>11</span><strong>请你介绍一下向量检索和关键词检索的区别？</strong></a><a class="" href="./12_query_rewrite.html"><span>12</span><strong>如何润色用户的 Query（Query Rewrite）？目的是什么？</strong></a><a class="" href="./13_multi_retrieval.html"><span>13</span><strong>什么是多路召回？具体怎么做？</strong></a><a class="" href="./14_retrieval_opt.html"><span>14</span><strong>RAG 检索优化策略有哪些？</strong></a><a class="" href="./15_advanced_paradigms.html"><span>15</span><strong>了解哪些更复杂的 RAG 范式？</strong></a><a class="" href="./16_graph_db.html"><span>16</span><strong>在什么场景下，你会选择使用图数据库来增强传统的向量检索？</strong></a><a class="" href="./17_hallucination.html"><span>17</span><strong>如何规避 RAG 系统中大模型的幻觉？</strong></a><a class="" href="./18_evaluation.html"><span>18</span><strong>怎么量化你的 RAG 效果？</strong></a><a class="" href="./19_dynamic_update.html"><span>19</span><strong>RAG 知识库如何实现动态与持续更新？</strong></a><a class="" href="./20_hardest_parts.html"><span>20</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a><a class="" href="./21_knowledge_conflict.html"><span>21</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a><a class="is-active" href="#article-top"><span>22</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a><a class="" href="./23_rag_vs_file_search.html"><span>23</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/rag.html">RAG</a><span>/</span>
+            <span>第 22 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,616 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>上下文窗口很大时为什么还需要 RAG？</h1>
+          <div class="article-deck">
+            <span>题目 22</span>
+            <p>上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：模型的上下文窗口已经很大了，为什么还需要 RAG？</p>
+<p>🙋‍♂️我：因为知识库还装不下。等窗口够大，把全部资料放进去就不需要检索了。</p>
+<p>👔面试官：装得下只是容量条件。里面有无关资料、不同版本和互相引用的条款，这次问题应该依据哪些内容？</p>
+<p>🙋‍♂️我：那 RAG 就是为了省 Token，全文输入的效果肯定更好。</p>
+<p>👔面试官：材料多不等于有效证据多，模型对长文本的利用也需要验证。全文就一定比选过的材料更适合当前任务吗？</p>
+<p>🙋‍♂️我：那取最相似的几段，内容少而且相关，答案应该就准确了。</p>
+<p>👔面试官：一段里是通用规则，另一段里是例外条件。后者没被检索到，模型依据前者回答，会错在哪里？</p>
+<p>咱们从读取容量和证据选择的区别讲起，再看长上下文与检索各自解决什么问题。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先拆清知识来源、用户问题与更新频率，再解释召回、生成和引用的取舍，最后用命中率、答案正确率、引用覆盖率和延迟定义上线标准。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。</p>
+<p>RAG 可以在生成之前检索并整理材料，把相关内容和适用版本交给模型，减少无关信息，也避免每次处理整个资料库。外部资料更新以后，通过更新内容和索引就能让后续回答使用新证据，不需要先重新训练模型。不过版本、权限和索引刷新都要实际实现，不能只靠向量相似度判断。</p>
+<p>它也不是每个任务都必须用。资料少、需要整体理解时，直接读全文可能更合适；检索可能漏掉例外或跨段关系。大窗口反而能帮助 RAG 读得更完整，比如先定位相关文档，再读取完整章节。两者可以配合，取舍要看证据是否充分，以及整条链路的效果和成本。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="窗口变大-扩大的是读取容量">窗口变大，扩大的是读取容量</h3>
+<p>把资料都放进模型，和让模型正确使用这些资料，中间还隔着什么？</p>
+<p>上下文窗口规定一次请求能够容纳的内容范围。它通常用 Token 衡量，Token 是模型处理文本等输入的单位，不能直接等同于字数。</p>
+<p>窗口更大，模型就有机会同时读取更多章节、文件和任务材料。原来必须分开看的内容，现在可能放在一次请求里分析，这对整体理解有直接帮助。</p>
+<p>但窗口本身没有选择资料，也没有把外部知识自动装进模型。文件还要由应用读取，业务数据还要从相应系统获取，之后才能成为本次输入。</p>
+<p>更进一步，资料进入请求以后，模型还要判断哪些与问题相关，哪些条件适用，以及哪些证据能够共同支撑结论。</p>
+<p>因此，可以分开理解两项能力：容量表示「能接收多少」，有效利用表示「能否从这些内容中得出符合要求的结果」。前者增加，不等于后者在任意任务上都已经得到保证。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/8186e12d_capacity-vs-evidence__dcd71e081e.webp" alt="上下文窗口很大时为什么还需要 RAG？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>RAG 是 Retrieval-Augmented Generation，也就是检索增强生成。它在生成之前从外部资料中查找相关内容，再让模型依据取回的材料回答。它可以缓解窗口不足，但作用并不限于把超长资料压进一个小窗口。</p>
+<h3 id="材料越多-为什么不一定意味着证据更充分">材料越多，为什么不一定意味着证据更充分？</h3>
+<p>回答质量需要的，是适用且足够完整的证据，并不是输入越长越好。</p>
+<p>无关内容不会因为能被放进去，就对问题产生帮助。它增加了模型需要区分的材料；重复说法、不同版本和相近主题，也可能让模型混用条件。</p>
+<p>模型对长文本的利用，还可能受到内容位置与组织方式影响。有些模型和任务中，关键信息放在中间，比放在开头或末尾更难被可靠利用。这类表现通常叫「中间信息利用不足」，程度会随模型、内容和任务变化，需要在实际使用的模型上验证。</p>
+<p>这个问题也不只是「找到一个词」。定位一条信息，与结合多处信息完成判断，是不同要求。模型可能找到了一个明确数字，却没有同时应用另一处限定条件。</p>
+<p>举个示意例子，一份说明里有两条规定：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">通用规则：上传文件的上限是 20 MB。
+接口 B 的特殊规则：上限为 5 MB。
+</code></pre></div><p>问题针对接口 B 时，两条内容都相关，但特殊规则决定最终答案。只找到了通用规则，或者忽略了它与接口 B 的范围关系，就会答成 20 MB。</p>
+<p>RAG 可以先围绕问题缩小材料范围，减少无关内容，让模型重点处理相关证据。但它也可能只检索出通用规则，漏掉特殊规定，所以筛选本身必须考虑证据完整性。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/7e67ec70_scope-specific-evidence__f381df893d.webp" alt="上下文窗口很大时为什么还需要 RAG？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这就出现了真正的取舍：全文可能把无关和冲突内容一起带进来，检索可能把必要内容提前筛掉。不能仅凭输入长短判断谁更准确。</p>
+<h3 id="rag-把资料选择提前到生成之前">RAG 把资料选择提前到生成之前</h3>
+<p>要控制证据范围，RAG 通常把工作分成资料准备和在线查询两部分。</p>
+<p>资料准备时，系统解析内容，按需要组织章节或片段，并建立查找索引。索引可以基于关键词，也可以基于文本含义，作用是帮助问题找到候选材料。</p>
+<p>在线查询时，根据当前问题查找候选，再筛选、排序和整理证据，最后交给模型理解与回答。</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">资料解析与索引准备
+        |
+        v
+用户问题 -&gt; 候选检索 -&gt; 适用性筛选与证据整理 -&gt; 模型回答
+</code></pre></div><p>这样，资料获取不再全部压在每一次模型推理中。应用可以显式控制从哪里取、取哪些版本，以及这次提供了什么依据。</p>
+<p>「相关」与「适用」需要区分。相似度高，表示内容可能谈论同一主题；它不能单独判断规则是否已经生效、是否属于当前对象。</p>
+<p>例如新版本下个月才生效，问题问的是本周，就不能只因为文件更新日期最新而采用新规则。系统需要记录版本与生效范围，再按问题条件选择。</p>
+<p>外部资料变化后，也可以独立更新内容和索引。下一次请求得到新证据，模型就能依据它作答，不必把每次变更都训练进参数。</p>
+<p>但索引不是自动保鲜的。原文件更新了，索引仍然保存旧内容，就可能继续召回旧证据。更新和失效处理需要有实际机制。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/a0c26649_index-retrieval-update__52e6096c72.webp" alt="上下文窗口很大时为什么还需要 RAG？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>权限也属于资料进入模型前需要确定的边界。RAG 可以在获取环节加入权限过滤，但真正判断访问权的是授权机制，不能交给模型或相似度分数。</p>
+<p>这些能力并非 RAG 独有。全文输入也可以先选择正确版本、过滤权限并记录来源。RAG 的价值，是在较大的外部资料集合里，提供一种按问题获取有效子集的方式。</p>
+<h3 id="不必每次读取整个资料库-成本才可能随问题缩小">不必每次读取整个资料库，成本才可能随问题缩小</h3>
+<p>除了回答质量，还要看一项能力被反复调用时，重复处理了多少资料。</p>
+<p>假设资料库共有 30 万 Token，一次问题相关的内容只有约 5000 Token。这里的数字只是示意资料规模，不包含指令、问题和输出。</p>
+<p>如果每次都全文输入，模型就要处理这份大集合；如果先检索出必要证据，模型输入可以围绕较小范围组织。问题越局部，全库读取里可能重复处理的无关材料越多。</p>
+<p>索引则把一部分资料处理提前完成，后续多个问题可以复用。这也是检索对高频知识问答有价值的原因：资料库规模很大，不代表每一次回答都必须读取同样大的输入。</p>
+<p>不过，RAG 自己也有开销。解析、索引维护、在线检索、排序和追加读取，都需要时间与计算；资料变化频繁时，还要不断更新。</p>
+<p>长上下文也可能利用前缀缓存，减少重复处理相同输入的部分费用或延迟。缓存收益取决于实现、命中情况和资料变化，不能直接用原始输入长度推出总成本。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/346f0e9b_repeated-query-cost__5877c219e7.webp" alt="上下文窗口很大时为什么还需要 RAG？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>因此，成本比较要包括资料准备、检索、模型处理与补读，而不是只比较一次请求的 Token 数。资料很少、只处理一次时，建立复杂检索链路未必划算；大量局部问题反复访问同一资料库时，按需读取通常更值得评估。</p>
+<h3 id="大窗口与检索配合-怎样保留必要的完整性">大窗口与检索配合，怎样保留必要的完整性？</h3>
+<p>既然检索会遗漏，能不能利用大窗口减少这种损失？可以，但需要改变对检索结果的使用方式。</p>
+<p>检索命中一个片段，可以先把它当作位置线索，再读取所属的完整章节。正文引用附件或另一项规则时，继续补齐对应材料，避免只拿一段孤立文字作结论。</p>
+<p>大窗口让这类扩展更容易。它可以容纳较完整的相关文档，让模型理解前后定义、条件和相互引用，而不必只压缩成几个短片段。</p>
+<p>这时检索负责缩小查找范围，长上下文负责在该范围内进行较完整的阅读。容量与资料选择分别发挥作用。</p>
+<p>但读取命中文档的全文，仍然补不回完全没有召回的另一份重要资料。检索之后还要检查当前证据能否回答问题，缺少范围、条件或依据时继续补查，而不能因为结果有几段文字就认为足够。</p>
+<p>对要求全量总结或检查所有例外的任务，排名靠前的少量结果尤其不能代替完整范围。相关性排名告诉你哪些内容更像问题，不证明没有遗漏。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/129a33cd_evidence-expansion__57507036af.webp" alt="上下文窗口很大时为什么还需要 RAG？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>选择方式可以依据任务来判断：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>任务与资料特点</th>
+<th>更适合评估的方式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>少量资料，需要通读、总结或整体比较</td>
+<td>直接使用长上下文</td>
+</tr>
+<tr>
+<td>大资料库，问题集中在局部事实</td>
+<td>检索后组织相关证据</td>
+</tr>
+<tr>
+<td>需要跨段条件或文档关系</td>
+<td>检索定位，再扩大阅读范围</td>
+</tr>
+</tbody>
+</table></div><p>验证时也要看问题有没有答全、规则有没有用对，之后再比较延迟和成本。同样模型与资料下，全文能做对而 RAG 做错，可能需要检查召回遗漏；全文混用不同版本，则需要检查输入范围和资料组织。</p>
+<p>所以，大窗口降低了必须切碎资料的压力，却没有让资料获取与证据选择失去意义。是否需要检索，要根据当前任务判断，不必让所有请求都走同一条路线。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头把 RAG 当成窗口太小的补丁，忽略了读取容量与证据选择的区别。能放下全部资料，不代表每份都相关、有效，也不代表必要条件已经被完整利用。</p>
+<p>RAG 在生成前获取并整理证据，能够减少无关输入、复用索引处理，并让来源和适用范围更容易管理。但它可能遗漏重要条件，版本、权限与内容更新也需要真正实现，不能靠检索名称自动获得。</p>
+<p>全文与检索都有取舍。少量资料的整体理解可以直接读全文，大资料库的局部查询可以按需检索，关系复杂时再扩大阅读范围。大窗口与 RAG 可以配合，最终依据是证据完整性、任务效果和总成本。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#窗口变大-扩大的是读取容量">窗口变大，扩大的是读取容量</a><a class="toc-level-3" href="#材料越多-为什么不一定意味着证据更充分">材料越多，为什么不一定意味着证据更充分？</a><a class="toc-level-3" href="#rag-把资料选择提前到生成之前">RAG 把资料选择提前到生成之前</a><a class="toc-level-3" href="#不必每次读取整个资料库-成本才可能随问题缩小">不必每次读取整个资料库，成本才可能随问题缩小</a><a class="toc-level-3" href="#大窗口与检索配合-怎样保留必要的完整性">大窗口与检索配合，怎样保留必要的完整性？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/rag/21_knowledge_conflict.html"><span>上一篇 · RAG</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a>
+      <a class="pagination-card next" href="../../articles/rag/23_rag_vs_file_search.html"><span>下一篇 · RAG</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

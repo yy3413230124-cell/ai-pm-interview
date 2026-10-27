@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="从底层架构、Post-Training、推理生成到量化、MoE、部署与模型选型，建立完整的大模型工程视角。">
+  <meta name="keywords" content="AI产品经理面试题,大模型工程面试题,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html">
+  <title>大模型工程面试专题｜AI产品经理面试题</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../assets/site.webmanifest">
+  <link rel="stylesheet" href="../styles/fonts.css">
+  <link rel="stylesheet" href="../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型工程面试专题｜AI产品经理面试题">
+  <meta property="og:description" content="从底层架构、Post-Training、推理生成到量化、MoE、部署与模型选型，建立完整的大模型工程视角。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型工程面试专题｜AI产品经理面试题">
+  <meta name="twitter:description" content="从底层架构、Post-Training、推理生成到量化、MoE、部署与模型选型，建立完整的大模型工程视角。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html#page","url":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html","name":"大模型工程面试专题｜AI产品经理面试题","description":"从底层架构、Post-Training、推理生成到量化、MoE、部署与模型选型，建立完整的大模型工程视角。","inLanguage":"zh-CN","isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"},"mainEntity":{"@type":"ItemList","numberOfItems":23,"itemListElement":[{"@type":"ListItem","position":1,"name":"什么是大语言模型？和传统 NLP 模型有什么区别？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/what_is_llm.html"},{"@type":"ListItem","position":2,"name":"讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/transformer_architecture.html"},{"@type":"ListItem","position":3,"name":"多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/mha_mqa_gqa_flash_attention.html"},{"@type":"ListItem","position":4,"name":"大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/position_encoding.html"},{"@type":"ListItem","position":5,"name":"什么是大模型项目的分词器？原理是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/tokenizer.html"},{"@type":"ListItem","position":6,"name":"大模型是怎么训练出来的？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/llm_training.html"},{"@type":"ListItem","position":7,"name":"什么是 Scaling Law？大模型的「涌现能力」是怎么回事？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/scaling_law_emergence.html"},{"@type":"ListItem","position":8,"name":"大模型微调的方案有哪些？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/finetuning.html"},{"@type":"ListItem","position":9,"name":"请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/lora.html"},{"@type":"ListItem","position":10,"name":"SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/post_training.html"},{"@type":"ListItem","position":11,"name":"大模型的 DPO 和 PPO 的区别是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/dpo_vs_ppo.html"},{"@type":"ListItem","position":12,"name":"大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/decoding_strategies.html"},{"@type":"ListItem","position":13,"name":"大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/temperature_top_p_top_k.html"},{"@type":"ListItem","position":14,"name":"KV Cache 是什么？Prompt Caching 的原理是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/kv_cache_prompt_caching.html"},{"@type":"ListItem","position":15,"name":"大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/quantization.html"},{"@type":"ListItem","position":16,"name":"如何写好 Prompt？分享下 Prompt 工程实践经验？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/prompt_engineering.html"},{"@type":"ListItem","position":17,"name":"什么是 CoT？为啥效果好？它有什么缺点或局限性？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/cot.html"},{"@type":"ListItem","position":18,"name":"大模型为什么会出现幻觉？怎么缓解？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/hallucination.html"},{"@type":"ListItem","position":19,"name":"MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/moe.html"},{"@type":"ListItem","position":20,"name":"大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/deployment_frameworks.html"},{"@type":"ListItem","position":21,"name":"大模型能力评测指标有哪些？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/evaluation_metrics.html"},{"@type":"ListItem","position":22,"name":"对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/model_selection.html"},{"@type":"ListItem","position":23,"name":"为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/23_long_context_lost_middle.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"}]}]}</script>
+</head>
+<body class="category-page" data-root="../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../index.html">首页</a>
+          <a href="../index.html#library">面试题库</a>
+          <a class="is-active" href="../index.html#topics">知识专题</a>
+          <a href="../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../index.html">首页 <span>01</span></a>
+          <a href="../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <section class="category-hero" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff">
+      <div class="category-hero-copy reveal">
+        <a class="breadcrumb" href="../index.html">首页</a>
+        <span class="category-index">04</span>
+        <span class="eyebrow">INTERVIEW TOPIC · 大模型工程</span>
+        <h1>大模型工程面试专题</h1>
+        <p>最近一两年大模型面试问得越来越深，特别是 Agent、AI 应用工程师、大模型工程师这类岗位，光会调 OpenAI API 和用 LangChain 已经远远不够了，面试官真正想考察的，是你对 LLM 底层原理的理解。</p>
+        <div class="category-actions">
+          <a class="button button-primary" href="#question-list">查看 23 道题 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+          <button class="button" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg> 随机抽题</button>
+        </div>
+      </div>
+      <div class="category-art" aria-hidden="true">
+        <span class="category-art-label">大模型工程</span>
+        <strong>23</strong>
+        <span>QUESTIONS</span>
+        <i class="category-art-orbit"></i>
+        <i class="category-art-grid"></i>
+      </div>
+    </section>
+    <section class="section category-library" id="question-list">
+      <div class="section-heading">
+        <div><span class="section-kicker">ALL QUESTIONS</span><h2>大模型工程 题目列表</h2></div>
+        <p>从 Transformer、训练到推理与部署</p>
+      </div>
+      <div class="question-grid">
+        
+    <article class="question-card" data-question-card data-category="llm" data-search="什么是大语言模型和传统nlp模型有什么区别我理解大语言模型的本质是一个用海量语料预训练参数到百亿千亿规模自回归生成文本的统一模型简要回答详细解析传统nlp是怎么干活的bert时代预训练通了一半llm的本质把所有任务收编成预测下一个token涌现能力量变到质变的关键三个本质区别总结这场转变对工程团队意味着什么面试总结" data-href="articles/llm/what_is_llm.html">
+      <a class="card-cover" href="../articles/llm/what_is_llm.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：什么是大语言模型？和传统 NLP 模型有什么区别？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">01</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/what_is_llm.html">什么是大语言模型？和传统 NLP 模型有什么区别？</a></h3>
+        <p>我理解大语言模型的本质，是一个用海量语料预训练、参数到百亿千亿规模、自回归生成文本的统一模型。</p>
+        <div class="card-footer">
+          <span>QUESTION 01</span>
+          <a href="../articles/llm/what_is_llm.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="讲讲transformer架构基本原理encoder和decoder是什么我理解transformer最核心的创新是selfattention让每个token都能直接和序列里任意其他位置建立联系一次性并行计算彻底解决了rnn顺序计算慢长距离信息衰减的两个老问题理解encoder和decoder的区别时我用这个角度简要回答详细解析transformer之前rnn的致命缺陷selfattention的核心直觉qkv是怎么从输入变换得到的为什么要除以dk缩放点积的数学直觉multiheadattention多角度观察位置编码注入顺序信息前馈网络ffn的作用encoderonlydecoderonly和encoderdecoder三种架构为什么decoderonly赢了面试总结" data-href="articles/llm/transformer_architecture.html">
+      <a class="card-cover" href="../articles/llm/transformer_architecture.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">02</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/transformer_architecture.html">讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</a></h3>
+        <p>我理解 Transformer 最核心的创新是 Self-Attention，让每个 token 都能直接和序列里任意其他位置建立联系，一次性并行计算，彻底解决了 RNN 顺序计算慢、长距离信息衰减的两个老问题。理解 Encoder 和 Decoder 的区别时我用这个角度：…</p>
+        <div class="card-footer">
+          <span>QUESTION 02</span>
+          <a href="../articles/llm/transformer_architecture.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="多头注意力mha有哪些局限mqagqaflashattention怎么解决我理解mha有三个核心痛点简要回答详细解析先理清mha的瓶颈到底卡在哪mqa暴力共享kv显存直接压到1hgqa折中方案效果与显存的甜蜜点flashattention换条赛道从计算实现优化三类优化的关系是叠加不是替代拓展长上下文时代还有哪些新方向面试总结" data-href="articles/llm/mha_mqa_gqa_flash_attention.html">
+      <a class="card-cover" href="../articles/llm/mha_mqa_gqa_flash_attention.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">03</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/mha_mqa_gqa_flash_attention.html">多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</a></h3>
+        <p>我理解 MHA 有三个核心痛点。</p>
+        <div class="card-footer">
+          <span>QUESTION 03</span>
+          <a href="../articles/llm/mha_mqa_gqa_flash_attention.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型的位置编码是干什么用的sincosropealibi有什么区别我理解位置编码要解决的问题本质上是selfattention的位置盲缺陷attention的计算是对称的不管词序怎么变注意力分数都一样我打你和你打我对模型来说是一回事所以必须显式注入位置信息简要回答详细解析为什么attention必须有位置编码sincos绝对位置编码原始transformer的方案绝对位置vs相对位置模型真正想要什么rope用旋转把相对位置编进点积alibi直接给注意力加距离惩罚三种方案对比为什么rope赢了拓展长上下文外推ntkyarn简介面试总结" data-href="articles/llm/position_encoding.html">
+      <a class="card-cover" href="../articles/llm/position_encoding.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">04</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/position_encoding.html">大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</a></h3>
+        <p>我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。</p>
+        <div class="card-footer">
+          <span>QUESTION 04</span>
+          <a href="../articles/llm/position_encoding.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="什么是大模型项目的分词器原理是什么我觉得面试被问到tokenizer最重要的是先说清楚为什么需要它模型只能处理整数不认识字符串tokenizer就是把文字转成数字id序列的桥梁至于原理主流路线都是子词分词常见实现有bpesentencepieceunigramwordpi简要回答详细解析为什么需要tokenizer朴素方案的问题bpe算法从合并规则开始中文分词的特点特殊token的作用为什么tokenizer对实际工程很重要面试总结" data-href="articles/llm/tokenizer.html">
+      <a class="card-cover" href="../articles/llm/tokenizer.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：什么是大模型项目的分词器？原理是什么？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">05</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/tokenizer.html">什么是大模型项目的分词器？原理是什么？</a></h3>
+        <p>我觉得面试被问到 Tokenizer，最重要的是先说清楚「为什么需要它」，模型只能处理整数，不认识字符串，Tokenizer 就是把文字转成数字 ID 序列的桥梁。至于原理，主流路线都是子词分词，常见实现有 BPE、SentencePiece / Unigram、WordPi…</p>
+        <div class="card-footer">
+          <span>QUESTION 05</span>
+          <a href="../articles/llm/tokenizer.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型是怎么训练出来的大模型训练我理解是分三个阶段每个阶段解决不同层次的问题我用一个类比来记忆预训练就像一个人从小到大读了海量的书积累了语言能力和世界知识训练目标就是预测下一个词简单但威力巨大sft是给这个博学的人做面试培训让他学会把知识转化成有问有答的对话形式而不是一直续简要回答详细解析先理一个直觉训练大模型为什么要分阶段第一阶段预训练读万卷书第二阶段sft从续写机器变对话机器第三阶段对齐学会好好说话三阶段为什么缺一不可面试总结" data-href="articles/llm/llm_training.html">
+      <a class="card-cover" href="../articles/llm/llm_training.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型是怎么训练出来的？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">06</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/llm_training.html">大模型是怎么训练出来的？</a></h3>
+        <p>大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续…</p>
+        <div class="card-footer">
+          <span>QUESTION 06</span>
+          <a href="../articles/llm/llm_training.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="什么是scalinglaw大模型的涌现能力是怎么回事我理解scalinglaw缩放定律讲的是大模型的损失值如何随模型规模训练数据量训练算力这三个量变化的可预测关系openai在2020年提出deepmind在2022年的chinchilla论文里精修简要回答详细解析scalinglaw是什么为什么它震撼了整个业界chinchilla2022参数和数据要按120的比例配llama3时代chinchilla不是数据上限涌现能力量变到质变的临界点mirage挑战涌现可能是测量假象对工程选型的启发scalinglaw的天花板与未来面试总结" data-href="articles/llm/scaling_law_emergence.html">
+      <a class="card-cover" href="../articles/llm/scaling_law_emergence.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：什么是 Scaling Law？大模型的「涌现能力」是怎么回事？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">07</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/scaling_law_emergence.html">什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</a></h3>
+        <p>我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随模型规模、训练数据量、训练算力这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。</p>
+        <div class="card-footer">
+          <span>QUESTION 07</span>
+          <a href="../articles/llm/scaling_law_emergence.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型微调的方案有哪些我了解微调之后首先意识到的是微调不是首选而是最后手段大多数问题先把prompt写好加fewshot示例或者用rag接外部知识基本都能解决真正需要微调的场景是模型需要以特定风格持续输出需要学会稳定的任务格式或者需要大幅降低成本用小模型替代大模简要回答详细解析先回答一个前置问题什么时候才真的需要微调微调的两个正交维度改哪些参数vs学什么目标改哪些参数维度从全量微调到qlora学什么目标维度sft和dpo实战选型怎么落地面试总结" data-href="articles/llm/finetuning.html">
+      <a class="card-cover" href="../articles/llm/finetuning.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型微调的方案有哪些？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">08</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/finetuning.html">大模型微调的方案有哪些？</a></h3>
+        <p>我了解微调之后，首先意识到的是：微调不是首选，而是最后手段。大多数问题先把 Prompt 写好、加 Few-shot 示例，或者用 RAG 接外部知识，基本都能解决。真正需要微调的场景是：模型需要以特定风格持续输出、需要学会稳定的任务格式、或者需要大幅降低成本用小模型替代大模…</p>
+        <div class="card-footer">
+          <span>QUESTION 08</span>
+          <a href="../articles/llm/finetuning.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="请讲一下lora技术除了减少参数量它还有哪些优点lora我在项目里用过省参数这个优点大家都知道但它还有几个很实用的好处简要回答详细解析背景微调大模型代价有多大lora的核心思路不改原模型在旁边打补丁低秩分解到底是什么意思参数量减少了多少优点一推理零开销合并就消失优点二模块化插拔一个基底多套能力优点三不丢通用能力白板旁边贴便利贴优点四训练更稳定超参不敏感优点五进阶lora权重可以加权混合总结对比loravs全量微调vsadapter面试总结" data-href="articles/llm/lora.html">
+      <a class="card-cover" href="../articles/llm/lora.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">09</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 13 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/lora.html">请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</a></h3>
+        <p>LoRA 我在项目里用过，省参数这个优点大家都知道，但它还有几个很实用的好处。</p>
+        <div class="card-footer">
+          <span>QUESTION 09</span>
+          <a href="../articles/llm/lora.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="sft之后还有哪些posttrainingrlhfdpogrpo拒绝采样什么关系我理解posttraining是个上位概念指的是sft之后所有继续提升模型质量的训练阶段它不是一个单一方法而是一族方法的总称简要回答详细解析posttraining是什么概念为什么sft之后还需要它rlhf经典方案4模型架构dpo绕过奖励模型的等价转换grpo砍掉valuemodel的ppo进化版拒绝采样简单粗暴的迭代式sftrlaif让强ai当老师五类方案对比表实际工程怎么组合使用面试总结" data-href="articles/llm/post_training.html">
+      <a class="card-cover" href="../articles/llm/post_training.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">10</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 18 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/post_training.html">SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</a></h3>
+        <p>我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。</p>
+        <div class="card-footer">
+          <span>QUESTION 10</span>
+          <a href="../articles/llm/post_training.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型的dpo和ppo的区别是什么dpo和ppo都是大模型对齐训练里的方法都是在sft之后让模型的输出更符合人类期望简要回答详细解析sft之后还差什么ppo先培养裁判再训练选手dpo绕过裁判直接看回放两种方案的对比ppo的进阶版grpo简介各自适合什么场景面试总结" data-href="articles/llm/dpo_vs_ppo.html">
+      <a class="card-cover" href="../articles/llm/dpo_vs_ppo.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型的 DPO 和 PPO 的区别是什么？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">11</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/dpo_vs_ppo.html">大模型的 DPO 和 PPO 的区别是什么？</a></h3>
+        <p>DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。</p>
+        <div class="card-footer">
+          <span>QUESTION 11</span>
+          <a href="../articles/llm/dpo_vs_ppo.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型生成文本时的解码策略有哪些贪心beamsearch采样分别什么时候用我理解大模型的解码策略本质上是回答一个问题模型在每一步输出了一个vocabulary大小的概率分布我们怎么从中选下一个token简要回答详细解析解码策略的本质从概率分布里选下一个token贪心解码最简单也最容易踩坑beamsearch翻译时代的王者为什么llm时代beamsearch失宠了采样族用随机性换多样性实际选型什么任务用什么策略进阶策略推测解码与selfconsistency面试总结" data-href="articles/llm/decoding_strategies.html">
+      <a class="card-cover" href="../articles/llm/decoding_strategies.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">12</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/decoding_strategies.html">大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</a></h3>
+        <p>我理解大模型的解码策略本质上是回答一个问题：模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？</p>
+        <div class="card-footer">
+          <span>QUESTION 12</span>
+          <a href="../articles/llm/decoding_strategies.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型的参数温度值topptopk分别是什么各个场景下的最佳设置是什么我调这几个参数的经验是temperature是最关键的另外两个基本不用动简要回答详细解析先理解大模型是怎么选下一个词的temperature热水和冷水的类比topk限制候选词的数量toppnucleussampling自适应的截断实际工程怎么配三个参数面试总结" data-href="articles/llm/temperature_top_p_top_k.html">
+      <a class="card-cover" href="../articles/llm/temperature_top_p_top_k.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">13</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/temperature_top_p_top_k.html">大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</a></h3>
+        <p>我调这几个参数的经验是，Temperature 是最关键的，另外两个基本不用动。</p>
+        <div class="card-footer">
+          <span>QUESTION 13</span>
+          <a href="../articles/llm/temperature_top_p_top_k.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="kvcache是什么promptcaching的原理是什么我理解kvcache和promptcaching是同一个机制在两个时间尺度上的应用简要回答详细解析自回归生成里隐藏的低效问题kvcache单次推理内的优化kvcache的显存代价从kvcache到promptcaching同一机制的扩展主流api的promptcaching实现适合用promptcaching的场景工程陷阱固定内容在前动态内容在后进阶kvcache量化与pagedattention面试总结" data-href="articles/llm/kv_cache_prompt_caching.html">
+      <a class="card-cover" href="../articles/llm/kv_cache_prompt_caching.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：KV Cache 是什么？Prompt Caching 的原理是什么？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">14</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/kv_cache_prompt_caching.html">KV Cache 是什么？Prompt Caching 的原理是什么？</a></h3>
+        <p>我理解 KV Cache 和 Prompt Caching 是同一个机制在两个时间尺度上的应用。</p>
+        <div class="card-footer">
+          <span>QUESTION 14</span>
+          <a href="../articles/llm/kv_cache_prompt_caching.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型量化是什么int8int4awqgptq怎么选我理解量化quantization的本质是把模型参数从高精度浮点数fp32或fp16映射到低精度整数int8或int4用更少的比特表示同样的信息简要回答详细解析量化是什么为什么大模型必须量化量化的核心映射连续到离散int8int4各自的精度边界gptq基于误差补偿的逐层量化awq激活感知的权重保护qlora与nf4让消费级gpu微调成为可能怎么选量化方案量化的副作用与陷阱面试总结" data-href="articles/llm/quantization.html">
+      <a class="card-cover" href="../articles/llm/quantization.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">15</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/quantization.html">大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</a></h3>
+        <p>我理解量化（Quantization）的本质是把模型参数从「高精度浮点数」（FP32 或 FP16）映射到「低精度整数」（INT8 或 INT4），用更少的比特表示同样的信息。</p>
+        <div class="card-footer">
+          <span>QUESTION 15</span>
+          <a href="../articles/llm/quantization.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="如何写好prompt分享下prompt工程实践经验我在实际做项目时踩过不少坑发现prompt写不好通常不是因为太短而是因为模糊模型根本不知道你想要什么格式什么风格给谁看的后来总结下来写好prompt核心就是做好五件事给模型设定角色说清楚任务交代背景上下文约定输出格式提供示例其中格式约束是简要回答详细解析为什么prompt的好坏能决定效果的上限五要素拆解从差prompt到好prompt完整改造示例任务要求文章内容进阶技巧迭代方法论进阶prompt压缩面试总结" data-href="articles/llm/prompt_engineering.html">
+      <a class="card-cover" href="../articles/llm/prompt_engineering.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：如何写好 Prompt？分享下 Prompt 工程实践经验？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">16</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/prompt_engineering.html">如何写好 Prompt？分享下 Prompt 工程实践经验？</a></h3>
+        <p>我在实际做项目时踩过不少坑，发现 Prompt 写不好通常不是因为太短，而是因为「模糊」，模型根本不知道你想要什么格式、什么风格、给谁看的。后来总结下来，写好 Prompt 核心就是做好五件事：给模型设定角色、说清楚任务、交代背景上下文、约定输出格式、提供示例。其中格式约束是…</p>
+        <div class="card-footer">
+          <span>QUESTION 16</span>
+          <a href="../articles/llm/prompt_engineering.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="什么是cot为啥效果好它有什么缺点或局限性cot我第一次用是在做一个需要多步逻辑推理的任务发现只要让模型先分步分析效果提升就很明显后来理解了为什么模型是一个token一个token生成的让它先组织中间步骤等于给了它草稿纸后面生成答案时能利用前面的推理上下文自然出错就少了缺点也很实际消简要回答详细解析没有cot时模型在做什么cot的核心思路两种cot形式为什么cot有效selfconsistencycot的升级版cot的局限性面试总结" data-href="articles/llm/cot.html">
+      <a class="card-cover" href="../articles/llm/cot.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：什么是 CoT？为啥效果好？它有什么缺点或局限性？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">17</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/cot.html">什么是 CoT？为啥效果好？它有什么缺点或局限性？</a></h3>
+        <p>CoT 我第一次用是在做一个需要多步逻辑推理的任务，发现只要让模型先分步分析，效果提升就很明显。后来理解了为什么：模型是一个 token 一个 token 生成的，让它先组织中间步骤，等于给了它「草稿纸」，后面生成答案时能利用前面的推理上下文，自然出错就少了。缺点也很实际，消…</p>
+        <div class="card-footer">
+          <span>QUESTION 17</span>
+          <a href="../articles/llm/cot.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型为什么会出现幻觉怎么缓解我理解大模型的幻觉本质是模型生成了听起来很合理但实际是错的内容这是llm的固有缺陷不是某个bug简要回答详细解析幻觉到底是什么为什么llm必然会幻觉根因一训练数据本身就有错根因二生成机制是续写不是查询根因三对齐目标的副作用三类幻觉的典型表现缓解方案训练层缓解方案推理层缓解方案系统层工程实践为什么幻觉不可能完全消除面试总结" data-href="articles/llm/hallucination.html">
+      <a class="card-cover" href="../articles/llm/hallucination.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型为什么会出现幻觉？怎么缓解？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">18</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/hallucination.html">大模型为什么会出现幻觉？怎么缓解？</a></h3>
+        <p>我理解大模型的幻觉本质是：模型生成了听起来很合理但实际是错的内容，这是 LLM 的固有缺陷，不是某个 bug。</p>
+        <div class="card-footer">
+          <span>QUESTION 18</span>
+          <a href="../articles/llm/hallucination.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="moe混合专家模型是什么deepseekv3qwen为什么用moe我理解moemixtureofexperts混合专家模型的核心思想是把传统transformer中的ffn前馈网络层替换成n个并行的专家网络再加一个router来决定每个token进哪个专家简要回答详细解析moe是什么为什么dense模型不够用了moe的三个核心组件总参数vs激活参数moe的设计哲学主流moe模型对比deepseekv3mixtralqwen各自的设计moe的三大训练挑战moe的部署挑战为什么2024年后moe才在llm领域火起来面试总结" data-href="articles/llm/moe.html">
+      <a class="card-cover" href="../articles/llm/moe.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">19</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/moe.html">MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</a></h3>
+        <p>我理解 MoE（Mixture of Experts，混合专家模型）的核心思想是把传统 Transformer 中的 FFN（前馈网络）层替换成 N 个并行的「专家网络」，再加一个 Router 来决定每个 token 进哪个专家。</p>
+        <div class="card-footer">
+          <span>QUESTION 19</span>
+          <a href="../articles/llm/moe.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型部署有哪些主流方案vllmtgillamacppsglang实际项目里怎么选我理解大模型部署框架的本质问题是怎么在固定的硬件上跑得更快更省显存支持更多并发用户简要回答详细解析部署框架解决的核心问题vllm与pagedattention操作系统虚拟内存的灵感sglang与radixattention共享前缀的杀手锏tgihuggingface生态集成方案llamacppcpu边缘设备的事实标准tensorrtllmnvidia官方极致优化怎么选部署方案决策矩阵部署的三大隐藏陷阱面试总结" data-href="articles/llm/deployment_frameworks.html">
+      <a class="card-cover" href="../articles/llm/deployment_frameworks.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">20</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 18 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/deployment_frameworks.html">大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</a></h3>
+        <p>我理解大模型部署框架的本质问题是：怎么在固定的硬件上跑得更快、更省显存、支持更多并发用户？</p>
+        <div class="card-footer">
+          <span>QUESTION 20</span>
+          <a href="../articles/llm/deployment_frameworks.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="大模型能力评测指标有哪些我对这块的理解是学术benchmark只能作为参考真正重要的是在自己业务数据上的表现mmlummlupro测综合知识humanevalswebenchverified测代码gsm8kmathgpqa测数学和科学推理liveb简要回答详细解析为什么需要评测指标主流学术benchmark逐一介绍benchmark的局限性数据污染问题如何建自己的业务评估集离线评估线上指标的闭环面试总结" data-href="articles/llm/evaluation_metrics.html">
+      <a class="card-cover" href="../articles/llm/evaluation_metrics.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：大模型能力评测指标有哪些？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">21</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/evaluation_metrics.html">大模型能力评测指标有哪些？</a></h3>
+        <p>我对这块的理解是，学术 Benchmark 只能作为参考，真正重要的是在自己业务数据上的表现。MMLU / MMLU-Pro 测综合知识，HumanEval / SWE-bench Verified 测代码，GSM8K / MATH / GPQA 测数学和科学推理，LiveB…</p>
+        <div class="card-footer">
+          <span>QUESTION 21</span>
+          <a href="../articles/llm/evaluation_metrics.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="对比使用过哪些主流大模型你们项目中最终选用了哪个模型为什么在项目选型阶段我会先把模型分成两类一类是国内可落地的生产候选比如deepseekqwen豆包这类模型另一类是海外能力标杆比如gpt55o系列claudesonnetopus系列用来做能力上限参照简要回答详细解析为什么不能盯着排行榜无脑选主流大模型横向盘点2026年视角我们最终选型落地的思考逻辑面试总结" data-href="articles/llm/model_selection.html">
+      <a class="card-cover" href="../articles/llm/model_selection.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">22</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 7 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/model_selection.html">对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</a></h3>
+        <p>在项目选型阶段，我会先把模型分成两类：一类是国内可落地的生产候选，比如 DeepSeek、Qwen、豆包这类模型；另一类是海外能力标杆，比如 GPT-5.5 / o 系列、Claude Sonnet / Opus 系列，用来做能力上限参照。</p>
+        <div class="card-footer">
+          <span>QUESTION 22</span>
+          <a href="../articles/llm/model_selection.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="llm" data-search="为什么长上下文会出现lostinthemiddle上下文窗口越大越好吗我不会把长上下文能力简单理解成模型最多能接收多少token最大上下文窗口只是输入上限真正有用的是模型在不同长度不同位置和不同干扰强度下能不能稳定找到证据并完成推理也就是它的有效上下文能力简要回答详细解析先分清训练长度窗口上限和有效长度lostinthemiddle到底是什么现象为什么不能只怪位置编码上下文窗口越大代价也越大工程上怎么让长上下文真正好用长上下文应该怎么评测面试总结" data-href="articles/llm/23_long_context_lost_middle.html">
+      <a class="card-cover" href="../articles/llm/23_long_context_lost_middle.html" style="--cat:#7a5af8;--soft:#efeaff;--acid:#d9ccff" aria-label="阅读：为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？">
+        <span class="cover-kicker">04 / 大模型工程</span>
+        <span class="cover-index">23</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/llm/23_long_context_lost_middle.html">为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</a></h3>
+        <p>我不会把长上下文能力简单理解成「模型最多能接收多少 token」。最大上下文窗口只是输入上限，真正有用的是模型在不同长度、不同位置和不同干扰强度下，能不能稳定找到证据并完成推理，也就是它的有效上下文能力。</p>
+        <div class="card-footer">
+          <span>QUESTION 23</span>
+          <a href="../articles/llm/23_long_context_lost_middle.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+      </div>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../index.html#library">全部面试题</a>
+            <a href="../index.html#topics">六类专题</a>
+            <a href="../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../category/agent.html">Agent</a>
+            <a href="../category/rag.html">RAG</a>
+            <a href="../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../assets/search-index.js"></script><script src="../app.js" defer></script>
+</body>
+</html>

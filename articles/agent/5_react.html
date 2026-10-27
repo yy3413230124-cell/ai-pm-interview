@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="Agent 的推理模式我用过几种。">
+  <meta name="keywords" content="AI产品经理面试题,Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/5_react.html">
+  <title>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？｜AI产品经理面试题">
+  <meta property="og:description" content="Agent 的推理模式我用过几种。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/5_react.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？｜AI产品经理面试题">
+  <meta name="twitter:description" content="Agent 的推理模式我用过几种。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/5_react.html#article","headline":"Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？｜AI产品经理面试题","description":"Agent 的推理模式我用过几种。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/5_react.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/5_react.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="is-active" href="#article-top"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 5 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟阅读</span>
+            <span>6,023 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</h1>
+          <div class="article-deck">
+            <span>题目 05</span>
+            <p>Agent 的推理模式我用过几种。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你做过 Agent 项目，那你说说 ReAct 是什么，跟普通的 LLM 调用有什么区别？</p>
+<p>🙋‍♂️我：ReAct 就是让模型一边思考一边行动，调工具拿结果，然后继续思考……就是一个循环。</p>
+<p>👔面试官：好，那你说说这个循环是谁在驱动？是模型自己在转，还是有别的机制？</p>
+<p>🙋‍♂️我：应该是……模型自己在循环？它判断完成了就停下来？</p>
+<p>👔面试官：不对，模型每次只输出一段文本，它不会自己「循环」。那这个循环到底是怎么跑起来的？</p>
+<p>🙋‍♂️我：那可能是框架帮它跑的？解析输出，执行工具，再把结果传回去？</p>
+<p>👔面试官：对了，这才是关键。模型每次只做一件事：根据历史输出下一步的 Thought 和 Action。你的代码负责检测输出、执行工具、把 Observation 填回历史，再次调用模型，这才叫 ReAct 的真正实现方式。</p>
+<p>理解了「模型负责推理、代码负责驱动」这个分工，ReAct 就不再神秘了。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>Agent 的推理模式我用过几种。</p>
+<p>最基础的是直接输出答案，没有中间推理；CoT 是让 LLM 先把推理过程写出来再给答案，准确率更高；ReAct 是在 CoT 基础上加了「行动」，让 LLM 交替输出思考和工具调用，每次行动后再根据结果继续思考，形成一个循环。</p>
+<p>我觉得 ReAct 是目前 Agent 用得最广的模式，因为它推理过程可见，又能动态利用外部工具，两个优点都有。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="什么是推理模式">什么是推理模式？</h3>
+<p>要理解「推理模式」这个词，得先说清楚 LLM 面临的一个根本困境。</p>
+<p>LLM 的工作原理，是根据你给它的输入，一个 token 一个 token 地往后预测。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305204408625__q_af168ec96f23__b104b04916.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>你问它一个简单问题，它可以直接说出答案。但如果你问的是一个需要多步推导的问题，比如「A 公司的市值是 B 公司的 1.2 倍，B 公司比 C 公司高 30%，请问 A 和 C 谁更高，差多少？」，LLM 在没有任何辅助的情况下，往往直接给你一个「感觉对」的答案，而这个答案可能是错的。</p>
+<p>原因在于，当它「一口气」预测答案时，中间的推导步骤都是隐式的，没有办法强制自己在每一步都做出正确的推断。误差会在中间某个暗处悄悄累积，最终暴露在答案里。</p>
+<p>你可以把它类比成心算和笔算的区别。让你心算「123 × 456」，你可能算错；但如果你把每一步都写在纸上，「123 × 6 = 738、123 × 50 = 6150……」，一步一步来，算错的概率就会大大降低。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dd7373d8069bf6e0f7066ea3dea8b025__559fa00ea8.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>原因不是你突然变聪明了，而是「写下来的过程」本身帮助你避免在中间某步跳跃出错。LLM 也一样，把推导过程写出来，就等于在每一步都有了一个可以依赖的「前文」，下一步的预测建立在一个已经写清楚的正确基础之上。</p>
+<p>「推理模式」存在的根本原因就是这个：通过不同的方式，让 LLM 把隐式的思考过程显式化出来，从而减少多步推理中的累积误差。CoT、ReAct 就是这个方向上的两种解法，每一个都在解决前一个的局限性。</p>
+<h3 id="cot是什么">CoT是什么？</h3>
+<p><strong>CoT</strong>，全称 Chain of Thought（思维链），由 Wei 等人在 2022 年提出，是最早也最简单的解法。</p>
+<p>核心想法极其朴素：在 prompt 里加一句「<strong>让我们一步步思考</strong>」，<strong>LLM 就会先把推理步骤写出来，再给答案，而不是直接蹦出结论</strong>。为什么加一句话就有效？</p>
+<p>本质是因为 LLM 的输出是顺序生成的，先写出来的推理内容会进入上下文，成为后续生成的依据。</p>
+<p>当 LLM 先写出「第一步：A 市值是 B 的 1.2 倍，所以 A &gt; B」这句话之后，这个推导结论就进入了上下文，下一步的预测建立在这个明确写出的正确基础上，而不是靠它在脑子里「暗中维持」这个中间状态。就像笔算，纸上的每一行数字都在帮你记住上一步算到哪了。</p>
+<p>CoT 有两种触发方式，理解了区别才能在实际项目中选对。</p>
+<ul>
+<li>
+<p>第一种叫 Zero-shot CoT，做法非常简单，直接在 prompt 末尾加上「让我们一步步思考」这句话就行了，LLM 会自己展开推理过程，不需要你提供任何示例。这种方式的优势是零成本、即插即用，缺点是 LLM 的推理格式和深度完全靠它自己发挥，不太稳定，有时候会写得很详细，有时候又跳步。</p>
+</li>
+<li>
+<p>第二种叫 Few-shot CoT，你需要在 prompt 里给几个带有完整推理过程的例子，让 LLM 照着这个格式来模仿。比如你先写一道数学题，把每一步怎么算、最后得出什么结论都写清楚，LLM 看到这个模板之后就会按照同样的格式展开推理。Few-shot 的效果更稳定，特别适合输出格式要求比较固定的场景，代价是需要你提前准备高质量的示例，而且示例本身也会占用 token。</p>
+</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/15f430f186d3500892974b46afa51783__34d79f6983.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>但 CoT 有一个根本性的局限：<strong>它是纯文字推理，没有办法和外部世界交互</strong>。</p>
+<p>推理过程再完整，也拿不到实时数据，不能执行计算，不能访问数据库。</p>
+<p>如果你问 LLM「现在苹果公司的市值是多少？」，它只能根据训练数据里的知识回答，而那些知识可能已经过时好几个月了。严格说，CoT 框架里不是不能调工具（你可以用 Prompt 让它生成一个「建议调用 API」的文本），但 CoT 的设计本身没有把推理和工具调用交织在一起，接工具需要你自己在外面额外胶水。</p>
+<p>你需要的不只是一个能把推理写出来的 LLM，而是<strong>一个能在推理过程中「出去拿数据」「执行工具」再「回来继续推理」、并且这件事是原生设计的系统。于是有了 ReAct</strong>。</p>
+<h3 id="react-是什么">ReAct 是什么？</h3>
+<p><strong>ReAct</strong> 是 Reasoning and Acting 的缩写，由 Yao 等人在 2022 年提出，核心思路是在 CoT 的推理链里，插入真实的「行动」。</p>
+<p>它让 LLM 按照「思考 -&gt; 行动 -&gt; 观察」这个循环来推进任务：先思考当前该怎么做，然后调用一个工具去获取信息或执行操作，把工具返回的结果作为新的「观察」接收回来，再进入下一轮思考，直到 LLM 判断任务完成。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305215844421__q_acb755ef5a70__e162a3a10c.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>那为什么不直接用纯 CoT 或者纯 Act-only（只行动不推理）呢？这个对比非常关键。</p>
+<p>纯 CoT 的问题前面说过了，它只能在脑子里推理，推得再好也拿不到真实数据，遇到需要实时信息的场景就抓瞎，而且纯靠内部推理很容易产生幻觉，因为没有外部事实来校准。</p>
+<p>纯 Act-only 走的是另一个极端，它让 LLM 直接输出工具调用序列，不写任何思考过程，看起来效率很高，但问题在于每一步行动之间没有推理链条来连接，就像一个人闷头干活但不动脑子，遇到需要调整策略的情况就容易出错。</p>
+<p>在 HotpotQA 这类多跳问答基准测试上，Act-only 的准确率明显低于 CoT 和 ReAct，原因就是缺少推理环节导致动作序列很脆弱，一旦某一步搜到了不相关的内容，后面的动作也跟着跑偏，因为没有「思考」环节来纠正方向。</p>
+<p>ReAct 的精妙之处就在于把推理和行动交织在一起：Thought 帮助 LLM 分析当前局势、决定下一步该做什么，Action 让它把决策落地为真实操作，Observation 把外部世界的反馈带回来，三者互补形成闭环。推理为行动提供方向，行动为推理提供事实，这才是 ReAct 比前两种方案都好用的根本原因。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/e822a4c6cffd06074bc211b000ac3513__f8e723946d.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>用一个具体例子来感受这个循环。</p>
+<p>假设你问 Agent「2024 年苹果公司和谷歌的市值谁更高？差多少？」，如果只靠 CoT，LLM 只能说出它训练时知道的数字，可能已经不准了。但用 ReAct，整个过程会是这样的：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">Thought: 这道题需要两家公司的实时市值数据，我得先查苹果的市值
+Action: search
+Action Input: 苹果公司 2024 年市值
+Observation: 苹果公司 2024 年市值约为 3.5 万亿美元
+
+Thought: 好，苹果的数字有了，再查谷歌的
+Action: search
+Action Input: 谷歌 2024 年市值
+Observation: 谷歌 2024 年市值约为 2.1 万亿美元
+
+Thought: 两个数字都有了，苹果 3.5 万亿，谷歌 2.1 万亿，苹果更高，差距是 1.4 万亿
+Final Answer: 苹果公司 2024 年市值约 3.5 万亿美元，谷歌约 2.1 万亿美元，苹果更高，差距约 1.4 万亿美元
+</code></pre></div><p>每一个 Thought 是 LLM 的推理，每一个 Action 是它决定调什么工具，每一个 Observation 是工具执行后系统填进去的真实结果，最后 Final Answer 是任务完成的终止信号。推理和真实数据的获取是交织在一起的，这才让 Agent 能处理「需要实时信息」或「需要执行操作」的任务。</p>
+<p><strong>ReAct 的实现原理</strong>，是通过 prompt 格式来约束 LLM 的输出结构，但这个循环不是 LLM 自己在转，而是由你的代码来驱动的。</p>
+<p>LLM 每次只做一件事：根据当前的历史，输出下一步的 Thought 加上 Action。你的代码负责检测它的输出，判断「有没有 Final Answer」，如果没有就解析出 Action、执行对应的工具、把工具结果作为 Observation 填回历史，再次调用 LLM，一轮一轮地转。一个典型的 ReAct prompt 长这样：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">你是一个 AI 助手，可以使用以下工具：
+- search(query): 搜索互联网获取最新信息
+- calculator(expr): 计算数学表达式
+
+回答时请严格按照以下格式：
+Thought: 你的思考过程（分析当前情况，决定下一步）
+Action: 工具名称
+Action Input: 工具的输入参数
+Observation: （此行由系统填入工具返回的结果，你不用写）
+... 以上可以重复多轮 ...
+Final Answer: 当你确定可以回答时，在这里给出最终答案
+
+问题：2024 年苹果公司的市值是多少？和谷歌相比谁更高？
+</code></pre></div><p>然后你的代码跑一个循环，不断地「调 LLM、检查输出、执行工具、把结果填回去」：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">def react_agent(question: str, tools: dict, max_steps: int = 10):
+    # 把 ReAct 格式约束和问题拼在一起，作为初始 prompt
+    prompt = build_react_prompt(question, tools)
+    # 用来存每一轮的对话历史，每次调 LLM 都把完整历史带上
+    history = []
+
+    for _ in range(max_steps):
+        # 调 LLM，让它输出下一步的 Thought + Action
+        # 注意：每次调用都把完整历史拼进去，LLM 才知道之前做了什么
+        response = llm.generate(prompt + &quot;\n&quot;.join(history))
+
+        if &quot;Final Answer:&quot; in response:
+            # LLM 输出了 Final Answer，说明它判断任务完成了
+            return response.split(&quot;Final Answer:&quot;)[-1].strip()
+
+        # 从 LLM 输出里解析出 Action 名称和 Action Input
+        # 例如：Action: search，Action Input: 苹果公司市值 -&gt; (&quot;search&quot;, &quot;苹果公司市值&quot;)
+        action, action_input = parse_action(response)
+
+        # 执行对应的工具，拿到真实结果
+        if action in tools:
+            observation = tools[action](action_input)
+        else:
+            # 如果 LLM 填了一个不存在的工具名，给它一个错误反馈
+            observation = f&quot;工具 {action} 不存在，请选择可用工具&quot;
+
+        # 把这一轮的 LLM 输出（含 Thought+Action）和 Observation 都追加进历史
+        # 下次调 LLM 时这些内容会成为它的「记忆」
+        history.append(response)
+        history.append(f&quot;Observation: {observation}&quot;)
+
+    return &quot;超过最大步数，任务未完成&quot;
+</code></pre></div><p>整个 loop 里，真正的「智能」全在 LLM 每次输出的 Thought 里，它在分析当前情况、做出下一步决策。你的代码框架做的事是：管理对话历史、执行工具、检测循环终止条件。两件事分工很清楚，理解了这个分工，ReAct 就不再神秘了。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/388e56899143a40fc8b3620b19ba1eb4__16168e1be9.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>需要补充一点：上面描述的是 ReAct 的<strong>经典实现</strong>，靠 prompt 格式约束加文本解析来驱动工具调用。</p>
+<p>现代 LLM（GPT-4、Claude 3 之后）基本都原生支持 <strong>Function Calling / Tool Use</strong>，模型可以直接输出结构化的 JSON 工具调用，不再需要靠解析 <code>Action: xxx</code> 这种文本格式。</p>
+<p>这让 ReAct 的实现更干净，也更可靠，不容易因为 LLM 输出格式不规范而解析失败。本质上「思考 -&gt; 行动 -&gt; 观察」的循环没变，只是「行动」这一步从解析文本变成了解析结构化 JSON。</p>
+<p>不过 ReAct 并不是完美的，它有两个在实际项目中很容易遇到的坑，面试时能主动说出来会非常加分。</p>
+<p>第一个坑叫「循环漂移」。你可以把 ReAct 想象成一个没有导航的旅行者，每到一个路口都根据眼前看到的路牌临时决定往哪走。如果路牌上的信息足够清晰，他能顺利到达目的地。</p>
+<p>但问题是，路上的「风景」也会吸引他的注意力，走着走着就拐进了一条岔路，忘了自己最初要去哪。ReAct 就是这样，因为每一步都是根据当前历史重新决策的，没有一个全局计划在约束它，跑着跑着就可能偏离最初的目标。</p>
+<p>举个实际的例子，你让它「查苹果公司最近三年的营收变化趋势」，它第一步搜了 2024 年的数据，第二步看到搜索结果里提到了苹果和三星的竞争关系，它觉得这个也挺有意思，于是第三步就跑去搜三星的数据了，越走越远，把原来的目标忘了。</p>
+<p>步骤越多，历史上下文越长，这种漂移的概率就越大，因为冗长的历史信息里充满了「诱惑」，随时可能把模型的注意力从原始目标上拉走。</p>
+<p>第二个坑叫「错误传播」。ReAct 的每一步决策都建立在前面所有步骤的结果之上，如果中间某一步拿到了错误的信息，或者工具返回了一个有误的结果，后面所有的推理都会被这个错误带跑。</p>
+<p>更麻烦的是，ReAct 没有内置的「回头检查」机制，它不会停下来反问自己「前面那步的结果靠谱吗」，而是默认前面的 Observation 都是对的，一路往前冲。一旦错误出现在早期步骤，整条推理链后面全部白费。</p>
+<p>这两个问题的根源其实是同一个：ReAct 是纯粹的「前向推理」，每一步都是走一步看一步，没有全局规划来约束方向，也没有反思机制来纠正错误。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/c5050783219d14e9f0010326e1202f0d__b98c345601.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>那怎么解决呢？既然问题出在「没有全局规划」，那最直接的思路就是：先让 LLM 站在全局视角把整个任务想清楚，列出一份完整的执行计划，然后再一步一步去执行。这就是 Plan-and-Execute 模式的核心思路。</p>
+<h3 id="plan-and-execute-先规划再执行">Plan-and-Execute：先规划再执行</h3>
+<p>你可以把 ReAct 和 Plan-and-Execute 的区别，类比成「边走边问路」和「先看地图再出发」的区别。</p>
+<p>ReAct 就像你到了一个陌生城市，没有地图，每到一个路口就问一次路人该往哪走。路人给的方向大致没错，但走着走着你可能被街边的小吃摊吸引，拐进了一条巷子，忘了自己要去哪。Plan-and-Execute 则是你出发之前先打开地图，把从起点到终点的路线全部规划好，标出途中要经过哪几个关键节点，然后按照这个路线一站一站地走。即使中途某条路封了，你也知道大方向在哪，可以绕路但不会迷路。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f4c09c16a0ff2ceacc79a31448d51ea9__c9301efba0.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>具体来说，Plan-and-Execute 把整个任务处理流程拆成了两个明确的阶段。</p>
+<ul>
+<li>
+<p>第一个阶段是「规划」（Planner）。把用户的任务目标交给 LLM，让它先不急着动手，而是站在全局的角度想清楚：这个任务要分几步完成？每一步具体做什么？步骤之间的依赖关系是什么？然后输出一份结构化的执行计划。这一步的关键是 LLM 只做规划、不执行任何工具调用，全部注意力都集中在「想清楚」这件事上。</p>
+</li>
+<li>
+<p>第二个阶段是「执行」（Executor）。拿着规划好的计划，按顺序一步一步地执行。每一步的执行本身可以用 ReAct 模式来跑，也就是说执行器在处理单个子任务时，仍然可以「思考 -&gt; 行动 -&gt; 观察」地循环。但不同的是，执行器始终知道自己在整体计划中处于哪一步、下一步要做什么，不会像纯 ReAct 那样漫无目的地漂移。</p>
+</li>
+</ul>
+<p>用代码来看会更清楚：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">def plan_and_execute(question: str, tools: dict):
+    # 第一阶段：让 LLM 生成一份完整的执行计划
+    # 注意这里只做规划，不执行任何工具
+    plan = llm.generate(f&quot;&quot;&quot;
+    请为以下任务制定一个分步执行计划：
+    任务：{question}
+    
+    请输出一个编号列表，每一步都要具体、可执行。
+    &quot;&quot;&quot;)
+    
+    # 解析出计划中的每一步
+    steps = parse_plan(plan)
+    results = []
+    
+    # 第二阶段：按计划逐步执行
+    for i, step in enumerate(steps):
+        # 每一步可以用 ReAct 模式来执行
+        # 但执行器知道自己在整体计划中的位置
+        step_result = react_executor(
+            task=step,
+            tools=tools,
+            context=f&quot;整体计划共{len(steps)}步，当前是第{i+1}步&quot;,
+            previous_results=results  # 把前面步骤的结果传进去
+        )
+        results.append(step_result)
+        
+        # 关键：执行完一步后，检查是否需要调整后续计划
+        # 这就是「动态重规划」机制
+        if need_replan(step, step_result, steps[i+1:]):
+            remaining_steps = llm.generate(f&quot;&quot;&quot;
+            原计划：{steps}
+            已完成到第{i+1}步，结果：{results}
+            剩余步骤是否需要调整？请输出更新后的剩余步骤。
+            &quot;&quot;&quot;)
+            steps = steps[:i+1] + parse_plan(remaining_steps)
+    
+    # 最后汇总所有步骤的结果，生成最终答案
+    return llm.generate(f&quot;根据以下执行结果回答问题：{results}&quot;)
+</code></pre></div><p>这段代码里有一个非常关键的设计，就是「动态重规划」。计划不是定死的，而是活的。每执行完一步，系统都会检查一下：这一步的实际结果和预期是否一致？</p>
+<p>如果某一步的结果出乎意料，比如你原计划第二步要查某个 API 但发现这个 API 已经下线了，系统会把已有的结果和剩余的步骤重新交给 Planner，让它根据新情况调整后续计划。这就像你开车导航时，前方突然封路了，导航会自动重新规划一条新路线，而不是傻傻地让你掉头回起点。</p>
+<p>那 Plan-and-Execute 和 ReAct 分别适合什么场景呢？</p>
+<p>ReAct 的优势在于灵活，每一步都能根据最新情况做决策，特别适合那些任务边界不太明确、需要探索性地获取信息的场景，比如开放式的问答、信息搜索这类任务。它的代价是容易漂移，而且每一步都要把完整历史带上调 LLM，步骤多了 token 消耗会线性增长。</p>
+<p>Plan-and-Execute 的优势在于有全局视野，不容易跑偏，特别适合那些目标明确、需要多步骤协作完成的复杂任务，比如深度研究、长文写作、多工具协同的数据分析。它的代价是初始规划本身就需要一次 LLM 调用，如果任务很简单（一两步就能搞定），这个规划步骤反而是多余的开销。</p>
+<p>实际工程中，两者经常被混合使用。一个常见的做法是：用 Plan-and-Execute 做全局规划，用 ReAct 做每一步的执行。</p>
+<p>规划阶段用能力更强的大模型（比如 GPT-4、Claude Opus）来保证计划质量，执行阶段用便宜的小模型来跑具体的工具调用，这样既保证了全局方向不跑偏，又控制了成本。这种大小模型搭配的架构，在实际项目中能降低 70% 到 90% 的 LLM 调用成本，是非常实用的工程技巧。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/4b47c29cd8d825a50959d1e5b5f2dbeb__7a2ae5d9d9.webp" alt="Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答 ReAct 相关问题，最容易踩的坑就是开头说的那个误区：以为模型自己在「循环」。</p>
+<p>面试官最想听到的核心点是两个：第一，ReAct 的本质是「思考 -&gt; 行动 -&gt; 观察」的循环，推理过程显式化，又能动态调用外部工具，解决了 CoT 只能纯文字推理的局限；第二，这个循环是由你的代码框架驱动的，模型每次只输出 Thought + Action，你的代码负责解析、执行工具、把 Observation 填回历史，再把完整历史传给模型进入下一轮。</p>
+<p>把这两点说清楚之后，主动提一下 ReAct 的两个实战局限（循环漂移和错误传播），再顺带说一下 Plan-and-Execute 是怎么通过「先规划再执行」来解决 ReAct 的漂移问题的，以及实际项目中两者经常混合使用（规划用大模型、执行用小模型），整个回答就会很有深度。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#什么是推理模式">什么是推理模式？</a><a class="toc-level-3" href="#cot是什么">CoT是什么？</a><a class="toc-level-3" href="#react-是什么">ReAct 是什么？</a><a class="toc-level-3" href="#plan-and-execute-先规划再执行">Plan-and-Execute：先规划再执行</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/4_patterns.html"><span>上一篇 · Agent</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/6_three_patterns.html"><span>下一篇 · Agent</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

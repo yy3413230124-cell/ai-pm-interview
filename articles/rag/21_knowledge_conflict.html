@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。">
+  <meta name="keywords" content="AI产品经理面试题,不同来源的文档发生知识冲突时，RAG 应该信谁？,RAG,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/21_knowledge_conflict.html">
+  <title>不同来源的文档发生知识冲突时，RAG 应该信谁？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="不同来源的文档发生知识冲突时，RAG 应该信谁？｜AI产品经理面试题">
+  <meta property="og:description" content="遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/21_knowledge_conflict.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="不同来源的文档发生知识冲突时，RAG 应该信谁？｜AI产品经理面试题">
+  <meta name="twitter:description" content="遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/21_knowledge_conflict.html#article","headline":"不同来源的文档发生知识冲突时，RAG 应该信谁？｜AI产品经理面试题","description":"遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。","articleSection":"RAG 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/21_knowledge_conflict.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"},{"@type":"ListItem","position":3,"name":"不同来源的文档发生知识冲突时，RAG 应该信谁？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/21_knowledge_conflict.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/rag.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> RAG 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#f08a24"></i>
+            <span>RAG</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="RAG 面试专题题目列表">
+            <a class="" href="./1_whatisrag.html"><span>01</span><strong>什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</strong></a><a class="" href="./2_rag_problems.html"><span>02</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a><a class="" href="./3_rag_vs_finetune.html"><span>03</span><strong>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</strong></a><a class="" href="./4_chunking.html"><span>04</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong></a><a class="" href="./5_semantic_cuts.html"><span>05</span><strong>怎么规避语义被切割掉的问题？</strong></a><a class="" href="./6_embedding.html"><span>06</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a><a class="" href="./7_embedding_algos.html"><span>07</span><strong>Embedding 有哪几种算法你了解过吗？</strong></a><a class="" href="./8_vectordb.html"><span>08</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong></a><a class="" href="./9_vectordb_practice.html"><span>09</span><strong>讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</strong></a><a class="" href="./10_online_workflow.html"><span>10</span><strong>你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</strong></a><a class="" href="./11_retrieval_types.html"><span>11</span><strong>请你介绍一下向量检索和关键词检索的区别？</strong></a><a class="" href="./12_query_rewrite.html"><span>12</span><strong>如何润色用户的 Query（Query Rewrite）？目的是什么？</strong></a><a class="" href="./13_multi_retrieval.html"><span>13</span><strong>什么是多路召回？具体怎么做？</strong></a><a class="" href="./14_retrieval_opt.html"><span>14</span><strong>RAG 检索优化策略有哪些？</strong></a><a class="" href="./15_advanced_paradigms.html"><span>15</span><strong>了解哪些更复杂的 RAG 范式？</strong></a><a class="" href="./16_graph_db.html"><span>16</span><strong>在什么场景下，你会选择使用图数据库来增强传统的向量检索？</strong></a><a class="" href="./17_hallucination.html"><span>17</span><strong>如何规避 RAG 系统中大模型的幻觉？</strong></a><a class="" href="./18_evaluation.html"><span>18</span><strong>怎么量化你的 RAG 效果？</strong></a><a class="" href="./19_dynamic_update.html"><span>19</span><strong>RAG 知识库如何实现动态与持续更新？</strong></a><a class="" href="./20_hardest_parts.html"><span>20</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a><a class="is-active" href="#article-top"><span>21</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a><a class="" href="./22_rag_long_context.html"><span>22</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a><a class="" href="./23_rag_vs_file_search.html"><span>23</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/rag.html">RAG</a><span>/</span>
+            <span>第 21 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,684 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>不同来源的文档发生知识冲突时，RAG 应该信谁？</h1>
+          <div class="article-deck">
+            <span>题目 21</span>
+            <p>遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：知识库里两份文档说法不一样，RAG 应该信谁？</p>
+<p>🙋‍♂️我：信向量相似度最高的那份，检索分数最高说明它和用户的问题最相关。</p>
+<p>👔面试官：相关不代表正确。群聊截图可能和问题一字不差，正式制度只用了另一种表达，难道你要让群聊覆盖公司制度？</p>
+<p>🙋‍♂️我：那就永远信发布时间最新的文档，新文档肯定已经修正了旧文档。</p>
+<p>👔面试官：总部今天发布的通用规则，能覆盖还在有效期内的上海地区细则吗？发布日期新，也不代表适用范围更准确。</p>
+<p>🙋‍♂️我：那让大模型把两份文档读一遍，自己判断哪份更可信。</p>
+<p>👔面试官：你既没有给它权威等级，也没有给版本状态和适用范围，它拿什么判断？生产系统不能把知识治理责任甩给一次随机生成。</p>
+<p>这道题看起来在问模型该选哪段文字，实际上考的是：知识库有没有一套能解释、能审核、能回滚的知识治理规则。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先拆清知识来源、用户问题与更新频率，再解释召回、生成和引用的取舍，最后用命中率、答案正确率、引用覆盖率和延迟定义上线标准。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。</p>
+<p>我的处理顺序是先看适用范围，再看来源权威度、版本状态和生效时间。入库时要保存来源、负责人、发布时间、生效区间、版本、地区、产品和状态等元数据；检索时先按用户、地区、产品和时间做过滤，再在适用的文档中召回和排序。</p>
+<p>如果两份同等权威且同时有效的材料仍然矛盾，系统不应该偷偷二选一，而要明确告诉用户存在冲突，分别引用两边的依据，必要时转人工审核。工程上还要有冲突检测、灰度发布、版本回滚和专项评测，保证错误知识不会悄悄进入生产答案。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么不能选择-相似度最高-的文档">为什么不能选择「相似度最高」的文档？</h3>
+<p>先来看一个很真实的场景。用户问：「今年婚假有多少天？」知识库检索出了三段内容。</p>
+<p>第一段来自员工群聊，内容写着「听说婚假改成 15 天了」；第二段来自公司正式制度，写着「婚假为 10 天」；第三段来自上海地区补充规则，写着「上海员工按 15 天执行」。</p>
+<p>如果用户问题里刚好出现「15 天」，群聊消息很可能得到更高的向量相似度。但它只是传闻，不是能执行的正式依据。即使公司制度更权威，如果提问者是上海员工，地区细则又可能比总部通用规则更适用。</p>
+<p>这说明检索分数只回答「像不像」，没有回答「该不该信」。知识冲突至少要看四个维度：内容是否适用于当前场景，来源是否权威，版本是否有效，时间是否仍在生效区间。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/cbdd117a_rag-conflict-governance__2d8e9baab3.webp" alt="不同来源的文档发生知识冲突时，RAG 应该信谁？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="入库时不只存正文-还要存-身份证">入库时不只存正文，还要存「身份证」</h3>
+<p>冲突发生后才让模型猜谁可信，通常已经晚了。真正有效的办法，要从文档入库时开始。</p>
+<p>每个文档和 chunk 除了正文、向量之外，还应该带上能支持裁决的元数据。比如 <code>source_id</code> 表示从哪个系统同步，<code>owner</code> 表示谁负责，<code>version</code> 表示版本号，<code>status</code> 区分草稿、已生效、已废止，<code>published_at</code> 和 <code>effective_from</code>、<code>effective_to</code> 分别记录发布时间与生效区间。</p>
+<p>为什么发布时间和生效时间要分开？因为下个月才生效的新制度，发布时间虽然最新，今天却不能执行；一份去年发布但有效期仍未结束的地区细则，也不能被今天刚发布的通用通知随便覆盖。</p>
+<p>适用范围同样重要。地区、产品版本、客户等级、部门、租户、语言和权限范围，都可能决定一段知识对谁有效。没有这些字段，系统只能看到两段互相矛盾的文字，却不知道它们可能各自在不同场景下成立。</p>
+<p>此外，还要保存原文链接、文档 hash 和审批记录。这样生成答案时能引用原文，发现问题时也能追到是谁、在什么时候、通过什么流程把它发布进来的。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/07ad3f0f_document-metadata-identity__01a8fbde48.webp" alt="不同来源的文档发生知识冲突时，RAG 应该信谁？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="先判断适用范围-再比较谁更权威">先判断适用范围，再比较谁更权威</h3>
+<p>有了元数据，系统还需要一套明确的裁决顺序。我更倾向于先做适用性判断，因为一份再权威的文档，如果不适用于当前用户，也不能拿来回答。</p>
+<p>系统可以先根据用户身份和问题上下文确定地区、产品、时间、部门等条件，把明显不适用、已经过期或尚未生效的文档过滤掉。接着再比较来源权威度，例如经过审批的正式制度通常高于内部知识文章，内部知识文章高于群聊和个人笔记。</p>
+<p>同一权威层级内，再看版本状态和生效时间。明确标记为「已废止」的旧版本不能因为文字更相似就返回；同一制度的多个有效修订版，则按组织事先定义的版本规则处理。</p>
+<p>需要注意，权威顺序不能由开发人员拍脑袋写成全公司的统一常量。财务、法务、产品和售后可能各有自己的知识负责人和效力层级。更稳妥的做法是维护一个来源注册表，由业务负责人定义各领域的来源等级、覆盖关系和审批流程。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/9b4d0207_rag-conflict-resolution-pipeline__c626c5ddbd.webp" alt="不同来源的文档发生知识冲突时，RAG 应该信谁？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="冲突应该怎样被发现">冲突应该怎样被发现？</h3>
+<p>知识库不能等用户指出答案矛盾以后才发现问题。离线入库和在线检索两个阶段，都应该设置冲突检测。</p>
+<p>离线入库时，可以先按实体、主题和适用范围把内容聚在一起。例如把所有「婚假天数」「退款期限」「接口超时时间」相关的片段归成一组，再抽取其中的关键事实。若同一适用范围、同一有效期内出现「10 天」和「15 天」这类不同取值，就标记为待审核，不要直接让新文档进入正式索引。</p>
+<p>对于结构化程度高的知识，规则比大模型更可靠。数字、日期、状态和版本号可以先用字段解析与数据库约束比较。自然语言表述比较复杂时，可以用模型做矛盾候选识别，但模型输出只能作为告警线索，不能自动决定谁胜出。</p>
+<p>在线阶段也要留一道保险。如果一次检索返回了多个高分片段，它们针对同一个事实给出互斥结论，系统要把「存在冲突」作为一种正式状态传给生成层，而不是把这些片段混在 Prompt 里，赌模型恰好选对。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/5bb72619_offline-online-conflict-detection__adb85796c4.webp" alt="不同来源的文档发生知识冲突时，RAG 应该信谁？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="检索阶段和生成阶段分别做什么">检索阶段和生成阶段分别做什么？</h3>
+<p>冲突治理不能只靠一层完成。检索阶段的任务，是尽量把「适用而且可信」的候选证据交给模型。</p>
+<p>具体来说，先用 metadata filter 排除权限不匹配、地区不匹配、已经过期的内容，再做向量和关键词召回。排序时除了相关性分数，还要考虑权威度、时效、版本状态和适用性。这里不一定要强行压成一个万能公式，很多业务规则用硬过滤和分层排序反而更容易解释。</p>
+<p>生成阶段的任务，是忠实地使用这些证据。Prompt 要求每个关键结论带上来源与版本，不允许用模型自身常识覆盖正式材料；如果证据只支持部分结论，就只回答能被支持的部分。</p>
+<p>如果高权威资料已经给出唯一有效结论，模型应明确引用它，并在必要时说明旧资料已废止。如果两份证据权威性相当、适用范围相同，而且系统确实无法裁决，就要诚实呈现：「当前知识库存在两个不同版本，A 文档在某日规定为 10 天，B 文档在某日规定为 15 天，暂时无法确认哪一个有效。」随后给出原文链接，询问用户补充地区或版本，或者转交知识负责人审核。</p>
+<p>这类回答看起来没有直接替用户下结论，却比模型随机选一个答案安全得多。尤其是医疗、金融、法务和内部制度场景，「不知道」是一种必要能力。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1fcb146a_conflict-answer-with-sources__32a8548f95.webp" alt="不同来源的文档发生知识冲突时，RAG 应该信谁？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="如何让错误知识可以灰度-可以回滚">如何让错误知识可以灰度、可以回滚？</h3>
+<p>即使有审核流程，新版本也可能带来新的冲突。核心知识库不能直接覆盖旧版本，更稳妥的是给新文档单独的版本标签，先进入待发布索引或影子索引。</p>
+<p>发布前，用历史问题和专门设计的冲突问题同时跑新旧版本，比较答案、引用来源和错误率。确认新版本正常以后，再把一小部分流量切过去观察。如果错误答案或用户投诉增加，就把检索别名和版本过滤条件切回旧版本，而不是临时重新解析和向量化所有文档。</p>
+<p>回滚之后，错误版本也不能直接消失。系统要保留变更记录、审批人、受影响问题和修复原因，方便复盘以及确认哪些答案曾受到影响。知识治理做得好不好，很大程度上就看系统能不能回答：「这条知识从哪里来，什么时候生效，谁批准的，出错后能不能撤回。」</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/8bfbaf83_blue-green-knowledge-index__e878e9bd55.webp" alt="不同来源的文档发生知识冲突时，RAG 应该信谁？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="评测时要专门考-会不会选错依据">评测时要专门考「会不会选错依据」</h3>
+<p>普通 RAG 测试集往往只有一个问题和一个标准答案，测不出系统处理冲突的能力。要验证这套机制，测试集中必须主动加入冲突样本。</p>
+<p>例如给系统同时放入正式制度和群聊传闻、已废止版本和现行版本、总部规则和地区细则，再改变用户的地区、身份和提问时间。这样才能看出系统是否真的理解适用范围，而不是碰巧选中了某个答案。</p>
+<p>评测至少关注几类结果：该回答是否选择了正确来源，是否误用过期文档，关键结论的引用是否准确，无法裁决时有没有明确暴露冲突，以及本该拒答时是否胡乱给出结论。</p>
+<p>线上还要记录答案引用过哪些 <code>source_id</code> 和版本。当某份文档被判定有误时，可以快速找出受影响的历史答案和用户请求，而不是只修知识库，却不知道错误已经传播到了哪里。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头的问题，RAG 遇到知识冲突时，绝对不能简单选择向量相似度最高的文档。相似度只表示内容相关，不能代表权威、有效和适用。</p>
+<p>面试时我会先给出裁决顺序：先根据用户身份、地区、产品和时间判断适用范围，再比较来源权威度、版本状态与生效区间，最后才在合格的候选中使用相关性分数排序。这个顺序能避免新文档无条件覆盖地区细则，也能避免群聊传闻因为措辞相似盖过正式制度。</p>
+<p>接着补上完整的工程闭环。入库时保存来源、负责人、版本、状态、生效时间和适用范围；离线与在线阶段都检测冲突；生成答案时逐条引用证据；无法裁决时诚实呈现分歧并转人工审核；发布时采用灰度索引和可回滚版本。</p>
+<p>最后用包含旧版本、地区规则和低权威干扰文档的测试集，评估正确来源选择、过期答案率、引用准确率、冲突披露率和拒答表现。能从「选哪段文本」讲到「知识如何被治理」，这道题才算答到了生产落地层面。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么不能选择-相似度最高-的文档">为什么不能选择「相似度最高」的文档？</a><a class="toc-level-3" href="#入库时不只存正文-还要存-身份证">入库时不只存正文，还要存「身份证」</a><a class="toc-level-3" href="#先判断适用范围-再比较谁更权威">先判断适用范围，再比较谁更权威</a><a class="toc-level-3" href="#冲突应该怎样被发现">冲突应该怎样被发现？</a><a class="toc-level-3" href="#检索阶段和生成阶段分别做什么">检索阶段和生成阶段分别做什么？</a><a class="toc-level-3" href="#如何让错误知识可以灰度-可以回滚">如何让错误知识可以灰度、可以回滚？</a><a class="toc-level-3" href="#评测时要专门考-会不会选错依据">评测时要专门考「会不会选错依据」</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/rag/20_hardest_parts.html"><span>上一篇 · RAG</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a>
+      <a class="pagination-card next" href="../../articles/rag/22_rag_long_context.html"><span>下一篇 · RAG</span><strong>上下文窗口很大时为什么还需要 RAG？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

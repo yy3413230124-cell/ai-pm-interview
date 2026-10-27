@@ -1,0 +1,286 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。">
+  <meta name="keywords" content="AI产品经理面试题,如何保证 AI 生成代码的质量？,AI 编程,AI产品经理,AI 编程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_code_quality.html">
+  <title>如何保证 AI 生成代码的质量？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="如何保证 AI 生成代码的质量？｜AI产品经理面试题">
+  <meta property="og:description" content="判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_code_quality.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="如何保证 AI 生成代码的质量？｜AI产品经理面试题">
+  <meta name="twitter:description" content="判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_code_quality.html#article","headline":"如何保证 AI 生成代码的质量？｜AI产品经理面试题","description":"判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。","articleSection":"AI 编程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_code_quality.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"AI 编程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html"},{"@type":"ListItem","position":3,"name":"如何保证 AI 生成代码的质量？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_code_quality.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/coding.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> AI 编程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#e94f72"></i>
+            <span>AI 编程</span>
+            <strong>14 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="AI 编程面试专题题目列表">
+            <a class="" href="./ai_programming_modes.html"><span>01</span><strong>AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？</strong></a><a class="" href="./task_specification.html"><span>02</span><strong>如何向 AI 描述开发需求、约束条件和验收标准？</strong></a><a class="" href="./code_context.html"><span>03</span><strong>使用 AI 编程时，应该提供哪些代码上下文？</strong></a><a class="" href="./code_localization.html"><span>04</span><strong>Coding Agent 如何在大型代码仓库中定位相关代码？</strong></a><a class="" href="./vibe_coding_vs_spec_driven.html"><span>05</span><strong>Vibe Coding 和 Spec 驱动开发有什么区别？分别适合什么场景？</strong></a><a class="" href="./task_decomposition.html"><span>06</span><strong>复杂开发需求如何拆分，才能让 AI 更可靠地完成？</strong></a><a class="is-active" href="#article-top"><span>07</span><strong>如何保证 AI 生成代码的质量？</strong></a><a class="" href="./ai_code_review.html"><span>08</span><strong>如何审查 AI 生成的代码，发现看起来合理但实际错误的实现？</strong></a><a class="" href="./ai_debugging.html"><span>09</span><strong>如何利用报错、日志和测试结果，让 AI 排查并修复问题？</strong></a><a class="" href="./generated_test_coverage.html"><span>10</span><strong>如何保证 AI 生成的测试用例覆盖关键业务场景？</strong></a><a class="" href="./context_management.html"><span>11</span><strong>AI 编程的上下文越来越长时，如何保留关键信息？</strong></a><a class="" href="./stale_code_description.html"><span>12</span><strong>Coding Agent 如何避免被过期的代码描述误导？</strong></a><a class="" href="./session_handoff.html"><span>13</span><strong>跨会话继续开发时，如何让 AI 接续需求、代码状态和任务进度？</strong></a><a class="" href="./permission_boundaries.html"><span>14</span><strong>AI 修改文件、执行命令和读取外部内容时，应该如何控制权限与风险？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/coding.html">AI 编程</a><span>/</span>
+            <span>第 7 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟阅读</span>
+            <span>4,098 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>如何保证 AI 生成代码的质量？</h1>
+          <div class="article-deck">
+            <span>题目 07</span>
+            <p>判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：用 AI 生成了一段代码，怎么判断它已经达到交付要求？</p>
+<p>🙋‍♂️我：让 AI 解释一下，思路合理、代码能运行就可以了。</p>
+<p>👔面试官：解释合理，怎么证明它实现的是正确需求，而且没有破坏原来的行为？</p>
+<p>🙋‍♂️我：再让 AI 给这段代码生成测试，全部通过就没问题了。</p>
+<p>👔面试官：如果实现和测试预期都理解错了，同样可以全部通过。预期结果依据什么？</p>
+<p>🙋‍♂️我：那换一个模型审查，两个模型都认可就能交付。</p>
+<p>👔面试官：换模型可以增加检查视角，但它们如果都没拿到真实业务约束，认可的依据仍然不充分。</p>
+<p>咱们从质量标准讲起，看看怎样让生成、验证和审查都围绕同一份需求进行。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>把 AI 编程当成交付流程设计：需求与验收标准是否清楚、上下文是否充分、结果如何验证、出错后怎样回滚和接续。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。</p>
+<p>生成前要明确输入输出、边界条件和不允许改变的行为，再提供相关源码、真实接口和项目约束，让修改集中在必要范围。这样既减少模型猜测，也方便后续检查每一处改动。</p>
+<p>生成后要先做构建、类型和静态检查，再用测试验证业务行为和真实调用链。测试预期必须有独立的需求依据，不能照着生成实现反推，否则实现和测试可能一起错。已有测试还要做相关回归，检查这次修改有没有破坏原来的功能。</p>
+<p>最后审查实际代码差异，重点看业务规则、权限边界和修改范围。发现失败就根据规则修复，不能靠删断言、跳过检查把结果改绿；修复后重新验证受影响部分。交付判断要依据最终这份代码的检查结果，并说明还有哪些重要条件没有验证。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="代码能运行-为什么还不够">代码能运行，为什么还不够？</h3>
+<p>AI 生成的代码可能语法正确，函数名和注释也很像项目原来的风格。运行一个正常输入，结果看起来合理，很容易让人觉得任务已经完成。</p>
+<p>但程序语言只规定代码怎样表达、怎样执行，不知道业务希望它做什么。规则要求某个数值至少为 100，<code>value &gt;= 100</code> 和 <code>value &gt; 100</code> 都是合法表达式，区别只会在边界值上显现。</p>
+<p>因此，能编译、能运行，只能排除部分基础错误。要判断功能正确，还需要一份独立于这段实现的标准，说明哪些条件下应该发生什么。</p>
+<p>质量也不只看新增行为。一段代码完成了新需求，却改变了原来的错误码、返回格式或权限规则，已有调用方仍然可能出问题。这些原有约定也是验收范围的一部分。</p>
+<p>再往后看，代码还要能维护。模型为一个简单判断引入复杂框架，或者复制了一套项目已有的逻辑，即使当前样例正确，也会增加后续理解和修改的成本。审查时需要判断这些复杂度是否确有必要。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/af9b3a78_code-quality-layers__0fc58af969.webp" alt="如何保证 AI 生成代码的质量？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这里要分清生成与验收的职责。AI 可以提出实现方案和待确认问题，真正的标准应来自需求、接口约定和项目规则。不能因为模型生成了某种行为，就反过来把这种行为当成需求。</p>
+<h3 id="生成前-哪些约束需要先确定">生成前，哪些约束需要先确定？</h3>
+<p>如果需求只有「处理异常情况」，模型就需要自行决定哪些异常可以重试、哪些应该返回错误，以及失败后要不要撤销已经发生的修改。这些选择会直接改变行为，不能当成普通实现细节。</p>
+<p>生成前需要把对结果有影响的歧义说明白：输入允许什么，成功后输出什么，边界与失败时怎样处理，哪些已有约定必须保留。不需要事先规定每一行代码，但不能让模型替业务决定关键规则。</p>
+<p>可以把这些内容理解为验收契约。契约约定外部能够观察到的行为，实现则决定内部怎样完成。两者分开，才允许不同的代码结构接受同一套检查。</p>
+<p>确定行为以后，还要提供相关的项目上下文。已有调用方怎样传参，接口怎样返回错误，项目使用哪个依赖版本，都影响代码能否接入。模型记得某个库有某种用法，不代表当前项目安装的版本支持它。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/ac936a7f_generation-constraints__cd45c6a10f.webp" alt="如何保证 AI 生成代码的质量？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>修改范围也要明确。例如修复一个校验条件，通常应围绕这个条件、相关调用和必要测试展开。额外改名、升级依赖或重写模块，会引入新的变化，也需要新的验证依据。</p>
+<p>这不要求每次都追求最少行数。合理重构可能让实现更清楚，但可以按目的拆开，让每份改动有明确职责。限制无关修改，主要是减少一次验收中需要同时判断的问题。</p>
+<p>这些约束仍然需要在生成后核对。输入里写了「保留接口」，不代表模型一定遵守；它们是检查的依据，不是已经满足的结果。</p>
+<h3 id="为什么测试预期不能跟着实现走">为什么测试预期不能跟着实现走？</h3>
+<p>测试执行以后，通常把程序的实际结果与预期结果比较。比较相等，只能说明这两者一致；要进一步说明程序正确，预期本身必须有可靠依据。</p>
+<p>还是看「数值至少为 100」这个规则。模型如果把实现写成 <code>value &gt; 100</code>，又根据实现给数值 100 写出「应该拒绝」的预期，测试就会通过。但它验证的是错误实现与错误预期相互一致。</p>
+<p>更明显的情况，是测试再次调用待测函数计算预期。这样实际值和预期值来自同一段逻辑，即使逻辑错了，也可能相等。把生产逻辑复制到测试中，也容易重复同一种错误。</p>
+<p>正确预期应从确认的规则推导。在这个例子里，100 应当被接受，低于 100 应当被拒绝，这些结论在实现生成之前就能确定。人工确认的样例、接口规范或经过审查的参考模型，都可以提供判断依据。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1e34ac9b_independent-test-oracle__49125c12d4.webp" alt="如何保证 AI 生成代码的质量？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这类判断正确结果的依据，常被称为测试 Oracle。它不一定是另一个程序，也可以是一组已经确认的输入和结果。重点是预期有需求依据，而不是照着待检验的实现反推。</p>
+<p>独立也不意味着测试必须全部人工编写。AI 可以根据确认的规则生成测试，开发者核对关键预期和断言。换一个模型审查能够增加视角，但如果两个模型都继承同一份错误规则，仍然可能一致认可。</p>
+<p>还要看测试观察了什么。只检查「函数没有抛异常」，验证不了数据是否正确保存；只检查某个方法被调用，也不一定证明最终状态正确。断言需要对应验收契约中的结果，才有机会发现相关缺陷。</p>
+<h3 id="不同检查-各自能发现什么问题">不同检查，各自能发现什么问题？</h3>
+<p>有了标准，接下来才能选择验证方式。不同检查观察的范围不同，适合互相补充，而不能把其中一种通过当成全部质量要求已经满足。</p>
+<p>构建与类型检查通常先处理基础问题，例如语法不合法、类型不匹配、接口引用不正确。静态分析根据代码结构和规则检查潜在问题，可以提示部分空值、资源处理或危险调用。但这些工具通常不知道项目特有的业务规则。</p>
+<p>单元测试把范围缩到一个函数或模块，验证局部输入与结果，适合快速检查边界和分支。失败以后，定位也比较集中。不过，局部行为正确，还需要调用方把正确的数据传进来。</p>
+<p>例如一个函数约定接收毫秒，上游却传入秒，两边都使用整数，类型检查未必能发现；函数的单元测试也可能一直使用正确单位。通过接口到函数的实际传递路径做集成验证，才能检查这类协作问题。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/9ea7b6ac_verification-layers__7ec8f29a3a.webp" alt="如何保证 AI 生成代码的质量？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>测试替身可以让外部组件按指定方式返回结果，方便构造正常与失败条件。但替身未必具有真实组件的事务、约束或网络行为，必要的集成验证要使用真实或足够接近实际的组件，确认这些假设。</p>
+<p>回归测试则检查修改有没有破坏原有行为。已有测试提供重要基础，还要根据影响范围关注调用方与公共约定。若修改前测试已经失败，需要区分原有问题和本次引入的问题，不能把所有失败都归因于新代码，也不能用原有失败掩盖新增问题。</p>
+<p>验证强度应围绕改动风险选择。修改权限条件，就要验证允许与拒绝的边界；修改带状态的重试，就要检查重复执行和失败后的状态。选检查的依据是这次可能改变什么行为，而不是把所有工具名称列一遍。</p>
+<h3 id="检查通过以后-为什么还要审查实际改动">检查通过以后，为什么还要审查实际改动？</h3>
+<p>测试总是在有限条件下运行，未构造的路径可能仍然有问题。审查代码差异，也就是 Diff，可以直接看到相对于原版本新增、删除和修改了哪些内容，再检查现有验证是否覆盖它们。</p>
+<p>模型的完成说明是一份摘要，可能漏掉修改。它说只调整了校验，实际却删了权限判断或改了公共返回格式，这些变化仍然会进入代码。审查对象应当是实际差异，并按需要补读周围的调用与数据关系。</p>
+<p>尤其要检查测试和检查配置本身。如果 AI 删除断言、放宽预期或跳过失败用例，测试变绿可能只是标准变弱。检查调整可以有合理原因，但需要独立说明原标准为什么不适用，不能只依据新实现无法通过。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/cb1d67ea_diff-review__f3171048f9.webp" alt="如何保证 AI 生成代码的质量？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>功能检查之外，还要关注信任边界。代码能够读取一条记录，不代表当前用户有权读取它；校验参数格式正确，也不代表这个参数对应的资源属于用户。权限与业务约束需要结合真实入口和数据来源判断，安全扫描没有告警也不能替代这项分析。</p>
+<p>可维护性同样需要结合项目审查。是否重复已有逻辑，异常是否按项目约定处理，新增抽象能否简化理解，都很难仅凭当前几条功能测试判断。目的在于让后续开发者能够理解和修改这段实现，避免为了形式上的复杂设计增加负担。</p>
+<p>AI 审查可以帮助提出疑点、发现遗漏，但疑点仍要回到源码与规则核实。熟悉业务和项目的开发者要判断关键行为是否符合要求，自动工具则提供相应范围内的检查结果。</p>
+<h3 id="验证失败以后-怎样修复才算完成">验证失败以后，怎样修复才算完成？</h3>
+<p>检查失败时，首先保留失败条件、实际结果和预期依据。它们说明哪项约定没有满足，也是判断后续修复是否有效的基础。</p>
+<p>然后区分原因。实现违反已经确认的规则，应修改实现；测试使用了错误预期，可以根据独立规则修正；依赖环境不可用，则需要恢复环境或说明验证尚未完成。失败本身不能决定应该改哪一边。</p>
+<p>修复以后，要重新运行相关检查，并根据影响范围做必要回归。只验证原来的失败样例，可能漏掉修复对其他分支的影响；也不需要每次无差别重复所有检查，关键是覆盖本次修复新影响的行为。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/da8547c8_repair-revalidation__888fdc919f.webp" alt="如何保证 AI 生成代码的质量？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>验证结果必须对应最终准备交付的代码。检查通过后又修改了逻辑或依赖，先前结果就不能直接证明新版本的行为。需要重新检查受影响部分，而不能继续引用之前的一次全绿。</p>
+<p>交付时应当能说明这份改动实现了哪些规则，经过哪些实际运行的检查，以及有哪些重要条件还没有验证。自动化流水线可以持续执行项目约定的检查，减少漏跑和环境不一致，但它仍然执行的是已经配置好的标准。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头的三个回答分别把解释、测试全绿和模型认可当成了交付依据。它们可以提供帮助，但如果缺少正确标准，仍然可能共同接受一个错误实现。</p>
+<p>质量控制需要从需求与项目约束开始，让生成范围可审查，再用有独立预期的测试验证行为。基础检查、局部测试、集成验证和回归各自观察不同范围，实际 Diff 审查则补充权限、业务约定和可维护性的判断。</p>
+<p>修复阶段同样要守住这份标准，区分实现、测试与环境的问题，修改后重新检查受影响部分。最终交付依据要与最终代码对应，尚未验证的重要条件也需要明确。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#代码能运行-为什么还不够">代码能运行，为什么还不够？</a><a class="toc-level-3" href="#生成前-哪些约束需要先确定">生成前，哪些约束需要先确定？</a><a class="toc-level-3" href="#为什么测试预期不能跟着实现走">为什么测试预期不能跟着实现走？</a><a class="toc-level-3" href="#不同检查-各自能发现什么问题">不同检查，各自能发现什么问题？</a><a class="toc-level-3" href="#检查通过以后-为什么还要审查实际改动">检查通过以后，为什么还要审查实际改动？</a><a class="toc-level-3" href="#验证失败以后-怎样修复才算完成">验证失败以后，怎样修复才算完成？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/coding/task_decomposition.html"><span>上一篇 · AI 编程</span><strong>复杂开发需求如何拆分，才能让 AI 更可靠地完成？</strong></a>
+      <a class="pagination-card next" href="../../articles/coding/ai_code_review.html"><span>下一篇 · AI 编程</span><strong>如何审查 AI 生成的代码，发现看起来合理但实际错误的实现？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

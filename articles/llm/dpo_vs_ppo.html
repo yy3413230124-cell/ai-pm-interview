@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。">
+  <meta name="keywords" content="AI产品经理面试题,大模型的 DPO 和 PPO 的区别是什么？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/dpo_vs_ppo.html">
+  <title>大模型的 DPO 和 PPO 的区别是什么？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型的 DPO 和 PPO 的区别是什么？｜AI产品经理面试题">
+  <meta property="og:description" content="DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/dpo_vs_ppo.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型的 DPO 和 PPO 的区别是什么？｜AI产品经理面试题">
+  <meta name="twitter:description" content="DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/dpo_vs_ppo.html#article","headline":"大模型的 DPO 和 PPO 的区别是什么？｜AI产品经理面试题","description":"DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/dpo_vs_ppo.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"大模型的 DPO 和 PPO 的区别是什么？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/dpo_vs_ppo.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="" href="./position_encoding.html"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="" href="./llm_training.html"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="" href="./scaling_law_emergence.html"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="" href="./post_training.html"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="is-active" href="#article-top"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="" href="./decoding_strategies.html"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="" href="./hallucination.html"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 11 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,481 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>大模型的 DPO 和 PPO 的区别是什么？</h1>
+          <div class="article-deck">
+            <span>题目 11</span>
+            <p>DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲大模型的 DPO 和 PPO 有什么区别？</p>
+<p>🙋‍♂️我：DPO 和 PPO 都是用来做对齐的，让模型的输出更符合人类偏好。DPO 比 PPO 简单一些。</p>
+<p>👔面试官：……「简单一些」是表面话。具体哪里简单？少了什么组件？再说，PPO 是强化学习算法，DPO 是监督学习算法，这个根本性差别你能讲出来吗？</p>
+<p>🙋‍♂️我：哦哦，DPO 不需要奖励模型，PPO 需要奖励模型？</p>
+<p>👔面试官：方向对了。那再问一个：PPO 训练时要同时维护几个模型？为什么需要这么多？KL 约束又是干什么的？</p>
+<p>🙋‍♂️我：呃……我记得是有 4 个模型，但具体是哪 4 个想不起来。</p>
+<p>👔面试官：典型的「知道有但讲不清」。PPO 的 4 模型架构是 policy（主模型）+ reference（参考模型）+ reward model（奖励模型）+ value model（价值模型），DPO 把这个砍到只剩 policy + reference 两个。这种「能不能说清楚每个组件做什么」是面试拉差距的地方。回去搞清楚再来。</p>
+<p>答到这里才反应过来，DPO 和 PPO 的区别不是「谁更简单」那一层，而是「在线 RL vs 等价监督学习」的本质分歧。把这条主线讲清楚，剩下 GRPO 那些新东西也就顺出来了。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>DPO 和 PPO 都是大模型对齐训练里的方法，都是在 SFT 之后让模型的输出更符合人类期望。</p>
+<p>PPO 是强化学习里的一个算法，在大模型里的用法是：先额外训练一个「奖励模型」来给模型的回答打分，然后用 PPO 这个 RL 算法不断调整大模型的参数，让它生成的内容往高分方向走。这套流程需要同时维护好几个模型，工程复杂度高，训练也容易不稳定，所以成本比较大。</p>
+<p>DPO 是后来提出的简化方案，它不需要单独训练奖励模型。它直接拿「人类偏好对」数据，就是同一个问题的「好回答」和「差回答」，让模型直接学「应该更像哪个」。更准确地说，DPO 是从带 KL 约束的 RLHF 目标推导出来的一个闭式偏好优化目标，不是说它和任意 PPO 训练过程都完全等价。工程上可以把它理解成把复杂 RL 流程简化成监督学习问题，只需要两个模型，更稳定、更好实现。</p>
+<p>简单总结：PPO 是「先训练裁判、再训练选手」，DPO 是「直接拿比赛录像告诉选手哪个动作对哪个动作错」，两者目标一致，但 DPO 省去了裁判这个中间层。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="sft-之后-还差什么">SFT 之后，还差什么？</h3>
+<p>要理解 PPO 和 DPO，得先搞清楚它们出现的背景：为什么 SFT 训完之后还需要对齐？</p>
+<p>预训练让模型掌握了语言能力和世界知识；SFT（监督微调）让模型学会了用对话格式回答问题。但 SFT 本质上是「模仿」，模型在模仿标注人员写的标准答案的格式和风格。这里有一个根本问题：SFT 告诉模型「怎么写」，但没有告诉模型「哪个更好」。</p>
+<p>举个例子，同一个问题「怎么学好 Python」，可以有很多种合格的回答：有的很简洁，有的很详细，有的带代码，有的全文字。SFT 只学了某一种写法，但用户对质量的偏好是有排序的，比如带代码示例的回答会更受欢迎，或者承认「我不知道」比自信地胡说更安全。</p>
+<p>这种「知道合格，但不知道哪个更好」的局限，就是对齐阶段要解决的问题。不经过对齐的模型可能会生成有毒内容、一本正经地胡说八道，或者输出让用户不满意的答案。PPO 和 DPO 都是解决这个问题的方案，只是路径不同。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dpo_vs_ppo_01_sft_vs_alignment_876909a9__afe968d587.webp" alt="大模型的 DPO 和 PPO 的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="ppo-先培养-裁判-再训练-选手">PPO：先培养「裁判」，再训练「选手」</h3>
+<p>PPO（Proximal Policy Optimization，近端策略优化）是强化学习里的一个经典算法，最早不是为大模型设计的，但 OpenAI 在 InstructGPT 里把它用到了 RLHF（基于人类反馈的强化学习）流程里。</p>
+<p><strong>第一步：训练奖励模型（Reward Model）</strong></p>
+<p>这个阶段，人类标注员会拿到很多「同一问题的多个回答」，然后按质量排名。比如问题「解释什么是递归」，回答 A 比回答 B 好，回答 B 比回答 C 好。用这些排名数据，训练一个专门的奖励模型，让它学会「给一个回答打质量分」。这个奖励模型就是裁判，它代替人类完成后续的自动评分。</p>
+<p><strong>第二步：用 PPO 优化主模型</strong></p>
+<p>有了裁判，就可以用强化学习来训练主模型了。流程是：主模型生成一段回答 -&gt; 奖励模型打分 -&gt; PPO 根据得分调整主模型的参数，让它以后生成更高分的回答。</p>
+<p>但这里有一个危险：如果只追求高分，模型可能学会「钻空子」，生成一些奖励模型打高分但实际上没用的内容（这叫做 reward hacking）。为了防止这个，PPO 流程里会同时维护一个「参考模型」（Reference Model），也就是 SFT 之后的原始模型的冻结副本，并用 KL 散度（一种衡量两个概率分布差距的指标）约束主模型，让它不要偏离参考模型太远。KL 散度就像一根绳子，主模型可以向高分方向移动，但不能走太远。</p>
+<p>整个 PPO 训练中，同时需要维护 4 个模型：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># PPO 训练时需要同时维护的四个模型
+policy_model     = load_sft_model()   # 主模型（正在被优化的）
+reference_model  = load_sft_model()   # 参考模型（冻结，SFT 模型副本，用于 KL 约束）
+reward_model     = load_reward_model() # 奖励模型（裁判，给回答打分）
+value_model      = load_value_model()  # 价值模型（RL 辅助，估算未来奖励期望）
+</code></pre></div><p>4 个模型同时加载到显存里，每个都和主模型差不多大，光是显存占用就是 SFT 训练的好几倍。加上 RL 训练本身的不稳定性（超参数敏感、容易 reward hacking、训练曲线震荡），PPO 的工程难度和资源成本都极高，能驾驭 PPO 的团队在业界凤毛麟角。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dpo_vs_ppo_02_ppo_four_models_cba89fc1__2b28eda402.webp" alt="大模型的 DPO 和 PPO 的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="dpo-绕过裁判-直接看回放">DPO：绕过裁判，直接看回放</h3>
+<p>DPO（Direct Preference Optimization，直接偏好优化）是 2023 年斯坦福提出的方法，核心思路是一个数学上的等价转化。</p>
+<p>研究者们发现：RLHF（PPO 方案）的优化目标，可以通过推导改写成一个纯监督学习的目标函数，不需要显式训练和调用奖励模型。直觉上，「奖励模型」的功能可以被「主模型相对于参考模型的概率比值」完全替代，如果主模型在某个回答上比参考模型提升了更多概率，那这个回答就被认为更受偏好。</p>
+<p>这个等价关系让 DPO 可以直接用「偏好对」数据（chosen/rejected）来训练，数据格式长这样：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># DPO 的训练数据格式：同一问题的「好回答」和「差回答」对
+{
+    &quot;prompt&quot;: &quot;如何学好 Python？&quot;,
+    &quot;chosen&quot;: &quot;建议先从官方文档入手，配合做小项目实践...&quot;,  # 人类更偏好的回答
+    &quot;rejected&quot;: &quot;Python 很简单，随便找个教程看看就行了...&quot;  # 人类不太喜欢的回答
+}
+</code></pre></div><p>DPO 的损失函数直觉上做的事情是：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># DPO 损失函数直觉（简化版，不是完整公式）
+loss = -log(
+    sigma(
+        beta * (log(policy(chosen) / ref(chosen))   # chosen 在主模型和参考模型之间的对数概率比
+        -     log(policy(rejected) / ref(rejected))) # rejected 在主模型和参考模型之间的对数概率比
+    )
+)
+# 目标：让 chosen 的比值 &gt; rejected 的比值
+# 即：相对于参考模型，主模型在 chosen 上的概率提升要大于在 rejected 上的提升
+</code></pre></div><p>简单说就是两件事同时发生：模型对「好回答」的概率，相对于参考模型升高；模型对「差回答」的概率，相对于参考模型降低。整个过程不需要奖励模型，只需要主模型和参考模型两个：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># DPO 训练只需要两个模型
+policy_model    = load_sft_model()  # 主模型（正在被优化的）
+reference_model = load_sft_model()  # 参考模型（冻结，用于计算概率比）
+# 相比 PPO 少了 reward_model 和 value_model，资源需求减半
+</code></pre></div><p>DPO 把对齐训练变成了一个普通的监督学习问题，用现成的深度学习框架就能实现，训练稳定，超参数也容易调。这就是为什么开源社区大量采用 DPO 的原因，不需要复杂的 RL 基础设施。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dpo_vs_ppo_03_ppo_vs_dpo_flow_06d4bc6d__f4639185ea.webp" alt="大模型的 DPO 和 PPO 的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="两种方案的对比">两种方案的对比</h3>
+<div class="table-shell"><table><thead>
+<tr>
+<th>维度</th>
+<th>PPO</th>
+<th>DPO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>是否需要奖励模型</td>
+<td>需要（需单独训练）</td>
+<td>不需要</td>
+</tr>
+<tr>
+<td>同时维护的模型数</td>
+<td>4 个</td>
+<td>2 个</td>
+</tr>
+<tr>
+<td>训练稳定性</td>
+<td>较差（RL 本身不稳定）</td>
+<td>好（等价于监督学习）</td>
+</tr>
+<tr>
+<td>实现难度</td>
+<td>高（需要 RL 基础设施）</td>
+<td>低（标准训练框架即可）</td>
+</tr>
+<tr>
+<td>表达能力</td>
+<td>强（可探索训练数据之外的空间）</td>
+<td>稍弱（受偏好数据分布限制）</td>
+</tr>
+<tr>
+<td>代表模型</td>
+<td>ChatGPT 早期版本、InstructGPT、Llama 2-Chat</td>
+<td>Zephyr、部分 Mistral / Qwen 派生 Instruct 模型</td>
+</tr>
+</tbody>
+</table></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dpo_vs_ppo_04_judge_vs_replay_cc3a08c4__f411c68344.webp" alt="大模型的 DPO 和 PPO 的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="ppo-的进阶版-grpo-简介">PPO 的进阶版：GRPO 简介</h3>
+<p>讲 PPO 和 DPO 的同时，最近两年（2024-2026）非常火的一个新方案是 <strong>GRPO（Group Relative Policy Optimization）</strong>，是 DeepSeek 在 2024 年 <em>DeepSeekMath</em> 论文里提出的 PPO 改进版。</p>
+<p>GRPO 的核心创新是<strong>砍掉了 PPO 的 Value Model</strong>。</p>
+<p>PPO 的 4 模型架构里，Value Model 的作用是估计「当前状态的预期奖励」作为基线，然后算「实际奖励 - 预期奖励」得到优势函数（Advantage）。但 Value Model 是一个独立的神经网络，规模和主模型差不多大，要单独训练、占显存。</p>
+<p>GRPO 的做法是：对一个问题 q，从主模型采样 G 个回答（典型 G=8），用奖励模型（或对错判定）给每个回答打分得到 r_1, r_2, ..., r_G。然后用「组内归一化」算每个回答的相对优势：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">A_i = (r_i - mean(r_1..r_G)) / std(r_1..r_G)
+</code></pre></div><p>「组内平均分」充当了 Value Model 的角色，这个基线天然就有，不用单独训练 Value Model。整个 PPO 的 4 模型架构变成 3 模型架构（Policy / Reference / Reward），显存占用接近 DPO 但保留了 RL 探索能力。</p>
+<p>GRPO 还有一个杀手级特性：<strong>对「可验证任务」特别友好</strong>。数学题、代码题这类「答案对就是对、错就是错」的场景，r_i 直接用 0/1 判定就行，连 Reward Model 都可以省。DeepSeek R1-Zero 就是这么做的，纯靠强化学习训出推理能力。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dpo_vs_ppo_05_grpo_group_advantage_32390d0b__0a2cc78c13.webp" alt="大模型的 DPO 和 PPO 的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>谁在用 GRPO：</p>
+<ul>
+<li><strong>DeepSeek R1 / R1-Zero</strong>：推理模型的代表</li>
+<li><strong>DeepSeek-Math</strong>：数学推理模型</li>
+<li><strong>Qwen-Math 系列</strong>：阿里的推理增强模型</li>
+</ul>
+<p>2026 年大厂面试问对齐方法，GRPO 几乎是必问点，能讲出「<strong>砍掉 Value Model 用组内归一化代替</strong>」这一句，就是高分回答。</p>
+<h3 id="各自适合什么场景">各自适合什么场景？</h3>
+<p>理解了两者的权衡，选择就很清晰了。</p>
+<p><strong>PPO 适合</strong>对对齐效果要求极高、资源充足、有 RL 工程能力的团队。它能探索训练数据里没有的高质量回答方式，理论上表达能力更强，ChatGPT 早期的强大效果很大程度上就来自精心调优的 PPO 流程。但门槛极高，能驾驭它的团队凤毛麟角。</p>
+<p><strong>DPO 适合</strong>快速迭代、GPU 资源有限、开源社区场景。不需要 RL 工程能力，偏好数据收集相对容易（众包打排名就可以），训练一次成功率高。大多数开源模型在资源有限的情况下都选 DPO，效果虽然可能略逊于精心调优的 PPO，但工程代价小得多。</p>
+<p>一个简单的判断原则是：如果你想在已有偏好数据的分布上把模型质量提升一步，DPO 够用且高效；如果你需要模型探索超出现有数据的能力边界、或者对齐效果要求接近 OpenAI 的水平，才值得投入 PPO 的工程成本。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dpo_vs_ppo_06_alignment_choice_5175fd9a__8f8a4ad7ec.webp" alt="大模型的 DPO 和 PPO 的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，问到 DPO 和 PPO 的区别，最重要的是先讲清楚<strong>两者都在解决「SFT 之后的对齐问题」</strong>。SFT 让模型学会按指令回答，但回答风格不一定符合人类偏好，所以需要进一步训练让模型学会「哪种回答更受人类欢迎」。这一句铺垫先讲到，面试官就知道你抓到了对齐这件事的本质。</p>
+<p>接下来讲 PPO 的流程：先收集人类偏好排序数据 → 训一个奖励模型代替人类打分 → 用 PPO 算法调整主模型参数让它生成的回答尽量得高分。整个流程要同时维护 4 个模型（policy / reference / reward / value），训练复杂、不稳定、调参难。能把「4 个模型分别做什么」讲清楚，面试官就知道你真的研究过 RLHF 流程。</p>
+<p>DPO 的核心创新是「<strong>把带 KL 约束的 RLHF 目标改写成偏好对上的监督学习损失</strong>」。不需要显式奖励模型，不需要跑 PPO，直接拿 (prompt, chosen, rejected) 三元组训练，让模型学会「好回答的概率比差回答提升得多」。流程从 4 模型砍到 2 模型，训练稳定、容易实现。能用「PPO 是先训裁判再训选手，DPO 是直接拿比赛录像告诉选手哪个动作对」这种类比讲出来，会比纯讲算法生动很多。</p>
+<p>最关键的一句话是：<strong>两者目标一致，但 DPO 省掉了「奖励模型」这个中间层，让对齐训练变成监督学习</strong>。这是 DPO 在开源社区大爆发的核心原因。</p>
+<p>如果还想再加分，可以提一句 GRPO（DeepSeek 2024 年提出的 PPO 改进版，砍掉 Value Model 用组内归一化代替），让面试官知道你跟得上 2026 年的最新对齐方法。能讲到这一层，已经是面试里很难追问的水平了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#sft-之后-还差什么">SFT 之后，还差什么？</a><a class="toc-level-3" href="#ppo-先培养-裁判-再训练-选手">PPO：先培养「裁判」，再训练「选手」</a><a class="toc-level-3" href="#dpo-绕过裁判-直接看回放">DPO：绕过裁判，直接看回放</a><a class="toc-level-3" href="#两种方案的对比">两种方案的对比</a><a class="toc-level-3" href="#ppo-的进阶版-grpo-简介">PPO 的进阶版：GRPO 简介</a><a class="toc-level-3" href="#各自适合什么场景">各自适合什么场景？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/post_training.html"><span>上一篇 · 大模型工程</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/decoding_strategies.html"><span>下一篇 · 大模型工程</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

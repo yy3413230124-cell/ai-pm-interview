@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随模型规模、训练数据量、训练算力这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。">
+  <meta name="keywords" content="AI产品经理面试题,什么是 Scaling Law？大模型的「涌现能力」是怎么回事？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/scaling_law_emergence.html">
+  <title>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随模型规模、训练数据量、训练算力这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/scaling_law_emergence.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随模型规模、训练数据量、训练算力这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/scaling_law_emergence.html#article","headline":"什么是 Scaling Law？大模型的「涌现能力」是怎么回事？｜AI产品经理面试题","description":"我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随模型规模、训练数据量、训练算力这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/scaling_law_emergence.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"什么是 Scaling Law？大模型的「涌现能力」是怎么回事？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/scaling_law_emergence.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="" href="./position_encoding.html"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="" href="./llm_training.html"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="is-active" href="#article-top"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="" href="./post_training.html"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="" href="./dpo_vs_ppo.html"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="" href="./decoding_strategies.html"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="" href="./hallucination.html"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 7 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟阅读</span>
+            <span>7,025 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</h1>
+          <div class="article-deck">
+            <span>题目 07</span>
+            <p>我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随模型规模、训练数据量、训练算力这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</p>
+<p>🙋‍♂️我：Scaling Law 就是模型越大越好嘛，参数越多效果越强。涌现能力就是大模型突然变强了。</p>
+<p>👔面试官：……「越大越好」是错的。Chinchilla 论文你看过吗？为什么 GPT-3 175B 后来被一个 70B 的小模型超过？「越大越好」忽略了什么变量？</p>
+<p>🙋‍♂️我：哦哦，可能还要看数据量？</p>
+<p>👔面试官：对了一半。那具体的最优配比是什么？为什么是这个比例？再说，「涌现」具体是指什么？是不是越涌现越好？为什么有人说涌现可能是「测量假象」？</p>
+<p>🙋‍♂️我：呃……测量假象我没听过。</p>
+<p>👔面试官：2023 年斯坦福一篇论文 <em>Are Emergent Abilities of Large Language Models a Mirage</em> 提出了挑战，认为很多涌现现象只是评估指标设置带来的错觉，换个连续指标曲线就平滑了。这种学术争议都不知道，去面试就是被怼。回去补一下。</p>
+<p>这几下追问其实在敲两件事，Scaling Law 不是一句「越大越好」，涌现也不是「玄学闪现」。背后有具体的数学规律（Chinchilla 1:20 配比）和工程含义（什么时候该堆算力、什么时候该补数据），得逐条拎清楚。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解 Scaling Law（缩放定律）讲的是大模型的损失值如何随<strong>模型规模、训练数据量、训练算力</strong>这三个量变化的可预测关系。OpenAI 在 2020 年提出，DeepMind 在 2022 年的 Chinchilla 论文里精修。</p>
+<p>核心发现是三个。</p>
+<p><strong>第一</strong>，损失值随这三个量按幂律下降（loss ∝ N^-α，N 是规模）。意思是规模翻倍，损失值按可预测的比例下降，没有「饱和点」。</p>
+<p><strong>第二</strong>，参数和数据要按一定比例配。Chinchilla 给的最优比例是 <strong>1:20</strong>（每个参数配 20 tokens）。GPT-3 175B 用 300B tokens 是「严重欠训」，比例只有 1:1.7；DeepMind 训了一个 70B 模型配 1.4T tokens（1:20），反而超过了 GPT-3 和自家更大的 280B Gopher。</p>
+<p><strong>第三</strong>，Llama 3 这类后续模型用了远高于 1:20 的训练 token，效果继续提升。更准确地说，Chinchilla 的 1:20 是「固定训练算力下的 compute-optimal 配比」，不是「数据再多就一定没用」的上限。后来的小模型大量喂数据，很多时候是在用更多训练计算换更低的推理成本。</p>
+<p><strong>涌现能力（Emergent Abilities）</strong> 是 Scaling Law 的一个特殊副产物。当模型规模超过某个临界值（典型是 50B-100B 参数），某些能力会<strong>从「完全不能」突变到「能做」</strong>：多步推理、上下文学习、跨语言迁移、代码理解等。</p>
+<p>但要注意 2023 年斯坦福的 Mirage 论文挑战了「涌现」的定义。他们认为很多涌现现象只是「评估指标的不连续性」造成的测量假象，换成连续指标后曲线就平滑了。学术争议还在继续，但工程层面，模型规模带来的能力跃迁是客观存在的。</p>
+<p>对工程选型的启发是：<strong>不是越大越好</strong>，要看「参数 × 数据 × 算力」三者的最优搭配；<strong>数据规模可能比参数规模更值得加大</strong>（Llama 3 8B 用 15T tokens 跑赢 GPT-3 175B 就是例证）；<strong>同样算力下</strong>，按 Chinchilla 比例训出来的小模型，可能比胡乱堆参数的大模型还强。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="scaling-law-是什么-为什么它震撼了整个业界">Scaling Law 是什么？为什么它震撼了整个业界</h3>
+<p>要理解 Scaling Law 的重要性，得先回到 2018-2020 年那个语境。</p>
+<p>那时候的深度学习圈子里，对「模型加大有没有用」是有分歧的。一派人觉得「模型再大也有上限，参数加多了就饱和了」，另一派人觉得「先把模型加大试试再说」。但谁都没有量化证据，全凭经验和直觉。</p>
+<p>2020 年 OpenAI 的 Kaplan 等人做了一项震撼业界的研究：他们系统训练了一系列从几万参数到几十亿参数的语言模型，发现一个惊人的规律。<strong>模型的损失值（loss）随模型参数 N、训练数据量 D、训练算力 C 这三个量按幂律下降</strong>。</p>
+<p>数学上写出来是这样的：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">loss(N) ≈ (N_c / N)^α_N
+</code></pre></div><p>其中 N_c 是某个常数，α_N 是幂律指数。直观理解就是：<strong>模型规模翻倍，损失值按一个固定比例下降</strong>，而且这个比例可以提前算出来。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_01_curve_6f9d476c__bdf43e4449.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这个发现震撼业界的关键有三点：</p>
+<p>第一，<strong>它是可预测的</strong>。不是「试试看运气」，而是「我现在有 X 算力，按 Scaling Law 算一下，最终能达到什么 loss」。这给了大公司投资大模型的底气，因为可以预测投入产出比。</p>
+<p>第二，<strong>它没有看到饱和点</strong>。论文里把规模一直加大到当时能训的极限，loss 还在按幂律下降，没有「再加就不动了」的拐点。这给业界传递了一个信号：<strong>继续加大规模就还能继续提升</strong>。</p>
+<p>第三，<strong>算力、数据、参数都可以独立做幂律分析</strong>。也就是说，可以分别问「我加倍参数能下降多少 loss」「我加倍数据能下降多少 loss」「我加倍算力能下降多少 loss」。这为后来的 Chinchilla 把这三个变量联立起来打下了基础。</p>
+<p>但 OpenAI 这版 Scaling Law 有一个隐含的问题：<strong>它没回答「参数和数据应该按什么比例配」</strong>。当时业界的普遍做法是「能加多少参数加多少，数据用差不多就行」。结果训出了一批「严重欠训」的大模型，最典型的就是 GPT-3。</p>
+<h3 id="chinchilla-2022-参数和数据要按-1-20-的比例配">Chinchilla 2022：参数和数据要按 1:20 的比例配</h3>
+<p>2022 年 DeepMind 发了一篇论文 <em>Training Compute-Optimal Large Language Models</em>，里面提出了著名的 <strong>Chinchilla 缩放定律</strong>，把 OpenAI 的 Scaling Law 精修了一步。</p>
+<p>DeepMind 做了一个相当壕的实验：<strong>训了 400 个不同规模的 Transformer 模型</strong>，参数从 70M 到 16B，数据量从 5B tokens 到 500B tokens，全部跑完拟合损失曲面。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_02_architecture_c27e8778__dd10fbbfb1.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>实验结果很清晰：<strong>给定固定的训练算力 C，参数和数据要按接近 1:20 的比例配，最终损失更低</strong>。换句话说，参数 N 每加倍，数据 D 也要按比例加倍，经验上大约是「每个参数配 20 个 token」。这个 1:20 不是自然常数，而是 Chinchilla 实验条件下拟合出来的 compute-optimal 经验点，但它把业界从「只堆参数」拉回了「参数和数据要均衡」。</p>
+<p>为了验证这个发现，DeepMind 训了一个对照实验：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>模型</th>
+<th>参数</th>
+<th>数据</th>
+<th>训练算力</th>
+<th>最终效果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Gopher（DeepMind 自家旧版）</td>
+<td>280B</td>
+<td>300B tokens</td>
+<td>X</td>
+<td>基线</td>
+</tr>
+<tr>
+<td>GPT-3</td>
+<td>175B</td>
+<td>300B tokens</td>
+<td>0.7X</td>
+<td>比 Gopher 略弱</td>
+</tr>
+<tr>
+<td><strong>Chinchilla</strong>（按 1:20 配比）</td>
+<td><strong>70B</strong></td>
+<td><strong>1.4T tokens</strong></td>
+<td>X</td>
+<td><strong>明显超过 Gopher 和 GPT-3</strong></td>
+</tr>
+</tbody>
+</table></div><p>注意：Chinchilla 的训练算力和 Gopher 接近（FLOPs 总量相同量级），但参数砍到 1/4，数据加到 4.7 倍。结果是用更小的模型 + 更多的数据，明显超过了 4 倍参数的 Gopher。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_03_comparison_a2b280ad__34d8de9114.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这个对照让业界恍然大悟：<strong>当时所有人训的大模型都严重欠训</strong>。</p>
+<p>具体看 GPT-3 的比例：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">GPT-3: 175B 参数 / 300B tokens = 1 : 1.7
+最优比例: 1 : 20
+GPT-3 数据缺口: 12 倍
+</code></pre></div><p>GPT-3 应该配 3.5T tokens 才是 Chinchilla 最优，但实际只用了 300B，差了一个数量级。如果当时 OpenAI 知道这个结论，可能就不会训那么大的 GPT-3，而是训一个更小但配足数据的模型。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_04_effect_ba9e53e4__bc2e87c42b.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>Chinchilla 改变了整个大模型行业。2022 年之后训的所有主流模型，配比都比之前激进得多。比如 LLaMA 1 的 7B 模型用了 1T tokens（比例 1:140），LLaMA 2 的 7B 用了 2T tokens（1:285），都远超 Chinchilla 推荐的 1:20。越来越多模型主动「过量」喂数据，因为 Chinchilla 让大家意识到：参数加得没那么疯也行，数据要喂够才是关键。</p>
+<p>但故事到这里还没结束。Chinchilla 这个 1:20 的配比，真的是终极答案吗？2024 年的 Llama 3 给了一个让所有人都没想到的答案。</p>
+<h3 id="llama-3-时代-chinchilla-不是数据上限">Llama 3 时代：Chinchilla 不是数据上限</h3>
+<p>2024 年 Meta 训 Llama 3 时，做了一件激进的事：<strong>把数据量推到 1:1875 的极端配比</strong>。</p>
+<p>具体数据：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">Llama 3 8B: 8B 参数 / 15T tokens = 1 : 1875
+（Chinchilla 推荐: 1 : 20）
+</code></pre></div><p>数据规模是 Chinchilla 推荐的 <strong>94 倍</strong>。按当时的常识，应该早就过拟合或者收益递减了。但 Meta 实测发现：<strong>模型在数据量从 1T 推到 15T 的过程中，loss 一直在稳定下降，效果一直在提升</strong>。</p>
+<p>最后训出来的 Llama 3 8B 在多项基准测试上<strong>超过了 GPT-3 175B</strong>。一个 8B 的小模型打赢了 22 倍参数的大模型，靠的就是数据规模。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_05_effect_92ec000d__3a9b12a421.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这件事重新定义了业界对 Scaling Law 的理解。原来的 Chinchilla 1:20 配比不是「数据上限」，而是「<strong>给定训练算力时，参数和数据怎么分配更划算</strong>」的经验答案。如果你愿意投入更多训练计算，继续喂更多高质量 token，loss 仍然可能下降，只是边际收益会变小。</p>
+<p>所以更准确的说法是：Chinchilla 告诉我们「别只堆参数，数据也要跟上」；Llama 3 之后的趋势告诉我们「为了降低推理成本，可以训练一个较小参数、更多 token 的模型」。这两句话不矛盾，只是在优化不同目标，一个偏训练算力最优，一个偏部署成本最优。</p>
+<p>Qwen3-0.6B 把这个趋势推到了更极端，用 36T tokens 训一个 0.6B 的小模型，比例 1:60000，远超 Llama 3 的 1:1875。这说明在追求「推理时性能 / 部署成本」最优的方向上，「小参数 + 海量数据」已经是当前最热门的路径。</p>
+<p>为什么会出现这个趋势？背后有两个很现实的工程原因。第一是<strong>推理成本</strong>：参数越多，推理时显存和延迟越高。一个 8B 模型部署一台消费级 GPU 就够，175B 模型要好几台 H100，成本天差地别。如果 8B + 大数据能达到同等效果，何乐不为？第二是<strong>数据相对便宜</strong>：算力是真金白银的硬件投入（一张 H100 三万美元，集群上千万），数据虽然也要花钱清洗，但相比 GPU 集群仍然便宜得多。在算力受限的环境下，把算力多花在「跑过更多数据」而不是「跑过更多参数」更划算。</p>
+<h3 id="涌现能力-量变到质变的临界点">涌现能力：量变到质变的临界点</h3>
+<p>Scaling Law 还有一个让所有人都没想到的副产物，叫<strong>涌现能力（Emergent Abilities）</strong>。</p>
+<p>涌现的精确定义是：「<strong>某项能力在小模型上完全看不到，规模超过某个临界点之后突然出现</strong>」。它不是平滑上升，而是一条「先趴在地上、到某个点垂直冲天」的折线。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_06_curve_08b17bc8__072e828dd3.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>学术界总结了几类典型的涌现能力，每一类都有具体的数据点支撑：</p>
+<p><strong>1. 多步算术推理</strong></p>
+<p>Google PaLM 论文里测试 5 步算术应用题。准确率随规模变化：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">8B  -&gt; ~0%
+62B -&gt; ~5%
+540B -&gt; ~60%
+</code></pre></div><p>中间没有任何渐进过程，从「完全不会」直接到「会一大半」。这种跳变只能用「涌现」来解释。</p>
+<p><strong>2. In-Context Learning（上下文学习）</strong></p>
+<p>GPT-3 175B 出现之前，业界共识是「想让模型学新任务，必须微调」。GPT-3 出来之后，OpenAI 发现只要在 Prompt 里给几个例子，模型就能学会新任务。这个能力在 1.5B 的 GPT-2 上完全看不到，在 175B 的 GPT-3 上突然就有了，临界点在 100B 左右。</p>
+<p><strong>3. 跨语言泛化</strong></p>
+<p>GPT-3 训练数据 92% 是英文，但训完之后能直接处理中文、阿拉伯语、甚至冰岛语。模型从来没被显式教过「中文怎么说」，它通过大规模混合语料的预训练，自己学会了不同语言间的对应关系。这种能力也是规模到了 100B 左右才稳定出现。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_07_comparison_936f7f73__468e808b96.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>涌现的临界规模通常出现在 50B-100B 这个区间。这个区间到底是什么物理意义，业界还没有定论。一个流行的解释是：模型大到一定程度，注意力头数、隐藏维度等达到了「能编码复杂推理结构」的最低门槛。再小就编码不了，再大就开始展示这些能力。</p>
+<h3 id="mirage-挑战-涌现可能是测量假象">Mirage 挑战：涌现可能是测量假象</h3>
+<p>正当涌现能力被业界广泛接受时，2023 年斯坦福的一篇论文炸了锅：<em>Are Emergent Abilities of Large Language Models a Mirage?</em></p>
+<p>论文作者 Schaeffer 等人观察到一个奇怪现象：<strong>很多「涌现」能力只在某些评估指标下才出现，换个指标就消失了</strong>。</p>
+<p>举个具体例子。多步算术任务，常规评估指标是「最终答案是否完全正确」（exact match）：</p>
+<ul>
+<li>答错任何一步，最终答案就错，得 0 分</li>
+<li>答对所有步骤，得 1 分</li>
+</ul>
+<p>这是一个<strong>离散的二元指标</strong>，要么 0 要么 1。在这个指标下，看到的就是「小模型一直 0 分，大模型突然跳到 60%」的涌现曲线。</p>
+<p>但如果换成「<strong>部分正确率</strong>」（比如答对了前 4 步算 0.8 分），同样的实验数据，能力提升曲线就变成了<strong>平滑的对数曲线</strong>，没有任何突变。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_08_comparison_fb9d0f7b__e6b920aa1c.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>论文的核心论点是：「<strong>涌现」可能不是模型本身的非线性特性，而是评估指标的不连续性放大了一个本来连续的能力提升过程</strong>。</p>
+<p>这个挑战引发了广泛讨论。后续也有论文反驳，认为某些涌现现象在多种连续指标下都能观察到，不能完全用「指标假象」解释。学术争议还在继续，目前的中立结论是：</p>
+<ul>
+<li><strong>能力跃迁是客观存在的</strong>：从工程效果看，模型规模到了 100B 之后，确实能做小模型完全做不了的事</li>
+<li><strong>但「涌现」这个概念可能被过度神化了</strong>：很多所谓的「突变」其实是连续提升 + 指标放大效应</li>
+<li><strong>不存在「魔法的涌现规模」</strong>：不同任务的临界点不同，有的早有的晚，没有统一的「100B 之后必然涌现」</li>
+</ul>
+<p>这个争议对面试来说很有用。如果你能在面试里指出 Mirage 论文的存在，并把双方观点都讲清楚，会显得你<strong>真的看过论文，不是只在背技术博客</strong>。</p>
+<h3 id="对工程选型的启发">对工程选型的启发</h3>
+<p>理解了 Scaling Law 和涌现的内核，对实际工程选型有几个直接启发：</p>
+<p><strong>1. 不是越大越好，要看 Chinchilla 比例</strong></p>
+<p>参数和数据要匹配，至少不能出现「参数很大但数据很少」的欠训状态。1:20 可以作为理解 Chinchilla 的标尺，但不是所有模型都必须卡死在这个比例。选型时更应该问：这个模型是不是训练充分？数据质量怎么样？它是为训练算力最优设计，还是为推理成本最优设计？</p>
+<p><strong>2. 数据规模可能比参数规模更值得加大</strong></p>
+<p>如果你有限的算力是 X，与其训一个 7B + 100B tokens 的模型，不如训 3B + 250B tokens。同样的算力开销，后者效果通常更好，推理还便宜。Llama 3 和 Qwen3 都验证了这个直觉。</p>
+<p><strong>3. 推理成本和参数规模强相关</strong></p>
+<p>部署一个 175B 模型要好几台 H100，部署 8B 模型一张消费级 GPU 就够。在效果差不多的前提下，「小参数 + 海量数据」的模型在推理成本上有天然优势。这也是为什么 2024 年之后开源社区疯狂做小模型大数据。</p>
+<p><strong>4. 涌现能力对模型选型的影响</strong></p>
+<p>如果你的任务依赖「涌现能力」（多步推理、ICL、跨语言迁移），最低门槛是 30B-70B 这个量级，再往下就不行。如果是简单分类、抽取、摘要任务，7B-13B 完全够用，没必要硬上大模型。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_09_architecture_62a48cb1__ca3cd1467d.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="scaling-law-的天花板与未来">Scaling Law 的天花板与未来</h3>
+<p>最后简单提一下 Scaling Law 的尽头，作为面试加分项。</p>
+<p>虽然到目前为止还没看到饱和点，但业界已经开始担心两个潜在天花板。</p>
+<p><strong>第一，数据见底</strong>。互联网上高质量公开文本的总量是有限的，估计在 10T-50T tokens 这个量级。Llama 3 已经用了 15T，Qwen3 用了 36T，再过几年就会把人类历史上所有公开文本都用完。这就是「<strong>数据墙（Data Wall）</strong>」问题。</p>
+<p>应对方向有三个：</p>
+<ul>
+<li><strong>合成数据</strong>：用强模型生成训练数据训弱模型（DeepSeek-Math、Qwen2.5-Math 都用了大量合成数据）</li>
+<li><strong>多模态数据</strong>：扩展到图像、视频、音频，把人类所有形式的信号都纳入训练</li>
+<li><strong>强化学习数据</strong>：用环境交互生成数据（DeepSeek R1 的 RL 训练就属于这一类）</li>
+</ul>
+<p><strong>第二，算力增长放缓</strong>。摩尔定律已经接近物理极限，GPU 算力的增长速度在放缓。能买得起 10 万张 H100 的玩家就那么几个，进一步堆参数的边际成本越来越高。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/scaling_law_emergence_10_curve_ce247daa__bc6e063d0d.webp" alt="什么是 Scaling Law？大模型的「涌现能力」是怎么回事？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这些挑战是 2026 年大模型领域最热的话题之一。能在面试里聊到这些，说明你不只是知道现在，还在思考未来。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，问到 Scaling Law 和涌现能力，最重要的是把 Scaling Law 的本质讲清楚。它讲的是 loss 和参数 N、数据 D、算力 C 的幂律关系（loss ∝ N^-α）。OpenAI 2020 年提出，给业界传递了「规模可预测地带来效果」这个革命性结论，是后面所有大模型烧钱投入的理论基础。</p>
+<p>讲完本质之后，自然引出 Chinchilla 配比的故事。DeepMind 2022 年训 400 个模型实验，发现固定训练算力下，参数和数据接近 1:20 更划算。GPT-3 175B 配 300B tokens 是严重欠训，70B 的 Chinchilla 配 1.4T tokens 反而明显超过 175B 级别的旧模型。这个发现改变了整个行业，2022 年之后大家不再盲目堆参数，而是更重视训练 token 和数据质量。</p>
+<p>接下来讲 Llama 3 时代的进一步变化。Meta 把数据推到 1:1875 的极端配比，用 8B + 15T tokens 训出超过 GPT-3 175B 的效果，说明 Chinchilla 不是「数据上限」。当目标变成「推理便宜、部署容易」时，小参数 + 大数据会非常有吸引力，这是 2024 年之后的重要趋势。</p>
+<p>最关键的是讲清涌现能力 + Mirage 挑战。涌现是某项能力从「完全不会」突变到「能做」，临界规模 50B-100B。但 2023 年斯坦福 Mirage 论文挑战，认为很多涌现是「评估指标不连续」造成的假象，换连续指标曲线就平滑了。学术争议在继续，但能力跃迁客观存在。<strong>能在面试里提出这个学术争议，会显示你真的看过论文，不是只在背技术博客</strong>。</p>
+<p>如果还想再加分，提一句 Scaling Law 的天花板（数据墙 + 算力墙）和应对方向（合成数据、多模态、强化学习），让面试官知道你对未来趋势有思考。能讲到这一层，已经是面试里很难追问的水平了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#scaling-law-是什么-为什么它震撼了整个业界">Scaling Law 是什么？为什么它震撼了整个业界</a><a class="toc-level-3" href="#chinchilla-2022-参数和数据要按-1-20-的比例配">Chinchilla 2022：参数和数据要按 1:20 的比例配</a><a class="toc-level-3" href="#llama-3-时代-chinchilla-不是数据上限">Llama 3 时代：Chinchilla 不是数据上限</a><a class="toc-level-3" href="#涌现能力-量变到质变的临界点">涌现能力：量变到质变的临界点</a><a class="toc-level-3" href="#mirage-挑战-涌现可能是测量假象">Mirage 挑战：涌现可能是测量假象</a><a class="toc-level-3" href="#对工程选型的启发">对工程选型的启发</a><a class="toc-level-3" href="#scaling-law-的天花板与未来">Scaling Law 的天花板与未来</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/llm_training.html"><span>上一篇 · 大模型工程</span><strong>大模型是怎么训练出来的？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/finetuning.html"><span>下一篇 · 大模型工程</span><strong>大模型微调的方案有哪些？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

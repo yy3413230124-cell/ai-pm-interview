@@ -1,0 +1,427 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="理解 LangChain、LangGraph、LlamaIndex 与 LangChain4j 的定位，掌握 Agent 编排和记忆工程。">
+  <meta name="keywords" content="AI产品经理面试题,LangChain面试题,AI产品经理,LangChain 框架面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html">
+  <title>LangChain 框架面试专题｜AI产品经理面试题</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../assets/site.webmanifest">
+  <link rel="stylesheet" href="../styles/fonts.css">
+  <link rel="stylesheet" href="../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="LangChain 框架面试专题｜AI产品经理面试题">
+  <meta property="og:description" content="理解 LangChain、LangGraph、LlamaIndex 与 LangChain4j 的定位，掌握 Agent 编排和记忆工程。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LangChain 框架面试专题｜AI产品经理面试题">
+  <meta name="twitter:description" content="理解 LangChain、LangGraph、LlamaIndex 与 LangChain4j 的定位，掌握 Agent 编排和记忆工程。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html#page","url":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html","name":"LangChain 框架面试专题｜AI产品经理面试题","description":"理解 LangChain、LangGraph、LlamaIndex 与 LangChain4j 的定位，掌握 Agent 编排和记忆工程。","inLanguage":"zh-CN","isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"},"mainEntity":{"@type":"ItemList","numberOfItems":12,"itemListElement":[{"@type":"ListItem","position":1,"name":"你了解过哪些 AI Agent 开发框架？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/agent_frameworks.html"},{"@type":"ListItem","position":2,"name":"请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/chain.html"},{"@type":"ListItem","position":3,"name":"LangChain 的底层架构与实现原理是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_architecture.html"},{"@type":"ListItem","position":4,"name":"使用 LangChain 构建 Agent 的核心步骤是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/build_agent.html"},{"@type":"ListItem","position":5,"name":"在 LangChain 中，如何为 Agent 注册工具？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/tool_registration.html"},{"@type":"ListItem","position":6,"name":"LangChain 如何实现短期记忆和长期记忆？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/memory.html"},{"@type":"ListItem","position":7,"name":"LangChain 和 LlamaIndex 有什么区别？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_llamaindex.html"},{"@type":"ListItem","position":8,"name":"请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain4j.html"},{"@type":"ListItem","position":9,"name":"请你详细说说 LangChain 和 LangGraph 的核心区别是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_langgraph.html"},{"@type":"ListItem","position":10,"name":"LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langgraph_advantages.html"},{"@type":"ListItem","position":11,"name":"LangChain 大版本升级有哪些核心变化？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/version_evolution.html"},{"@type":"ListItem","position":12,"name":"Deep Research 的实现逻辑和适用场景是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/deep_research.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"LangChain 框架面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html"}]}]}</script>
+</head>
+<body class="category-page" data-root="../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../index.html">首页</a>
+          <a href="../index.html#library">面试题库</a>
+          <a class="is-active" href="../index.html#topics">知识专题</a>
+          <a href="../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../index.html">首页 <span>01</span></a>
+          <a href="../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <section class="category-hero" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee">
+      <div class="category-hero-copy reveal">
+        <a class="breadcrumb" href="../index.html">首页</a>
+        <span class="category-index">05</span>
+        <span class="eyebrow">INTERVIEW TOPIC · LANGCHAIN</span>
+        <h1>LangChain 框架面试专题</h1>
+        <p>只要面的是大模型应用开发或者 Python Agent 开发岗位，LangChain 基本都是绕不开的话题。面试官可能先问一句「你用过哪些 Agent 框架」，但只要你回答用过 LangChain，后面往往就会一路追问 Chain、Tools、Memory、LangGraph，甚至继续问到框架选型和版本演进。</p>
+        <div class="category-actions">
+          <a class="button button-primary" href="#question-list">查看 12 道题 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+          <button class="button" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg> 随机抽题</button>
+        </div>
+      </div>
+      <div class="category-art" aria-hidden="true">
+        <span class="category-art-label">LangChain</span>
+        <strong>12</strong>
+        <span>QUESTIONS</span>
+        <i class="category-art-orbit"></i>
+        <i class="category-art-grid"></i>
+      </div>
+    </section>
+    <section class="section category-library" id="question-list">
+      <div class="section-heading">
+        <div><span class="section-kicker">ALL QUESTIONS</span><h2>LangChain 题目列表</h2></div>
+        <p>从 Chain、Runnable 到 LangGraph</p>
+      </div>
+      <div class="question-grid">
+        
+    <article class="question-card" data-question-card data-category="langchain" data-search="你了解过哪些aiagent开发框架我重点了解过langchainlanggraph和llamaindex简要回答详细解析agent框架解决了什么为什么重点看langchainlanggraph和langchain是什么关系llamaindex强在哪里三个框架怎么配合其他框架要了解吗到底该怎么选面试总结参考资料" data-href="articles/langchain/agent_frameworks.html">
+      <a class="card-cover" href="../articles/langchain/agent_frameworks.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：你了解过哪些 AI Agent 开发框架？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">01</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/agent_frameworks.html">你了解过哪些 AI Agent 开发框架？</a></h3>
+        <p>我重点了解过 LangChain、LangGraph 和 LlamaIndex。</p>
+        <div class="card-footer">
+          <span>QUESTION 01</span>
+          <a href="../articles/langchain/agent_frameworks.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="请你谈谈对langchain中核心概念chain的理解以及它的核心作用与设计理念chain是一种应用编排思路把prompt模型检索器输出解析器和自定义逻辑等步骤按照明确的数据流连接起来让上一步的输出成为下一步的输入最终形成一个可以整体执行的流程简要回答详细解析为什么需要chainchain只能线性执行吗runnable解决了什么lcel不只是语法糖如何并行与汇合为什么统一协议能不断扩展为什么弃用旧式chain三种编排方式怎么选哪些理解容易走偏面试总结参考资料" data-href="articles/langchain/chain.html">
+      <a class="card-cover" href="../articles/langchain/chain.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">02</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/chain.html">请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。</a></h3>
+        <p>Chain 是一种应用编排思路：把 Prompt、模型、检索器、输出解析器和自定义逻辑等步骤，按照明确的数据流连接起来，让上一步的输出成为下一步的输入，最终形成一个可以整体执行的流程。</p>
+        <div class="card-footer">
+          <span>QUESTION 02</span>
+          <a href="../articles/langchain/chain.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="langchain的底层架构与实现原理是什么当前langchainv1更像一套面向agent的分层开发框架而不只是将prompt串起来的chain工具简要回答详细解析langchain解决了什么架构分成几层核心协议如何统一agentloop如何运行数据应该放在哪里middleware做什么langgraph是什么角色旧版chain还能用吗面试总结参考资料" data-href="articles/langchain/langchain_architecture.html">
+      <a class="card-cover" href="../articles/langchain/langchain_architecture.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：LangChain 的底层架构与实现原理是什么？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">03</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/langchain_architecture.html">LangChain 的底层架构与实现原理是什么？</a></h3>
+        <p>当前 LangChain v1 更像一套面向 Agent 的分层开发框架，而不只是将 Prompt 串起来的 Chain 工具。</p>
+        <div class="card-footer">
+          <span>QUESTION 03</span>
+          <a href="../articles/langchain/langchain_architecture.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="使用langchain构建agent的核心步骤是什么我通常分七步构建langchainagent简要回答详细解析什么才算完整agent第一步明确任务边界第二步选择模型与tools第三步约束行为与输出第四步组装agent第五步补齐状态与安全第六步选择调用方式第七步测试与监控上线前检查什么面试总结参考资料" data-href="articles/langchain/build_agent.html">
+      <a class="card-cover" href="../articles/langchain/build_agent.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：使用 LangChain 构建 Agent 的核心步骤是什么？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">04</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/build_agent.html">使用 LangChain 构建 Agent 的核心步骤是什么？</a></h3>
+        <p>我通常分七步构建 LangChain Agent。</p>
+        <div class="card-footer">
+          <span>QUESTION 04</span>
+          <a href="../articles/langchain/build_agent.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="在langchain中如何为agent注册工具langchain中注册tool的本质是同时向模型提供一份工具说明并向运行时提供一个真正可执行的函数工具说明主要包含名称用途和参数schema模型根据它选择工具并生成参数langchain再执行对应函数简要回答详细解析tool注册了什么常用方式怎么选为什么优先使用tool何时使用高级定义可信参数如何注入异步工具怎么处理错误应该怎么处理注册后还要检查什么面试总结参考资料" data-href="articles/langchain/tool_registration.html">
+      <a class="card-cover" href="../articles/langchain/tool_registration.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：在 LangChain 中，如何为 Agent 注册工具？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">05</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/tool_registration.html">在 LangChain 中，如何为 Agent 注册工具？</a></h3>
+        <p>LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。</p>
+        <div class="card-footer">
+          <span>QUESTION 05</span>
+          <a href="../articles/langchain/tool_registration.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="langchain如何实现短期记忆和长期记忆在langchainv1中可以用一句话区分两类记忆简要回答详细解析应该记住什么短期记忆如何实现消息太多怎么办长期记忆如何实现如何跨线程读取什么时候写入长期记忆生产环境要注意什么旧memory还能用吗面试总结参考资料" data-href="articles/langchain/memory.html">
+      <a class="card-cover" href="../articles/langchain/memory.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：LangChain 如何实现短期记忆和长期记忆？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">06</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/memory.html">LangChain 如何实现短期记忆和长期记忆？</a></h3>
+        <p>在 LangChain v1 中，可以用一句话区分两类记忆：</p>
+        <div class="card-footer">
+          <span>QUESTION 06</span>
+          <a href="../articles/langchain/memory.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="langchain和llamaindex有什么区别langchain和llamaindex现在都能构建agent调用工具和实现rag但它们的默认入口与优势重心不同简要回答详细解析为什么容易混淆核心区别是什么langchain强在哪里llamaindex强在哪里应该如何选型两者如何组合常见误区面试总结参考资料" data-href="articles/langchain/langchain_vs_llamaindex.html">
+      <a class="card-cover" href="../articles/langchain/langchain_vs_llamaindex.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：LangChain 和 LlamaIndex 有什么区别？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">07</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/langchain_vs_llamaindex.html">LangChain 和 LlamaIndex 有什么区别？</a></h3>
+        <p>LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。</p>
+        <div class="card-footer">
+          <span>QUESTION 07</span>
+          <a href="../articles/langchain/langchain_vs_llamaindex.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="请你谈谈langchain4j这类java生态的langchain衍生框架主要帮开发者解决了哪些核心问题它的核心适用场景是什么langchain4j的名字虽然受langchain启发但它不是官方的java移植版它是一套独立开发按照java习惯设计的开源llm应用框架简要回答详细解析它是langchain的java版吗统一接口能抹平所有差异吗aiservices解决什么问题tools如何连接业务动作chatmemory等于聊天档案吗rag不只是连接向量库java生态如何集成可观测性与guardrails的边界什么时候适合langchain4j面试总结参考资料" data-href="articles/langchain/langchain4j.html">
+      <a class="card-cover" href="../articles/langchain/langchain4j.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">08</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/langchain4j.html">请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</a></h3>
+        <p>LangChain4j 的名字虽然受 LangChain 启发，但它不是官方的 Java 移植版。它是一套独立开发、按照 Java 习惯设计的开源 LLM 应用框架。</p>
+        <div class="card-footer">
+          <span>QUESTION 08</span>
+          <a href="../articles/langchain/langchain4j.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="请你详细说说langchain和langgraph的核心区别是什么langchain和langgraph处在不同的抽象层按照当前官方定位langchainv1是高层agent开发框架负责提供模型工具结构化输出和middleware等常用能力简要回答详细解析两者处于同一层吗核心差异抽象层级langchain只能线性执行吗middleware与图编排有何不同state默认状态与自由建模谁提供持久化与记忆人工介入有什么区别流式输出能看到多深部署与调试如何分工什么时候下沉langgraph面试总结参考资料" data-href="articles/langchain/langchain_vs_langgraph.html">
+      <a class="card-cover" href="../articles/langchain/langchain_vs_langgraph.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：请你详细说说 LangChain 和 LangGraph 的核心区别是什么？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">09</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 18 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/langchain_vs_langgraph.html">请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</a></h3>
+        <p>LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。</p>
+        <div class="card-footer">
+          <span>QUESTION 09</span>
+          <a href="../articles/langchain/langchain_vs_langgraph.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="langgraph相比于langchain有哪些核心优势更适配哪些agent场景langgraph和langchain不是互斥的两套agent框架langchainv1提供模型工具中间件和预构建agentloopcreateagent本身就运行在langgraph上langgraph是更低层的编排框架与运行时让开发者简要回答详细解析两者为什么不对立为什么要把流程与状态摊开两种编排api怎么选流程跨小时后如何继续人工怎样进入任意一步失败后为什么不必整段重跑复杂任务如何并行又汇合运行中怎样持续看见进度状态如何走向生产部署完整流程示例哪些场景适合langgraph哪些场景不必用langgraph面试总结参考资料" data-href="articles/langchain/langgraph_advantages.html">
+      <a class="card-cover" href="../articles/langchain/langgraph_advantages.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">10</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 22 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/langgraph_advantages.html">LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</a></h3>
+        <p>LangGraph 和 LangChain 不是互斥的两套 Agent 框架。LangChain v1 提供模型、工具、中间件和预构建 Agent loop，createagent 本身就运行在 LangGraph 上；LangGraph 是更低层的编排框架与运行时，让开发者…</p>
+        <div class="card-footer">
+          <span>QUESTION 10</span>
+          <a href="../articles/langchain/langgraph_advantages.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="langchain大版本升级有哪些核心变化langchain的版本演进可以抓住四条主线简要回答详细解析为什么要不断调整架构核心与集成为何拆开runnable改变了什么为什么转向langgraphlangchainv1聚焦了什么pydantic2值得重点背吗升级时要注意什么演进方向是什么面试总结参考资料" data-href="articles/langchain/version_evolution.html">
+      <a class="card-cover" href="../articles/langchain/version_evolution.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：LangChain 大版本升级有哪些核心变化？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">11</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/version_evolution.html">LangChain 大版本升级有哪些核心变化？</a></h3>
+        <p>LangChain 的版本演进可以抓住四条主线。</p>
+        <div class="card-footer">
+          <span>QUESTION 11</span>
+          <a href="../articles/langchain/version_evolution.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="langchain" data-search="deepresearch的实现逻辑和适用场景是什么deepresearch不是langchain核心包里的一个固定开关而是一类面向开放问题的研究型agent架构langchain团队提供了opendeepresearch参考实现也提供了更通用的deepagentssdk前者是具体研究应用后者简要回答详细解析deepresearch是什么核心流程是什么为什么需要子agent如何保证研究质量如何控制成本和安全哪些场景适合面试总结参考资料" data-href="articles/langchain/deep_research.html">
+      <a class="card-cover" href="../articles/langchain/deep_research.html" style="--cat:#1598c8;--soft:#e5f7ff;--acid:#9aefee" aria-label="阅读：Deep Research 的实现逻辑和适用场景是什么？">
+        <span class="cover-kicker">05 / LANGCHAIN</span>
+        <span class="cover-index">12</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/langchain/deep_research.html">Deep Research 的实现逻辑和适用场景是什么？</a></h3>
+        <p>Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 opendeepresearch 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者…</p>
+        <div class="card-footer">
+          <span>QUESTION 12</span>
+          <a href="../articles/langchain/deep_research.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+      </div>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../index.html#library">全部面试题</a>
+            <a href="../index.html#topics">六类专题</a>
+            <a href="../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../category/agent.html">Agent</a>
+            <a href="../category/rag.html">RAG</a>
+            <a href="../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../assets/search-index.js"></script><script src="../app.js" defer></script>
+</body>
+</html>

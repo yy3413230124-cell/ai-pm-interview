@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续…">
+  <meta name="keywords" content="AI产品经理面试题,大模型是怎么训练出来的？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/llm_training.html">
+  <title>大模型是怎么训练出来的？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型是怎么训练出来的？｜AI产品经理面试题">
+  <meta property="og:description" content="大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续…">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/llm_training.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型是怎么训练出来的？｜AI产品经理面试题">
+  <meta name="twitter:description" content="大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续…">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/llm_training.html#article","headline":"大模型是怎么训练出来的？｜AI产品经理面试题","description":"大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续…","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/llm_training.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"大模型是怎么训练出来的？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/llm_training.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="" href="./position_encoding.html"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="is-active" href="#article-top"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="" href="./scaling_law_emergence.html"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="" href="./post_training.html"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="" href="./dpo_vs_ppo.html"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="" href="./decoding_strategies.html"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="" href="./hallucination.html"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 6 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,588 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>大模型是怎么训练出来的？</h1>
+          <div class="article-deck">
+            <span>题目 06</span>
+            <p>大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续…</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲大模型是怎么训练出来的？</p>
+<p>🙋‍♂️我：训练就是给模型喂大量数据让它学习，最后能回答各种问题。</p>
+<p>👔面试官：……「喂大量数据」具体喂什么？数据从哪来？训练目标是什么？为什么训完一次就能回答问题？</p>
+<p>🙋‍♂️我：哦哦，应该是给它 prompt 和答案对，让它学会回答？</p>
+<p>👔面试官：你说的是 SFT 阶段，但 SFT 之前还有更基础的预训练阶段，没有预训练 SFT 啥都干不成。再说，SFT 之后还有对齐阶段，三个阶段缺一不可。这三件事你能讲清楚分别在做什么、为什么需要、为什么缺一不可吗？</p>
+<p>🙋‍♂️我：呃……三个阶段我大概知道有，但具体差别讲不清楚。</p>
+<p>👔面试官：典型的「知道有但讲不清」。预训练是「让模型读万卷书」，SFT 是「让它学会问答」，对齐是「让它好好说话」。这三件事的训练目标完全不同，数据格式完全不同，缺少任何一个模型都用不起来。回去搞清楚再来。</p>
+<p>到这里我才老实了，训练大模型真不是「喂数据」三个字。它是「预训练 → SFT → 对齐」三段流水线，每一段解决的问题不同，顺序还动不得。把这三段各自的角色拆开讲，整条主线才立得起来。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>大模型训练我理解是分三个阶段，每个阶段解决不同层次的问题。我用一个类比来记忆：预训练就像一个人从小到大读了海量的书，积累了语言能力和世界知识，训练目标就是「预测下一个词」，简单但威力巨大；SFT 是给这个博学的人做面试培训，让他学会把知识转化成有问有答的对话形式，而不是一直续写文章；对齐阶段是给他做职业素养培训，用 RLHF 或 DPO 让他的回答方式更符合人类偏好、更安全。三个阶段缺一不可，预训练决定能力天花板，SFT 给格式，对齐给价值观，这是目前所有主流大模型训练的基本框架。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="先理一个直觉-训练大模型为什么要分阶段">先理一个直觉：训练大模型为什么要分阶段？</h3>
+<p>很多人第一次听说「大模型训练分三个阶段」会很困惑，为什么不能一次性训完？为什么要分这么麻烦？</p>
+<p>要回答这个问题，先做个类比。培养一个能在公司独当一面的员工，至少要经过三件事。</p>
+<p>他得先<strong>有基础知识</strong>，从小学读到大学，掌握语言、数学、逻辑、各种学科常识。没有这个基础，进了公司啥也干不了。然后他得<strong>会公司的流程</strong>，哪怕他知识再渊博，进了公司也不知道「怎么写汇报邮件、怎么和客户对话、怎么提交工单」。这些不是知识问题，是「适配工作场景」的问题。最后他得<strong>懂职业素养</strong>，知道该说什么、不该说什么、什么时候要谦虚、什么时候要拒绝不合理要求。这些不是技能问题，是「价值观和分寸感」的问题。</p>
+<p>大模型的三个训练阶段对应的就是这三件事。预训练让它读万卷书，SFT 让它学会问答格式，对齐让它学会好好说话。每个阶段解决一个完全不同层面的问题，所以缺一不可。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/llm_training_01_three_stage_training_401d6384__c20bb7752a.webp" alt="大模型是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>有了这个类比打底，下面分别看每个阶段具体在做什么。</p>
+<h3 id="第一阶段-预训练-读万卷书">第一阶段：预训练，读万卷书</h3>
+<p>预训练是大模型能力的根基，所有上层能力都从这里来。</p>
+<p><strong>数据从哪来？</strong></p>
+<p>预训练用的数据规模大到夸张。GPT-3 用了 3000 亿 token，Llama 3 用了 15 万亿 token，相当于把整个互联网的公开文本资源差不多都吞了一遍。</p>
+<p>具体数据来源你可以理解成「能爬到的所有公开文本」，互联网网页（Common Crawl 项目专门干这事）、GitHub 上的所有代码、维基百科全部条目、扫描过的图书、学术论文、新闻报道，几乎所有形式的人类知识都在里面。</p>
+<p>但原始爬到的数据是不能直接用的，里面充满垃圾，包括重复内容、机器生成的乱码、低质量论坛灌水、广告页面这些。预训练前要做大量清洗工作，去重、过滤低质量内容、识别语言、剔除有害信息。一个高质量训练集的清洗成本可能比模型训练本身还贵，这是大模型公司之间的核心竞争力之一。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/llm_training_02_data_cleaning_factory_49462eec__2d39e30a7e.webp" alt="大模型是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>训练目标长什么样？</strong></p>
+<p>这一点其实很反直觉。你猜大模型的训练目标是什么？是「回答正确率」？还是「写得通不通顺」？都不是，是一个看起来简单到让人怀疑的任务，<strong>预测下一个 token</strong>。</p>
+<p>学术上叫 CLM（Causal Language Modeling，因果语言模型）。每条训练样本就是「给前 N 个 token，预测第 N+1 个 token」，对整个语料库做这件事，反复调整模型参数让它的预测越来越准。</p>
+<p>「预测下一个词」就这么简单？没错，就是这么简单。但威力大到吓人。为什么呢？因为想要在不同上下文里准确预测下一个词，模型必须真的理解语法、记住事实、推理逻辑。</p>
+<p>举几个例子你就明白了。要预测「北京是中国的____」，模型必须知道「北京是首都」这个事实；要预测「如果 x=2，那么 x²=____」，模型必须会算数；要预测一段代码的下一行，模型必须理解编程逻辑；要预测一首诗的下一句，模型必须懂韵律和意境。所有这些能力都被「预测下一个词」这一个目标<strong>逼着学会了</strong>。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/llm_training_03_next_token_learning_59969dff__5caf796189.webp" alt="大模型是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这就是为什么「预测下一个词」这个看起来简单的目标，能造就一个能写代码、能解数学题、能创作诗歌的通用智能模型。简单的目标 + 海量数据 = 涌现的智能。</p>
+<p><strong>计算开销有多大？</strong></p>
+<p>惊人的离谱。训练 GPT-3 据估算花了约 3.14×10²³ 次浮点运算（FLOPs）。这是什么概念？用一张 A100 GPU 算需要 36 万年。OpenAI 实际是用了几百到几千张 GPU 并行训练了几个月才搞定。算力成本上千万美元，这就是为什么早期只有少数巨头能玩得起预训练。</p>
+<p>预训练完之后，模型有了一个「大脑」，里面塞满了语言能力和世界知识。但这个大脑还有个问题，<strong>它不会回答问题，只会续写</strong>。</p>
+<h3 id="第二阶段-sft-从-续写机器-变-对话机器">第二阶段：SFT，从「续写机器」变「对话机器」</h3>
+<p>预训练后的模型本质上是一个「文本续写机器」。</p>
+<p>什么意思？你给它一段文字，它会继续往下写，但<strong>不真的理解你在「问问题」</strong>。打个比方，你问它「天空为什么是蓝色的？」，它可能续写成「天空为什么是蓝色的？这是个有趣的科学问题。今天天气不错，让我们看看……」一直发散下去，根本没在回答你。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/llm_training_04_sft_continue_to_answer_c1680d5e__f56132309a.webp" alt="大模型是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>SFT 的目的就是把这个「续写机器」改造成「对话机器」。</p>
+<p>它怎么做？训练数据格式变了，从「连续文本」变成「(指令，期望回答) 对」，比如这种格式：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">指令：请用简单易懂的语言解释为什么天空是蓝色的
+回答：天空呈现蓝色是因为大气中的散射现象。太阳光包含所有颜色，
+当光进入大气层时，氮气和氧气分子会将短波长的蓝光散射到各个方向，
+而长波长的红光穿透能力更强，散射较少。所以我们从任何方向看天空，
+都能看到散射来的蓝光。
+</code></pre></div><p>模型在这种数据上继续训练，慢慢学会「啊，看到这种格式我就该给一个完整答案，不要无限续写下去」。这就是从「续写模式」切换到「对话模式」的关键。</p>
+<p>数据质量比数量更重要。Llama 2 用了大约 100 万条 SFT 数据，但每条都是精心标注的。AlpacaFarm 的研究还发现一个反直觉的结论，<strong>几千条高质量数据训出来的效果，比几十万条低质量数据要好</strong>。所以工业界做 SFT 不会盲目堆数量，而是花大量人力打磨数据质量。</p>
+<p>数据多样性也很关键，不能只覆盖一种任务。一份合格的 SFT 数据集会涵盖问答、写作、代码、角色扮演、数学推理、翻译等各种场景。覆盖面不够的话，模型在没见过的任务上就会表现拉胯。</p>
+<p>SFT 之后，模型已经会按指令回答问题了。但它的回答方式不一定是你喜欢的，可能太啰嗦、太简洁、或者偶尔说出一些不该说的话。这就需要第三阶段。</p>
+<h3 id="第三阶段-对齐-学会-好好说话">第三阶段：对齐，学会「好好说话」</h3>
+<p>对齐（Alignment）的目标是让模型的行为更符合人类的价值观和偏好。</p>
+<p>举个例子。同一个问题「怎么学好 Python」，可以有很多种「合格」的回答。有的简洁、有的详细、有的带代码示例、有的纯文字、有的承认「我不熟悉这块」、有的硬装专家胡说。SFT 只教会了模型「这种格式叫合格回答」，但没告诉它「哪种回答用户更喜欢」。对齐就是补这一课。</p>
+<p>对齐的主流方法是 <strong>RLHF</strong>（Reinforcement Learning from Human Feedback，基于人类反馈的强化学习），OpenAI 在 InstructGPT 里首次引入。</p>
+<p>它的流程是这样的。先让人类标注员对同一个问题的多个回答做排序（A 比 B 好、B 比 C 好），收集大量这种「偏好排序」数据。然后用这些数据训一个独立的「奖励模型」，让它学会自动给回答打分（代替人类，因为人类标注太慢太贵）。最后用强化学习算法（PPO）调整大模型的参数，让它生成的回答尽量得高分。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/llm_training_05_rlhf_flow_cb996cf7__1d2ee1d418.webp" alt="大模型是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>RLHF 听起来挺合理，但工程上很难。流程长、要同时维护好几个模型、训练不稳定。一不小心模型会学会「钻空子」，讨好奖励模型而不是真的变好，业内叫「奖励 Hacking」。能驾驭 RLHF 的团队在业界凤毛麟角。</p>
+<p>后来斯坦福提出了 <strong>DPO</strong>（Direct Preference Optimization，直接偏好优化），把对齐流程大幅简化。它发现 RLHF 的优化目标可以用数学等价的方式改写成纯监督学习，<strong>不需要奖励模型，也不需要 PPO</strong>。直接拿（问题，好回答，差回答）三元组训练，让模型学会「好回答的概率要比差回答提升得多」就行。</p>
+<p>DPO 训练简单、稳定、容易实现，很多开源 Instruct 模型会把它作为偏好对齐方案之一。但这里要注意别把所有模型都说成 DPO 训出来的。比如 Llama 2-Chat 公开论文里的主线是 SFT、拒绝采样和 PPO/RLHF，并不是 DPO；Llama 3 系列则使用了更复杂的多阶段 post-training。面试里说「DPO 是开源社区常见方案」可以，说「Llama 2 都是 DPO」就不严谨了。</p>
+<p>到这里，三个阶段都讲完了。最后回头看一遍，理解为什么这三件事缺一不可。</p>
+<h3 id="三阶段为什么缺一不可">三阶段为什么缺一不可</h3>
+<p>如果只做预训练，不做 SFT，模型只会续写文本，根本不会以对话方式回答问题。你问它问题，它给你接下去写一篇文章。这种模型只能当「智能补全工具」用，做不了对话产品。</p>
+<p>如果只做预训练加 SFT，不做对齐，模型会以对话方式回答了，但回答质量参差不齐。它可能生成有害内容、歧视性言论，或者回答方式让用户不爽（过于啰嗦、过于简洁、自信地胡说）。这种模型上线之后用户体验不好，公司可能还会被监管找麻烦。</p>
+<p>如果只做 SFT 和对齐，跳过预训练，那就是在「空壳」上优化。模型没有底层知识，给它再多对话数据也学不出真正的智能。这也是为什么所有大模型公司都在拼预训练，<strong>预训练决定了模型能力的天花板</strong>，SFT 和对齐只是在这个天花板内做优化，决定能不能把天花板的潜力发挥出来。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/llm_training_06_missing_stage_comparison_1f8ca7e8__1657f73394.webp" alt="大模型是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>理解了这一点，再看大模型公司之间的竞争就清楚了。OpenAI、Anthropic、DeepSeek 这些公司之所以能领先，最大的护城河不是 SFT 或对齐技巧（这些公开材料都有），而是预训练阶段的「数据 + 算力 + 工程经验」。这些东西要么靠时间积累，要么靠真金白银，是后来者难以追赶的。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，问到「大模型是怎么训练出来的」，最关键的是把「分三个阶段」这件事的逻辑讲清楚，而不是只会说三个阶段的名字。</p>
+<p>预训练是地基，让模型学会语言和世界知识，训练目标是「预测下一个 token」，看起来简单但威力极大。这一步是最贵的，几百到几千张 GPU 训几个月，烧的是真金白银。</p>
+<p>SFT 是格式适配，把「续写机器」改造成「对话机器」。数据格式从连续文本变成（指令，期望回答）对，质量比数量重要，几千条精心标注的数据能赢几十万条粗糙数据。</p>
+<p>对齐是价值观训练，让模型「好好说话」。经典路线是 RLHF（奖励模型 + PPO），开源社区也大量使用 DPO、ORPO、KTO 这类更容易落地的偏好优化方法。不同模型会把这些方法组合起来用，这一阶段决定模型上线后用户体验好不好。</p>
+<p>最关键的一句话是，<strong>这三个阶段缺一不可，预训练定天花板，SFT 给格式，对齐给价值观</strong>。能讲清楚「为什么缺一不可」，比单纯背三个阶段名字深刻得多。</p>
+<p>如果还想加分，可以提一句大模型公司之间真正的护城河在预训练阶段（数据 + 算力 + 工程经验），SFT 和对齐相对来说技巧已经透明化了。这种「站在产业视角」的回答会让面试官印象深刻。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#先理一个直觉-训练大模型为什么要分阶段">先理一个直觉：训练大模型为什么要分阶段？</a><a class="toc-level-3" href="#第一阶段-预训练-读万卷书">第一阶段：预训练，读万卷书</a><a class="toc-level-3" href="#第二阶段-sft-从-续写机器-变-对话机器">第二阶段：SFT，从「续写机器」变「对话机器」</a><a class="toc-level-3" href="#第三阶段-对齐-学会-好好说话">第三阶段：对齐，学会「好好说话」</a><a class="toc-level-3" href="#三阶段为什么缺一不可">三阶段为什么缺一不可</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/tokenizer.html"><span>上一篇 · 大模型工程</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/scaling_law_emergence.html"><span>下一篇 · 大模型工程</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

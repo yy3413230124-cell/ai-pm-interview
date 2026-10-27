@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。">
+  <meta name="keywords" content="AI产品经理面试题,了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/4_patterns.html">
+  <title>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/4_patterns.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/4_patterns.html#article","headline":"了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？｜AI产品经理面试题","description":"我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/4_patterns.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/4_patterns.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="is-active" href="#article-top"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 4 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,282 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</h1>
+          <div class="article-deck">
+            <span>题目 04</span>
+            <p>我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你了解哪些 Agent 的设计范式？</p>
+<p>🙋‍♂️我：有 ReAct，就是让模型先思考再行动，还有……多 Agent 协作那种。</p>
+<p>👔面试官：多 Agent 协作是架构模式，不是设计范式。除了 ReAct，还有哪些？Reflection 知道吗？</p>
+<p>🙋‍♂️我：Reflection 是反思，就是模型做完之后自己检查一遍？这应该是调试用的吧。</p>
+<p>👔面试官：Reflection 是正式的设计范式，不是调试工具，它在执行流程里加了自我评估环节，能显著提升输出质量，但也有代价，你知道是什么代价吗？</p>
+<p>🙋‍♂️我：多跑几次 LLM？会慢一点？</p>
+<p>👔面试官：是 token 消耗和延迟都会增加。那我再问，生产环境里你会优先用纯 Agent 模式还是 Workflow？为什么？</p>
+<p>好，这道题考的是你对 Agent 工程取舍的理解，咱系统说一下。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。</p>
+<p>常见的设计范式除了纯 Agent 之外，还有 ReAct、Plan-and-Execute、Reflection 这几种。</p>
+<p>我在实际工程里用得最多的反而是把两者混用，固定流程的部分用 Workflow，需要灵活决策的节点嵌入 Agent 能力，这样既保住了整体可控，又有局部的灵活性。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>在 Agent 开发里有一个非常基础但经常被忽视的问题：<strong>什么情况下该用 Agent，什么情况下该用 Workflow？</strong> 这是实际工程里最常碰到的架构决策，弄错了要么过度工程化，要么系统一点都不可控。</p>
+<h3 id="workflow-和-agent-的区别">Workflow 和 Agent 的区别</h3>
+<p>先把两者的本质区别说清楚。<strong>Workflow</strong> 就是一个确定性的流程图，你提前定好「第一步做 A，A 完了做 B，B 失败了走分支 C」，每一步的逻辑都是你硬编码进去的，LLM 只是其中某个节点的执行工具，不负责决策流程本身。好处是行为完全可预测、容易测试、出了问题好排查；坏处是灵活性低，遇到你没预料到的情况就会走入死胡同。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305203811055__q_acb755ef5a70__d1937211e6.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>Agent</strong> 则相反，它把「下一步做什么」这个决策权交给了 LLM。你只告诉它目标，它自己判断该调哪个工具、该不该继续、什么时候算完成。好处是能处理你事先没设计进去的情况；坏处是行为不确定，同样的输入可能走出不同的路径，线上出了问题也很难复现。</p>
+<p>光说文字可能还不够直观，我用代码结构来对比一下，你一眼就能感受到区别：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># Workflow 风格：流程固定，每步都是确定的，LLM 只是工具
+def workflow_answer_question(user_query: str):
+    # 第一步：固定做向量检索
+    docs = vector_db.search(user_query, top_k=5)
+    # 第二步：固定做 rerank（重排序，筛选最相关的结果）
+    reranked = reranker.rank(user_query, docs)
+    # 第三步：固定喂给 LLM 生成答案
+    answer = llm.generate(user_query, context=reranked)
+    return answer
+
+# Agent 风格：流程不固定，LLM 自己在运行时动态决定每一步
+def agent_answer_question(user_query: str):
+    while True:
+        # LLM 自己决定：要搜索？要计算？还是直接回答？
+        action = llm.decide(user_query, history=memory)
+        if action.type == &quot;search&quot;:
+            result = vector_db.search(action.query)
+            memory.append(result)
+        elif action.type == &quot;calculate&quot;:
+            result = calculator.run(action.expr)
+            memory.append(result)
+        elif action.type == &quot;final_answer&quot;:
+            return action.content
+</code></pre></div><p>对比来看，Workflow 的每一行都是明确的指令，控制流完全由代码决定；Agent 的 loop 里只有 <code>llm.decide()</code>，所有路径都是 LLM 在运行时动态选的。两种风格在代码结构上就完全不一样，Workflow 是「开发者在驾驶」，Agent 是「LLM 在驾驶，开发者在副驾驶设了一些安全限制」。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f83cfe1b689eab0436cef4e2b2c03e3e__313c47a2f6.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="agent-三种设计范式">Agent 三种设计范式</h3>
+<p>在具体的 Agent 设计范式上，目前主流的有这几种：</p>
+<p><strong>ReAct</strong>（Reasoning + Acting）是最常见的一种。</p>
+<p>它的名字直接说明了它的核心机制：把推理（Reasoning）和行动（Acting）交替进行。具体来说，ReAct 的每一轮循环由三个步骤组成，形成一个完整的 Thought -&gt; Action -&gt; Observation 循环。</p>
+<p>Thought 阶段，LLM 先把当前的情况分析一遍，把推理过程写出来，比如「用户想查竞品信息，我应该先用搜索工具查一下竞品 A 的最新动态」；Action 阶段，LLM 根据思考的结论决定调用哪个工具、传什么参数；Observation 阶段，工具返回的结果被反馈给 LLM，它读取这个结果，然后进入下一轮 Thought，重新分析当前局面、决定接下来怎么做。</p>
+<p>为什么要把这三步显式地分开？因为如果让模型直接输出行动，它经常会「冲动决策」，比如还没搞清楚用户到底要什么就急着调工具。加了 Thought 环节之后，模型会先把问题理清楚，推理过程写出来了，决策质量自然就稳定多了。而且 Thought 的内容是可见的，出了问题你可以直接看它是在哪一步想歪了，调试起来方便很多。这个循环会不断重复，直到 LLM 在某轮 Thought 中判断「信息已经够了，可以给出最终答案」，整个 Agent 才停下来。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/7a3b85349084240ff3fec3f2be32e6a7__a404709a82.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>不过 ReAct 也有一个明显的短板：它是「走一步看一步」的模式，每一步都是局部最优决策，处理特别复杂的、需要全局规划的任务时，容易在中间迷失方向。比如一个需要十几步才能完成的研究任务，ReAct 可能做到第五步就忘了最初的目标是什么，或者反复在几个工具之间打转。</p>
+<p><strong>Plan-and-Execute</strong> 就是针对这个短板来的。</p>
+<p>它把规划和执行彻底分开，先让一个 LLM 专门做规划，输出一个完整的步骤列表，然后由另一个 LLM（或同一个模型以不同角色）逐步执行。</p>
+<p>规划和执行解耦之后，好处是复杂任务的整体结构非常清晰，你甚至可以在执行前让人工审核一下计划是否合理。</p>
+<p>这里有一个非常关键的机制需要特别说一下：动态重规划。很多人对 Plan-and-Execute 的理解停留在「先做一个计划，然后死板地执行」，这其实是不对的。</p>
+<p>成熟的 Plan-and-Execute 实现里，每执行完一步都会把结果反馈给规划器，规划器会判断：当前的执行结果和预期一致吗？后续的计划还适用吗？需不需要调整？如果发现某一步的结果和预期严重偏离，规划器会修改后续的步骤，甚至插入新的步骤来应对。</p>
+<p>比如你原计划是「搜索竞品 A 的产品信息 -&gt; 搜索竞品 B 的产品信息 -&gt; 对比分析」，但执行第一步时发现竞品 A 刚刚发布了一个重大更新，规划器可能会动态插入一步「搜索竞品 A 最新更新的详细信息」，然后再继续后面的计划。</p>
+<p>这种「计划是活的、会根据执行结果动态调整」的能力，让 Plan-and-Execute 既保持了全局视野，又不会因为死板而失效。缺点是多了规划和重规划的 LLM 调用，延迟和成本都会增加，而且如果初始规划本身的方向就做错了，后面不管怎么调整执行细节都很难挽回。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/5dbbf29f9cf752e8fa4472362c528d79__82d5a91567.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>Reflection（反思）</strong> 则是在前两种范式的基础上加了一层「质量保障」。</p>
+<p>它的做法是在 Agent 完成一步或者完成整个任务之后，再让一个 LLM（可以是同一个模型也可以是专门的评估模型）来判断做得好不好、结果是否符合预期。如果评估不通过，就重试或者换一种策略。这个机制能显著提升输出质量，尤其是在代码生成、文案写作这类「质量要求高但一次做对很难」的场景下效果特别明显。</p>
+<p>Reflection 有一个非常值得关注的变体叫 Reflexion。它和基础 Reflection 的区别在于，Reflexion 不只是简单地说「这个结果不好，重做一遍」，而是会生成一段具体的「反思总结」，记录下这次失败的原因和改进建议，然后把这段总结作为额外的上下文传给下一次尝试。</p>
+<p>你可以把它理解成「写错题本」，不是简单地重做一遍，而是先分析错在哪了、下次该注意什么，然后带着这些经验教训再做一次。</p>
+<p>这个机制的效果是有数据支撑的：在 HumanEval 代码生成基准测试上，GPT-4 直接做的准确率大约是 80%，加上 Reflexion 之后提升到了 91%，这个提升幅度是非常可观的。不过代价也很直接，每加一轮反思就多一次甚至多次 LLM 调用，token 消耗和延迟都会增加，你需要在「质量提升」和「成本增加」之间做取舍。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/ad2253ddc51df3f1d12b02335f8cfd9e__c31222b754.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>那面试的时候如果被追问「这三种范式怎么选」，怎么回答？</p>
+<p>其实核心看两个维度：任务复杂度和质量要求。如果任务步骤不多、每步都比较独立，ReAct 就够了，简单直接；如果任务很复杂、步骤之间有依赖关系需要全局统筹，Plan-and-Execute 更合适；如果对输出质量要求特别高、允许多花一些时间和成本，就在前面的基础上叠加 Reflection。实际项目里这三种范式也不是互斥的，很多系统会混合使用，比如用 Plan-and-Execute 做整体规划，每个步骤内部用 ReAct 来执行，关键步骤再加上 Reflection 做质量把关。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1343589238336479d6a010bd66704024__329dd46420.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>实际工程里，纯 Agent 模式其实用得不多，因为太难控制。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/bae9bf2ee8cc10e7bd9c514f71f924a0__573b46e95e.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>更常见的做法是**「Agentic Workflow」**，整体用 Workflow 框住主流程，在需要灵活处理的节点嵌入 Agent 能力。比如一个客服系统，意图识别 -&gt; 知识检索 -&gt; 回答生成这条主链路是固定的 Workflow，但「知识检索」这个节点内部可以用 Agent 来动态决定检索几轮、用哪些工具。这样既保住了整体可控，又有局部的灵活性，这是目前生产环境里最主流的做法。</p>
+<p>Anthropic 在他们的工程博客里总结了一个非常实用的原则：<strong>能用 Workflow 解决的问题，就不要用 Agent。</strong></p>
+<p>这句话听起来有点反直觉，毕竟 Agent 更灵活、更「智能」，为什么不优先用呢？原因是在生产环境里，可控性比灵活性更重要。Workflow 的行为是确定的，出了问题你能精确定位是哪个节点出了错，修复起来也很快。</p>
+<p>而 Agent 的行为是概率性的，同样的输入可能走不同的路径，测试覆盖率天然就低。</p>
+<p>所以 Anthropic 的建议是，先从最简单的 Workflow 开始，只有当你发现某个节点确实需要灵活决策、写死的逻辑无法覆盖所有情况时，才把那个节点升级成 Agent。这个「从简单到复杂、按需升级」的思路，在面试里说出来是很加分的。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/9b718f880372adbf11738041f8c45ba0__955e1ed02d.webp" alt="了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>两种模式的核心差异，直接对照看更直观：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>维度</th>
+<th>Workflow</th>
+<th>Agent</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>决策者</td>
+<td>开发者（硬编码流程）</td>
+<td>LLM（动态决策）</td>
+</tr>
+<tr>
+<td>确定性</td>
+<td>高，行为完全可预测</td>
+<td>低，同输入可能走不同路径</td>
+</tr>
+<tr>
+<td>灵活性</td>
+<td>低，流程固定</td>
+<td>高，能处理预料之外的情况</td>
+</tr>
+<tr>
+<td>调试难度</td>
+<td>容易，链路清晰</td>
+<td>困难，行为不确定</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>流程相对固定的业务</td>
+<td>需要灵活判断的复杂任务</td>
+</tr>
+</tbody>
+</table></div><h2 id="面试总结">🎯 面试总结</h2>
+<p>开头对话里踩了三个雷，要重点记住。</p>
+<p>第一个雷是设计范式不熟，ReAct 是最常见的，但 Plan-and-Execute（把规划和执行解耦）和 Reflection（执行后加自我评估环节）也是必须说出来的，三个范式各有适用场景。</p>
+<p>第二个雷是把 Reflection 当调试手段，它是正式的运行时机制，内嵌在 Agent 的执行流程里，代价是增加 token 消耗和延迟，这个取舍在面试里经常被追问。</p>
+<p>第三个雷也是最重要的一个：以为 Agent 是生产环境的首选。实际上纯 Agent 模式在生产里用得很少，因为行为不确定、难以调试、成本容易失控。</p>
+<p>真正的工程答案是 Agentic Workflow：整体用 Workflow 框住主流程保证可控，在需要灵活判断的节点嵌入 Agent 能力。能主动说出「为什么纯 Agent 在生产里有局限」，是这道题拿高分的关键。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#workflow-和-agent-的区别">Workflow 和 Agent 的区别</a><a class="toc-level-3" href="#agent-三种设计范式">Agent 三种设计范式</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/3_workflow_tools.html"><span>上一篇 · Agent</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/5_react.html"><span>下一篇 · Agent</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

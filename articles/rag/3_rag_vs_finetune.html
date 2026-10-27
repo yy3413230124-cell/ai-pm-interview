@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。">
+  <meta name="keywords" content="AI产品经理面试题,相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？,RAG,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/3_rag_vs_finetune.html">
+  <title>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？｜AI产品经理面试题">
+  <meta property="og:description" content="我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/3_rag_vs_finetune.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/3_rag_vs_finetune.html#article","headline":"相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？｜AI产品经理面试题","description":"我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。","articleSection":"RAG 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/3_rag_vs_finetune.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"},{"@type":"ListItem","position":3,"name":"相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/3_rag_vs_finetune.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/rag.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> RAG 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#f08a24"></i>
+            <span>RAG</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="RAG 面试专题题目列表">
+            <a class="" href="./1_whatisrag.html"><span>01</span><strong>什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</strong></a><a class="" href="./2_rag_problems.html"><span>02</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a><a class="is-active" href="#article-top"><span>03</span><strong>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</strong></a><a class="" href="./4_chunking.html"><span>04</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong></a><a class="" href="./5_semantic_cuts.html"><span>05</span><strong>怎么规避语义被切割掉的问题？</strong></a><a class="" href="./6_embedding.html"><span>06</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a><a class="" href="./7_embedding_algos.html"><span>07</span><strong>Embedding 有哪几种算法你了解过吗？</strong></a><a class="" href="./8_vectordb.html"><span>08</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong></a><a class="" href="./9_vectordb_practice.html"><span>09</span><strong>讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</strong></a><a class="" href="./10_online_workflow.html"><span>10</span><strong>你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</strong></a><a class="" href="./11_retrieval_types.html"><span>11</span><strong>请你介绍一下向量检索和关键词检索的区别？</strong></a><a class="" href="./12_query_rewrite.html"><span>12</span><strong>如何润色用户的 Query（Query Rewrite）？目的是什么？</strong></a><a class="" href="./13_multi_retrieval.html"><span>13</span><strong>什么是多路召回？具体怎么做？</strong></a><a class="" href="./14_retrieval_opt.html"><span>14</span><strong>RAG 检索优化策略有哪些？</strong></a><a class="" href="./15_advanced_paradigms.html"><span>15</span><strong>了解哪些更复杂的 RAG 范式？</strong></a><a class="" href="./16_graph_db.html"><span>16</span><strong>在什么场景下，你会选择使用图数据库来增强传统的向量检索？</strong></a><a class="" href="./17_hallucination.html"><span>17</span><strong>如何规避 RAG 系统中大模型的幻觉？</strong></a><a class="" href="./18_evaluation.html"><span>18</span><strong>怎么量化你的 RAG 效果？</strong></a><a class="" href="./19_dynamic_update.html"><span>19</span><strong>RAG 知识库如何实现动态与持续更新？</strong></a><a class="" href="./20_hardest_parts.html"><span>20</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a><a class="" href="./21_knowledge_conflict.html"><span>21</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a><a class="" href="./22_rag_long_context.html"><span>22</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a><a class="" href="./23_rag_vs_file_search.html"><span>23</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/rag.html">RAG</a><span>/</span>
+            <span>第 3 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 6 分钟阅读</span>
+            <span>2,464 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</h1>
+          <div class="article-deck">
+            <span>题目 03</span>
+            <p>我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：RAG 和微调（Fine-tuning）有什么区别？各自适合什么场景？</p>
+<p>🙋‍♂️我：微调就是拿自己的数据训练一下模型，RAG 也是拿自己的数据训练一下模型，只是方法不同。</p>
+<p>👔面试官：……RAG 根本不训练模型，它是在推理时检索知识注入 prompt。你连这两个方案的本质区别都没搞清楚，一个改参数，一个不改参数，怎么能说「方法不同」呢？</p>
+<p>🙋‍♂️我：好吧，那微调肯定更好吧？直接把知识写进模型，RAG 每次都要检索多麻烦。</p>
+<p>👔面试官：更好？你公司的业务数据每周都在变，你每周都重新微调一遍？微调的成本你算过吗？而且微调出来的模型回答问题，你能追溯到是哪条知识在起作用吗？</p>
+<p>🙋‍♂️我：呃……那我就选 RAG 呗，反正微调不好。</p>
+<p>👔面试官：谁说微调不好了？你要让模型学会特定的输出格式、行业语气，微调才是正解。两个方案各有所长，还可以组合使用，你为什么非要二选一？</p>
+<p>确实，这道题最容易犯的错就是二选一思维。下面我把微调和 RAG 的区别讲透，让你面试的时候能说清楚什么时候用哪个，什么时候两个一起用。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先拆清知识来源、用户问题与更新频率，再解释召回、生成和引用的取舍，最后用命中率、答案正确率、引用覆盖率和延迟定义上线标准。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。</p>
+<p>微调是把新知识直接烧进模型参数里，适合改变模型的行为风格或者培养深度的专业能力；RAG 是在推理的时候实时检索注入知识，适合知识需要频繁更新、或者需要有溯源的场景。</p>
+<p>如果非要让我选一个，知识库类的问答系统我会首选 RAG，成本低而且可以随时更新。如果是要让模型学会特定的输出格式或者行业语气，那微调更合适。</p>
+<p>实际上这两个方案也可以组合用，先微调再套 RAG。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>要搞清楚这个问题，先得理解 LLM 知识的本质。LLM 的「知识」是训练时通过海量文本学到的，最终以权重参数的形式固化在模型里。你可以把它理解成「把知识烧进了 ROM」，训练完成之后，这些知识就刻在那里了，不会自己更新。这意味着训练完之后，模型就不再「成长」了，它不知道新发生的事，也不知道你的私有数据。</p>
+<p>理解了「LLM 的知识是固化在参数里的」，就能理解为什么需要微调和 RAG 这两种方案了，它们本质上都是在解决同一个问题：怎么把模型训练时没学到的知识给它补上。只不过思路完全不同，一个是直接改参数，一个是不改参数、推理时现查。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776781677589-27e6b631-1bbc-49ad-91c1-8786310de74e__6193d4efde.webp" alt="相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="微调-fine-tuning-把知识直接烧进模型">微调（Fine-tuning）：把知识直接烧进模型</h3>
+<p>微调是直接改模型参数的方案。用你自己的数据继续训练，让模型把这些新知识「记」进去。微调的优势是效果非常彻底，模型会从内部改变，不管是专业词汇、输出格式、回答风格，都能深度定制。而且推理时不需要额外的检索步骤，响应延迟低。</p>
+<p>听起来很美好对吧？但微调的代价也很明显。</p>
+<p>首先是成本，需要准备标注数据、租用 GPU、跑训练，时间和金钱成本都不低。</p>
+<p>其次是知识更新的问题，你可能会想：数据变了再微调一次不就行了？问题在于，业务数据每周都在变，你不可能每周都重新微调一次，每次微调都是几小时到几天的训练，成本根本扛不住。</p>
+<p>第三是不透明，模型的回答来自参数里，你不知道它是从哪条知识推出来的，出错了也很难定位原因。很多人以为微调之后模型就「懂」了你的业务知识，其实模型只是记住了训练数据里的模式，它到底记住了什么、记错了什么，你根本无从得知。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776781810697-0ebca069-371c-4ee2-856b-6b82ae27fcd8__eef7a64f68.webp" alt="相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="rag-不改参数-推理时现查知识">RAG：不改参数，推理时现查知识</h3>
+<p>正是因为微调有上面这些痛点，RAG 才应运而生。RAG 绕开了这些问题，它不改模型参数，而是在推理时临时把知识塞进 prompt。知识库更新只是往向量库里加文档，不需要重新训练，加完就生效。回答可以附上来源 chunk，出错了马上知道是哪条知识有问题。成本也低得多，小团队用 OpenAI Embedding + Chroma 就能跑起来。</p>
+<p>但 RAG 也并非完美。</p>
+<p>首先是多了检索步骤，整体响应延迟会增加几百毫秒到一秒。</p>
+<p>其次是「检索质量上限」问题，如果相关的 chunk 没被检索回来，LLM 再强也答不出来。你可能会觉得，换个更强的 LLM 不就好了？其实不是。</p>
+<p>这里有个很重要的直觉：生成层（LLM）只是在复述和整理检索到的内容，它的上限被检索层死死卡住，你只能回答你检索到的知识，没检索到的东西，LLM 是变不出来的。所以 RAG 系统调优的主战场永远是检索这一层，不是换更强的 LLM。很多人一上来就想着换更贵的模型来提升效果，这往往是南辕北辙，真正该优化的是检索质量。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776781912137-c9127239-897a-4f75-8723-f1131ab52665__c90929b18f.webp" alt="相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>第三是对复杂推理能力提升有限，RAG 只是给模型提供了「参考资料」，但如果你需要模型对某个领域有更深的推理能力，光靠检索资料是不够的，还是得微调。</p>
+<h3 id="组合使用-微调解决-怎么说-rag-解决-说什么">组合使用：微调解决「怎么说」，RAG 解决「说什么」</h3>
+<p>聊到这里你可能会问，既然各有优劣，那能不能两个都用？当然可以，而且实际工程里这恰恰是最常见的做法。一个典型的组合是：先对基础模型做一轮微调，让它学会输出格式、语气风格、行业术语；再用 RAG 来提供具体的知识内容。微调解决「怎么说」，RAG 解决「说什么」，各司其职。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776781981828-cf529b55-35f5-423c-987b-a565ca7ffdbd__0ee81b723b.webp" alt="相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>把两种方案的核心差异对比起来，选型的时候更好做判断：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>维度</th>
+<th>微调（Fine-tuning）</th>
+<th>RAG</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>知识更新</td>
+<td>需要重新训练，成本高</td>
+<td>更新知识库即可，实时生效</td>
+</tr>
+<tr>
+<td>推理延迟</td>
+<td>低，无额外检索步骤</td>
+<td>较高，多一次检索耗时</td>
+</tr>
+<tr>
+<td>实现成本</td>
+<td>高，需要 GPU 和标注数据</td>
+<td>低，向量库 + Embedding 即可</td>
+</tr>
+<tr>
+<td>答案可溯源</td>
+<td>不支持，来自模型参数</td>
+<td>支持，可追溯到具体 chunk</td>
+</tr>
+<tr>
+<td>适合场景</td>
+<td>定制输出风格、深度专业能力</td>
+<td>私有知识问答、动态更新数据</td>
+</tr>
+<tr>
+<td>知识上限</td>
+<td>受限于训练数据质量和规模</td>
+<td>受限于检索质量和 context 长度</td>
+</tr>
+</tbody>
+</table></div><h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段面试，这道题最忌讳的就是「二选一」思维。</p>
+<p>面试官问 RAG 和微调的区别，你要先说清本质：微调是改模型参数，RAG 是不改参数、推理时注入知识。然后各说优劣：微调擅长定制输出风格、培养深度专业能力，但成本高、更新慢、不可溯源；RAG 擅长知识频繁更新、答案可溯源的场景，但多了检索延迟、检索质量卡住上限。</p>
+<p>最后一定要提到两者可以组合使用：微调解决「怎么说」，RAG 解决「说什么」。能把这个组合思路讲出来，面试官就知道你不只是背了定义，而是真正理解了怎么在工程里做选型。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#微调-fine-tuning-把知识直接烧进模型">微调（Fine-tuning）：把知识直接烧进模型</a><a class="toc-level-3" href="#rag-不改参数-推理时现查知识">RAG：不改参数，推理时现查知识</a><a class="toc-level-3" href="#组合使用-微调解决-怎么说-rag-解决-说什么">组合使用：微调解决「怎么说」，RAG 解决「说什么」</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/rag/2_rag_problems.html"><span>上一篇 · RAG</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a>
+      <a class="pagination-card next" href="../../articles/rag/4_chunking.html"><span>下一篇 · RAG</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

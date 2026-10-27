@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="Embedding 算法大致经历了三代演进。">
+  <meta name="keywords" content="AI产品经理面试题,Embedding 有哪几种算法你了解过吗？,RAG,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/7_embedding_algos.html">
+  <title>Embedding 有哪几种算法你了解过吗？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Embedding 有哪几种算法你了解过吗？｜AI产品经理面试题">
+  <meta property="og:description" content="Embedding 算法大致经历了三代演进。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/7_embedding_algos.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Embedding 有哪几种算法你了解过吗？｜AI产品经理面试题">
+  <meta name="twitter:description" content="Embedding 算法大致经历了三代演进。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/7_embedding_algos.html#article","headline":"Embedding 有哪几种算法你了解过吗？｜AI产品经理面试题","description":"Embedding 算法大致经历了三代演进。","articleSection":"RAG 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/7_embedding_algos.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"},{"@type":"ListItem","position":3,"name":"Embedding 有哪几种算法你了解过吗？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/7_embedding_algos.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/rag.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> RAG 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#f08a24"></i>
+            <span>RAG</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="RAG 面试专题题目列表">
+            <a class="" href="./1_whatisrag.html"><span>01</span><strong>什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</strong></a><a class="" href="./2_rag_problems.html"><span>02</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a><a class="" href="./3_rag_vs_finetune.html"><span>03</span><strong>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</strong></a><a class="" href="./4_chunking.html"><span>04</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong></a><a class="" href="./5_semantic_cuts.html"><span>05</span><strong>怎么规避语义被切割掉的问题？</strong></a><a class="" href="./6_embedding.html"><span>06</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a><a class="is-active" href="#article-top"><span>07</span><strong>Embedding 有哪几种算法你了解过吗？</strong></a><a class="" href="./8_vectordb.html"><span>08</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong></a><a class="" href="./9_vectordb_practice.html"><span>09</span><strong>讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</strong></a><a class="" href="./10_online_workflow.html"><span>10</span><strong>你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</strong></a><a class="" href="./11_retrieval_types.html"><span>11</span><strong>请你介绍一下向量检索和关键词检索的区别？</strong></a><a class="" href="./12_query_rewrite.html"><span>12</span><strong>如何润色用户的 Query（Query Rewrite）？目的是什么？</strong></a><a class="" href="./13_multi_retrieval.html"><span>13</span><strong>什么是多路召回？具体怎么做？</strong></a><a class="" href="./14_retrieval_opt.html"><span>14</span><strong>RAG 检索优化策略有哪些？</strong></a><a class="" href="./15_advanced_paradigms.html"><span>15</span><strong>了解哪些更复杂的 RAG 范式？</strong></a><a class="" href="./16_graph_db.html"><span>16</span><strong>在什么场景下，你会选择使用图数据库来增强传统的向量检索？</strong></a><a class="" href="./17_hallucination.html"><span>17</span><strong>如何规避 RAG 系统中大模型的幻觉？</strong></a><a class="" href="./18_evaluation.html"><span>18</span><strong>怎么量化你的 RAG 效果？</strong></a><a class="" href="./19_dynamic_update.html"><span>19</span><strong>RAG 知识库如何实现动态与持续更新？</strong></a><a class="" href="./20_hardest_parts.html"><span>20</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a><a class="" href="./21_knowledge_conflict.html"><span>21</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a><a class="" href="./22_rag_long_context.html"><span>22</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a><a class="" href="./23_rag_vs_file_search.html"><span>23</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/rag.html">RAG</a><span>/</span>
+            <span>第 7 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,390 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Embedding 有哪几种算法你了解过吗？</h1>
+          <div class="article-deck">
+            <span>题目 07</span>
+            <p>Embedding 算法大致经历了三代演进。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：RAG 里用的 Embedding 算法有哪些？你了解过几代演进？</p>
+<p>🙋‍♂️我：Embedding 算法我知道，Word2Vec 嘛，把词变成向量。</p>
+<p>👔面试官：Word2Vec 是 2013 年的算法了，它每个词只有一个固定向量，「吃苹果」和「苹果手机」里的「苹果」向量完全一样，多义词都处理不了，你怎么拿它做语义检索？</p>
+<p>🙋‍♂️我：那就用 BERT 呗，BERT 能理解上下文，效果肯定好。</p>
+<p>👔面试官：BERT 做语义检索？你每次查询都要把问题和所有候选文档拼在一起跑一遍 BERT，百万级知识库跑百万次，你的用户等得起吗？SBERT 呢？SimCSE 呢？BGE 呢？这些专门为检索设计的 Embedding 模型你一个都没听说过？</p>
+<p>好吧，Embedding 算法远不止 Word2Vec，下面我把三代演进讲清楚。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先拆清知识来源、用户问题与更新频率，再解释召回、生成和引用的取舍，最后用命中率、答案正确率、引用覆盖率和延迟定义上线标准。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>Embedding 算法大致经历了三代演进。</p>
+<p>第一代是静态词向量，以 Word2Vec 和 GloVe 为代表，把每个词映射成固定向量，但同一个词不管上下文是什么，向量永远不变，处理不了多义词。</p>
+<p>第二代是以 BERT 为代表的上下文相关向量，同一个词在不同语境下有不同的向量，表达能力大幅提升，但 BERT 本身输出的是 token 级别的向量，两个句子要比较相似度就必须拼在一起跑，百万条文档就要跑百万次，检索速度完全不可接受。</p>
+<p>第三代是以 SBERT、SimCSE、BGE 为代表的句子级对比学习 Embedding，专门为「两段文本有多相似」这个任务优化，能提前把所有文档向量算好存起来，查询时只需算一次，是 RAG 场景的标配。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么-embedding-算法要一代代演进">为什么 Embedding 算法要一代代演进</h3>
+<p>要理解各代算法的设计动机，先想一个最简单的问题：怎么让计算机理解「苹果手机怎么截图」和「iPhone 如何截屏」是同一个问题？</p>
+<p>关键词匹配完全没用，因为这两句话没有一个共同的词。早期 NLP 系统为了解决这个问题，走向了「把词变成向量」这条路，向量空间里的距离代表语义距离，这就是 Embedding 的核心出发点。</p>
+<p>你可能会想，既然都是把文本变成向量，搞一套方案不就行了，为什么还要一代一代演进？原因很简单：每一代方案解决了一类问题的同时，都暴露出了新的短板。第一代处理不了多义词，第二代处理了多义词但在检索场景下慢得无法实用，第三代才真正把「语义检索」这件事做到既能用又好用。理解了这个「每一代在补上一代的坑」的逻辑，后面三代算法的设计思路就很好懂了。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776785869934-53e4ada8-1048-4f8c-9e28-9382477d1344__ed934ee29b.webp" alt="Embedding 有哪几种算法你了解过吗？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="第一代-静态词向量-word2vec-glove-fasttext">第一代：静态词向量（Word2Vec / GloVe / FastText）</h3>
+<p>先来看第一代算法。它们的核心思路非常朴素：用一个词周围的词来预测这个词，或者反过来用这个词来预测周围的词。通过大量文本训练，语义相近的词自然就会在向量空间里被推到一起。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260310180341826__q_7a68262f9d6f__d85163d8db.webp" alt="Embedding 有哪几种算法你了解过吗？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>Word2Vec</strong> 是这一代最有影响力的代表，2013 年 Google 提出。它有两种训练方式：CBOW（用周围词预测中心词）和 Skip-gram（用中心词预测周围词）。为什么 Skip-gram 更常用？因为它从一个词能产生多个训练样本（用这个词预测周围每一个词），样本利用率更高，对低频词尤其友好；CBOW 在大数据集上收敛更快，但两者最终效果通常比较接近，细节上 Skip-gram 对生僻词表现更好，所以更常作为默认选项。训练完之后，每个词对应一个固定的向量，「国王 - 男人 + 女人 ≈ 女王」这个著名的类比就是用 Word2Vec 向量做到的，当时整个 NLP 圈都为之兴奋。</p>
+<p><strong>GloVe</strong>（Global Vectors for Word Representation）是斯坦福提出的，思路和 Word2Vec 类似但更系统，直接对整个语料库的词共现矩阵做分解，对全局统计信息的利用更充分。实际效果和 Word2Vec 差不多，很多场景两者可以互换。</p>
+<p><strong>FastText</strong> 是 Facebook 提出的改进，解决了一个很实际的问题：Word2Vec 处理不了「未登录词」，也就是训练集里从没见过的词。你可能会觉得这有什么大不了的，但在真实业务里，新词、专有名词、网络流行语不断冒出来，处理不了新词就意味着检索直接断链。FastText 的解法很巧妙——把词拆成字符级别的 n-gram 子词，比如「苹果」会被拆成「苹」「果」「苹果」等子片段，每个子片段有自己的向量，一个词的向量是其子片段向量的平均。这样遇到没见过的新词，只要子片段见过，就还能估算出一个合理的向量。</p>
+<p>这一代算法的共同局限性是两个字：<strong>静态</strong>。每个词只有一个固定向量，不管上下文如何。「我吃了苹果」里的「苹果」和「苹果手机发布了」里的「苹果」，向量完全相同。很多人以为 Word2Vec 已经理解了语义，其实它只是记住了「哪些词经常一起出现」，真正的语义理解还差得远。这个致命缺陷直接催生了第二代算法。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776785947203-e57e51f1-bfd9-4ad4-9fcf-027fda537272__6ac9c9e998.webp" alt="Embedding 有哪几种算法你了解过吗？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="第二代-上下文相关向量-elmo-bert">第二代：上下文相关向量（ELMo / BERT）</h3>
+<p>理解了第一代「一个词永远只有一个向量」的局限，第二代算法的改进方向就很明确了：让词的向量随上下文动态变化，同一个词在不同句子里有不同的向量表示。</p>
+<p><strong>ELMo</strong>（2018 年，Allen NLP 提出）用双向 LSTM 来建模，同时从左往右和从右往左扫描句子，把两个方向的隐藏状态拼起来作为词的上下文向量。ELMo 是第一个实用的上下文 Embedding，当时在多个 NLP 任务上大幅刷新了成绩。</p>
+<p><strong>BERT</strong>（2018 年，Google 提出）用 Transformer 替代 LSTM，引入了 Masked Language Model 预训练任务，效果全面超越 ELMo，成为 NLP 领域最重要的里程碑之一。BERT 用 [CLS] token 来表示整个句子，同时看到前后文（双向），表达能力远超单向模型。</p>
+<p>但问题来了，BERT 这么强，为什么 RAG 检索不用它？很多人以为 BERT 效果好就万事大吉，其实不是。</p>
+<p>BERT 有一个在检索场景下极其致命的缺陷：要比较两个句子的相似度，必须把两个句子拼在一起喂给 BERT，让 [CLS] 来做判断。这意味着每次检索都要把查询和每一个候选 chunk 拼在一起跑 BERT，百万条文档的知识库就要跑百万次。</p>
+<p>你可能觉得百万次也不算多吧？别忘了 BERT 一次前向传播就要几十毫秒，百万次就是好几个小时，用户根本等不起。这个问题直接导致了第三代的诞生。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776785906281-75df6194-ebc4-494c-892f-4058bf16ca95__ec4119080c.webp" alt="Embedding 有哪几种算法你了解过吗？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="第三代-句子级对比学习-embedding-sbert-simcse-bge">第三代：句子级对比学习 Embedding（SBERT / SimCSE / BGE）</h3>
+<p>第二代 BERT 虽然语义理解能力强，但「必须两两拼接」这个限制让它在检索场景下完全没法用，这就引出了第三代的核心理念：能不能让每个句子独立生成一个向量，然后直接用余弦相似度来比较？</p>
+<p>第三代专门针对「句子相似度」和「语义检索」这个任务优化，是 RAG 系统的标配。</p>
+<p><strong>SBERT</strong>（Sentence-BERT，2019 年）就是用这个思路解决了 BERT 在检索场景下用不了的问题。它用 bi-encoder 结构：两个句子分别独立过 BERT，各自得到一个句子级向量，然后只用余弦相似度来衡量两个向量的距离。</p>
+<p>你可能会问，这样精度不会下降吗？确实会一点，因为两个句子是分开编码的，模型在编码阶段看不到两句话 token 之间的交叉关系（Cross-Encoder 那种「每个 token 都能和另一句的每个 token 互相注意到」的深度交互就被牺牲掉了），所以在特别微妙的匹配上会不如 Cross-Encoder。</p>
+<p>但换来的是速度提升了几个数量级，知识库里所有文档的向量可以提前算好存起来，每次检索时只需要算一次查询向量，然后做余弦相似度就行，毫秒级返回。在 RAG 这种「速度优先」的场景里，这个取舍完全值得。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776785977955-61600597-2b86-4656-a10c-ff00b75a886f__231c993059.webp" alt="Embedding 有哪几种算法你了解过吗？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">from sentence_transformers import SentenceTransformer
+
+model = SentenceTransformer(&#39;all-MiniLM-L6-v2&#39;)
+
+# 查询和文档分别独立编码，不需要拼在一起
+query = &quot;苹果手机怎么截图&quot;
+doc   = &quot;iPhone 截屏方法&quot;
+
+query_vec = model.encode(query)   # 检索时实时算
+doc_vec   = model.encode(doc)     # 提前算好，存向量库
+
+# 余弦相似度衡量语义距离
+from sklearn.metrics.pairwise import cosine_similarity
+score = cosine_similarity([query_vec], [doc_vec])
+</code></pre></div><p><strong>SimCSE</strong>（2021 年，普林斯顿提出）进一步提升了句子 Embedding 的质量。核心思路是对比学习：把同一句话做两次 dropout 得到两个不同的向量，把这两个向量作为正样本对，让模型学会把它们拉近；同时把同一个 batch 里其他句子的向量作为负样本，把它们推远。这个方法训练非常简单，不需要人工标注，但效果很好。</p>
+<p>它解决了一个很多人不知道的问题：BERT 原生的句子向量存在「各向异性」，也就是说向量分布是扭曲的，都挤在一个窄小的锥形区域里，没有充分利用向量空间。SimCSE 通过对比学习把向量「撑开」了，让语义空间变得更均匀。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776786056751-3aab642b-f729-4fc8-b06e-353d8feb9273__86ae7c0e81.webp" alt="Embedding 有哪几种算法你了解过吗？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>BGE</strong>（BAAI General Embedding，北京智源研究院）是中文 RAG 场景非常流行的开源模型，基于对比学习在大规模中英文数据上训练，同时支持 bi-encoder 和 reranker 两种形态，专门为检索场景优化。E5（微软）是另一个常用的英文对比学习 Embedding，效果同样优秀。</p>
+<p>值得一提的是，第三代模型还在持续进化。2025-2026 年出现了几个重要的新趋势。</p>
+<p><strong>指令感知 Embedding</strong>（比如 Qwen3-Embedding），模型能根据检索指令动态调整向量表示，同一段文本在「找相似问题」和「找答案」两种意图下会产生不同的向量。</p>
+<p><strong>Matryoshka 表示学习</strong>（MRL），模型训练时让向量的前 N 维就能表达有意义的语义，这样你可以灵活地截断维度来平衡精度和存储成本。</p>
+<p><strong>多模态 Embedding</strong>，同一个模型既能编码文本也能编码图片，让 RAG 可以做到文本和图片的跨模态检索。</p>
+<p>这些新趋势不是独立的第四代，而是在第三代对比学习的基础上做的增强，但面试时如果能提到，会显示你对最新进展有关注。</p>
+<p>理解了这三代，用一张表来总结它们的演进逻辑：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>世代</th>
+<th>代表模型</th>
+<th>核心特点</th>
+<th>主要局限</th>
+<th>RAG 适用性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第一代</td>
+<td>Word2Vec、GloVe、FastText</td>
+<td>词级静态向量</td>
+<td>无法处理多义词，词级非句子级</td>
+<td>不适用</td>
+</tr>
+<tr>
+<td>第二代</td>
+<td>ELMo、BERT</td>
+<td>上下文动态向量</td>
+<td>检索时需两两拼接，速度极慢</td>
+<td>不适用于实时检索</td>
+</tr>
+<tr>
+<td>第三代</td>
+<td>SBERT、SimCSE、BGE、E5</td>
+<td>句子级 bi-encoder，对比学习</td>
+<td>精度低于 cross-encoder</td>
+<td>标配，性能和精度平衡最优</td>
+</tr>
+</tbody>
+</table></div><p>RAG 场景下基本只考虑第三代模型，中文场景 BGE 和 Qwen3-Embedding 都是很好的开源选择，英文场景 E5 或 text-embedding-3-small 都不错。新趋势方面，指令感知 Embedding、Matryoshka 降维、多模态 Embedding 是值得关注的方向。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段面试，Embedding 算法这个问题考察的是你对检索层技术的理解深度。</p>
+<p>回答时要按三代演进的逻辑来讲。</p>
+<p>第一代静态词向量（Word2Vec/GloVe）：解决了「词变向量」的问题，但处理不了多义词。</p>
+<p>第二代上下文向量（BERT）：解决了多义词的问题，但检索时要两两拼接，百万级知识库完全没法用。</p>
+<p>第三代句子级 Embedding（SBERT/SimCSE/BGE）：用 bi-encoder 独立编码，提前算好向量存起来，检索时只算余弦相似度，是 RAG 的标配。</p>
+<p>面试官如果追问「你们项目用的什么模型」，你就说中文场景用 BGE，在自己的业务数据上做评估选型，能讲出这个就有说服力了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么-embedding-算法要一代代演进">为什么 Embedding 算法要一代代演进</a><a class="toc-level-3" href="#第一代-静态词向量-word2vec-glove-fasttext">第一代：静态词向量（Word2Vec / GloVe / FastText）</a><a class="toc-level-3" href="#第二代-上下文相关向量-elmo-bert">第二代：上下文相关向量（ELMo / BERT）</a><a class="toc-level-3" href="#第三代-句子级对比学习-embedding-sbert-simcse-bge">第三代：句子级对比学习 Embedding（SBERT / SimCSE / BGE）</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/rag/6_embedding.html"><span>上一篇 · RAG</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a>
+      <a class="pagination-card next" href="../../articles/rag/8_vectordb.html"><span>下一篇 · RAG</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

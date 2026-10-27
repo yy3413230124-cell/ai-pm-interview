@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。">
+  <meta name="keywords" content="AI产品经理面试题,在 LangChain 中，如何为 Agent 注册工具？,LangChain,AI产品经理,LangChain 框架面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/tool_registration.html">
+  <title>在 LangChain 中，如何为 Agent 注册工具？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="在 LangChain 中，如何为 Agent 注册工具？｜AI产品经理面试题">
+  <meta property="og:description" content="LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/tool_registration.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="在 LangChain 中，如何为 Agent 注册工具？｜AI产品经理面试题">
+  <meta name="twitter:description" content="LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/tool_registration.html#article","headline":"在 LangChain 中，如何为 Agent 注册工具？｜AI产品经理面试题","description":"LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。","articleSection":"LangChain 框架面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/tool_registration.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"LangChain 框架面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html"},{"@type":"ListItem","position":3,"name":"在 LangChain 中，如何为 Agent 注册工具？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/tool_registration.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/langchain.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> LangChain 框架面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#1598c8"></i>
+            <span>LangChain</span>
+            <strong>12 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="LangChain 框架面试专题题目列表">
+            <a class="" href="./agent_frameworks.html"><span>01</span><strong>你了解过哪些 AI Agent 开发框架？</strong></a><a class="" href="./chain.html"><span>02</span><strong>请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。</strong></a><a class="" href="./langchain_architecture.html"><span>03</span><strong>LangChain 的底层架构与实现原理是什么？</strong></a><a class="" href="./build_agent.html"><span>04</span><strong>使用 LangChain 构建 Agent 的核心步骤是什么？</strong></a><a class="is-active" href="#article-top"><span>05</span><strong>在 LangChain 中，如何为 Agent 注册工具？</strong></a><a class="" href="./memory.html"><span>06</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong></a><a class="" href="./langchain_vs_llamaindex.html"><span>07</span><strong>LangChain 和 LlamaIndex 有什么区别？</strong></a><a class="" href="./langchain4j.html"><span>08</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong></a><a class="" href="./langchain_vs_langgraph.html"><span>09</span><strong>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</strong></a><a class="" href="./langgraph_advantages.html"><span>10</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong></a><a class="" href="./version_evolution.html"><span>11</span><strong>LangChain 大版本升级有哪些核心变化？</strong></a><a class="" href="./deep_research.html"><span>12</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/langchain.html">LangChain</a><span>/</span>
+            <span>第 5 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,751 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>在 LangChain 中，如何为 Agent 注册工具？</h1>
+          <div class="article-deck">
+            <span>题目 05</span>
+            <p>LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：在 LangChain 中，怎么给 Agent 注册工具？</p>
+<p>🙋‍♂️我：给函数加一个 <code>@tool</code>，然后放进 Agent 就行。</p>
+<p>👔面试官：已有的普通函数能不能直接传？复杂参数怎么校验？什么情况下需要 <code>StructuredTool</code> 或 <code>BaseTool</code>？</p>
+<p>🙋‍♂️我：那就全部继承 <code>BaseTool</code>，这样最规范。</p>
+<p>👔面试官：为了查询一次天气也写一个类，只会增加样板代码。用户身份和权限又应该怎么传给工具？</p>
+<p>🙋‍♂️我：让模型生成一个 <code>user_id</code> 参数。</p>
+<p>👔面试官：可信身份不能由模型填写，否则既可能填错，也可能被提示注入利用。</p>
+<p>理解工具协议，才能根据输入复杂度和工程要求选择合适的 Tool 实现方式。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先判断团队需要的是快速验证还是长期可控编排，再讨论框架抽象与运行时可观测性，避免只回答“用过某个 Chain”。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>LangChain 中注册 Tool 的本质，是同时向模型提供一份工具说明，并向运行时提供一个真正可执行的函数。工具说明主要包含名称、用途和参数 Schema，模型根据它选择工具并生成参数，LangChain 再执行对应函数。</p>
+<p>最常用的实现方式有四种：</p>
+<ol>
+<li>简单的已有函数，可以带上类型注解和 docstring 后直接放入 <code>tools</code>。</li>
+<li>大多数业务工具使用 <code>@tool</code>，便于自定义名称、描述和参数 Schema。</li>
+<li>需要在运行时组装同步函数、异步函数和 Schema 时，可以使用 <code>StructuredTool</code>。</li>
+<li>工具需要封装客户端、维护资源或定制执行过程时，再继承 <code>BaseTool</code>。</li>
+</ol>
+<p>在 LangChain v1 中，通常通过 <code>create_agent(model=..., tools=[...])</code> 完成注册。城市、关键词、订单号等任务参数可以让模型填写；用户 ID、租户、权限和存储对象等可信参数，应通过 <code>ToolRuntime</code> 从运行时注入，不能暴露给模型。</p>
+<p>生产环境还要关注参数校验、权限检查、超时、重试、幂等和错误分类。只有网络超时等临时故障适合自动重试，参数错误和业务拒绝应该返回清楚的信息，程序 Bug 则不应该被统一吞掉。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="tool-注册了什么">Tool 注册了什么？</h3>
+<p>模型看不到 Python 函数的源码，那它凭什么知道该调用谁？注册工具时，LangChain 会先把函数转换成一份模型能够理解的说明。</p>
+<p>模型首先看到 <code>name</code> 和 <code>description</code>，借此判断工具叫什么、应该在什么情况下使用。决定调用后，它再按照 <code>args_schema</code> 生成满足类型和约束的参数。真正拿着这些参数做事的，则是应用侧的函数或协程，也就是 executor。</p>
+<p>模型先生成包含工具名和参数的调用请求，运行时执行函数，再把结果作为 <code>ToolMessage</code> 返回给模型。模型拿到结果后，决定继续调用工具还是生成最终回答。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/779ff7af_tool-call-contract__c40042656d.webp" alt="在 LangChain 中，如何为 Agent 注册工具？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>工具描述和 Schema 是模型与业务代码之间的调用合同。描述过于模糊，模型可能选错工具；参数缺少约束，模型可能生成无法执行的数据。</p>
+<h3 id="常用方式怎么选">常用方式怎么选？</h3>
+<p>日常开发中，没有必要为了显得专业而直接继承最底层的类。选择方式时，可以先问这个工具到底还是不是一个普通函数。</p>
+<p>如果已有函数的名称、类型注解和 docstring 已经能把用途说清楚，直接放入 <code>tools</code> 就够了。可一旦我们希望明确修改工具名称、补充参数描述，或者用 Pydantic 限制枚举和范围，普通函数提供的信息就不够，这时 <code>@tool</code> 会成为大多数业务工具的自然选择。</p>
+<p>原函数不能修改，或者工具要在运行时动态组装同步与异步实现时，可以使用 <code>StructuredTool</code>。只有当工具需要长期持有客户端、维护资源并定制完整执行过程时，它才从「一个函数」变成「一个组件」，这时再考虑继承 <code>BaseTool</code> 才划算。</p>
+<p>这四种方式对应不同的复杂度：先让函数说清楚，再补充工具契约，接着处理动态组装，最后才管理组件生命周期。</p>
+<p>模型厂商提供的 Web Search、代码执行器等服务端工具，有时会使用厂商约定的字典配置。这类工具属于特定 Provider 能力，使用时应单独查看对应集成文档，不需要把它当作通用 Python Tool 的主要定义方式。</p>
+<h3 id="为什么优先使用-tool">为什么优先使用 <code>@tool</code>？</h3>
+<p><code>@tool</code> 能从函数签名和 docstring 自动推导 Schema，也允许通过 Pydantic 显式描述复杂参数，是大多数业务工具的首选。</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">from typing import Literal
+
+from langchain.agents import create_agent
+from langchain.tools import tool
+from pydantic import BaseModel, Field
+
+
+class OrderQuery(BaseModel):
+    # Field 描述和类型约束都会进入模型看到的工具 Schema
+    order_id: str = Field(description=&quot;要查询的订单号&quot;)
+    detail: Literal[&quot;summary&quot;, &quot;full&quot;] = Field(
+        default=&quot;summary&quot;,
+        description=&quot;返回摘要还是完整信息&quot;,
+    )
+
+
+# args_schema 显式指定工具参数的校验模型
+@tool(args_schema=OrderQuery)
+def query_order(order_id: str, detail: str = &quot;summary&quot;) -&gt; str:
+    &quot;&quot;&quot;查询订单状态。用户询问某个订单时调用。&quot;&quot;&quot;
+    return f&quot;订单 {order_id} 的状态为已发货，返回模式：{detail}&quot;
+
+
+# 注册时把 Tool 放进 create_agent 的 tools 列表
+agent = create_agent(
+    model=&quot;openai:gpt-5.4-mini&quot;,
+    tools=[query_order],
+)
+</code></pre></div><p>这个例子中，模型只需要决定 <code>order_id</code> 和 <code>detail</code>。Pydantic 的字段描述和枚举限制会进入工具 Schema，既帮助模型正确填写参数，也能在执行前拦截非法输入。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/8637c3b4_schema-clarity-comparison__cee7ba1a44.webp" alt="在 LangChain 中，如何为 Agent 注册工具？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>已有的简单函数也可以不加装饰器，直接传给 <code>tools</code>。函数必须有清楚的名称、类型注解和 docstring，否则自动生成的工具说明很难指导模型正确调用。</p>
+<h3 id="何时使用高级定义">何时使用高级定义？</h3>
+<p><code>StructuredTool.from_function</code> 更适合「原函数不能修改，但需要改变它对模型的呈现方式」的场景。例如，同一个业务函数需要注册成不同名称，或者要把同步函数和异步协程组合成一个工具对象。</p>
+<p>什么时候才需要 <code>BaseTool</code>？当工具不再只是一个函数，而是要长期持有数据库或第三方客户端，并同时管理同步、异步、tags、metadata 和回调时，它已经变成了一个有生命周期的组件。此时使用 <code>BaseTool</code>，才值得承担更多样板代码。</p>
+<p>选择原则可以概括为：函数能够说清楚就用普通函数，需要明确 Schema 就用 <code>@tool</code>，需要运行时组装再用 <code>StructuredTool</code>，出现组件生命周期后才考虑 <code>BaseTool</code>。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/09948b27_tool-definition-levels__3ee6c99fd0.webp" alt="在 LangChain 中，如何为 Agent 注册工具？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="可信参数如何注入">可信参数如何注入？</h3>
+<p>假设「查询我的账户余额」工具需要用户 ID。如果把 <code>user_id</code> 放进模型可见的 Schema，模型可能填错用户，也可能被恶意提示诱导查询其他账户。</p>
+<p>因此，需要区分两类参数：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>参数类型</th>
+<th>示例</th>
+<th>参数来源</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>任务参数</td>
+<td>城市、关键词、订单号</td>
+<td>模型根据用户问题生成</td>
+</tr>
+<tr>
+<td>可信参数</td>
+<td>用户 ID、租户、权限、当前状态</td>
+<td>应用运行时注入</td>
+</tr>
+</tbody>
+</table></div><p>LangChain v1 使用 <code>ToolRuntime</code> 把这些可信信息送进工具，但不同信息仍有不同作用域。用户身份、租户和依赖属于本次调用上下文，从 <code>runtime.context</code> 读取；当前会话消息和短期状态放在 <code>runtime.state</code>；跨会话仍要保留的长期数据，才进入 <code>runtime.store</code>。</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">from dataclasses import dataclass
+
+from langchain.tools import ToolRuntime, tool
+
+
+@dataclass
+class UserContext:
+    # 这些字段由应用运行时提供，不让模型生成
+    user_id: str
+    role: str
+
+
+@tool
+def get_balance(
+    account_type: str,
+    runtime: ToolRuntime[UserContext],
+) -&gt; str:
+    &quot;&quot;&quot;查询当前登录用户的账户余额。&quot;&quot;&quot;
+    # 先使用可信 Context 做权限检查
+    if runtime.context.role not in {&quot;user&quot;, &quot;finance_admin&quot;}:
+        return &quot;当前用户无权查询余额&quot;
+
+    # 用户 ID 来自 Runtime，而不是模型参数
+    user_id = runtime.context.user_id
+    return f&quot;用户 {user_id} 的 {account_type} 账户余额为 100 元&quot;
+</code></pre></div><p>模型能够看到并填写 <code>account_type</code>，却看不到 <code>runtime</code>。可信用户身份由应用传入，而不是由模型生成。这是工具权限控制的重要边界。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/ee4a8500_toolruntime-trust-boundary__aa2b6be246.webp" alt="在 LangChain 中，如何为 Agent 注册工具？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="异步工具怎么处理">异步工具怎么处理？</h3>
+<p>搜索、数据库和远程 API 通常属于 I/O 密集型操作。如果底层客户端支持异步，工具也应使用原生 <code>async def</code>，并通过 Agent 的 <code>ainvoke</code> 或异步流式接口调用。</p>
+<p>不要只把函数声明成 <code>async def</code>，内部却继续调用阻塞式 HTTP 客户端；这种写法不会自动提高并发能力。工具是否异步，应该和底层客户端以及整条 Agent 调用链保持一致。</p>
+<h3 id="错误应该怎么处理">错误应该怎么处理？</h3>
+<p>工具调用失败时，先别急着统一重试，因为不同失败意味着完全不同的下一步。</p>
+<p>如果日期格式错误或缺少必填字段，问题出在模型生成的参数，应先让 Schema 拦截，再把可修正的信息交给模型重新填写。库存不足、没有权限或订单不存在则不是参数格式问题，而是一次正常的业务结果。工具应该把原因说清楚，让 Agent 决定换条路径或直接告知用户。</p>
+<p>网络超时、限流和服务暂不可用才属于可以尝试恢复的临时故障。这类错误可以做有上限的重试，但必须同时设置退避和总超时，否则 Agent 只会在一个坏掉的服务前反复等待。</p>
+<p>程序 Bug、数据损坏和权限配置错误不应该被统一转换成「调用失败」后继续执行，否则系统会掩盖真正的问题。对于付款、发邮件、创建订单等有副作用的工具，还必须设计幂等键和人工审批，避免重试造成重复执行。</p>
+<h3 id="注册后还要检查什么">注册后还要检查什么？</h3>
+<p>Agent 能调用函数只是第一步。检查工具能否安全上线，可以沿着一次真实调用往下走，不用背一张清单。</p>
+<p>模型准备调用之前，先看名称和描述是否会与其他工具混淆，Schema 有没有限制枚举、范围和必填字段。这一步决定模型能不能选对工具、填对参数。</p>
+<p>请求进入执行阶段后，再确认用户身份和权限来自可信 Runtime，而不是模型参数。远程调用还要有超时、重试上限和并发限制；只要动作会改变外部状态，就继续补上幂等、审批与审计，防止一次恢复或重试变成重复扣款、重复发信。</p>
+<p>调用结束也不是安全边界的终点。日志与 Trace 需要帮助排查错误，但不能记录密钥、完整身份凭证或不必要的敏感数据。这样从模型选择、业务执行到事后追踪，工具契约才算真正闭环。</p>
+<p>工具数量也不是越多越好。一次性向模型暴露大量相似工具，会增加选择错误和参数混淆的概率。更合理的做法是根据用户权限和当前任务动态缩小工具集合。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>先说明 Tool 是「模型可见的调用合同 + 运行时可执行函数」，再讲清楚四种常用定义方式的选择边界。</p>
+<p>实际项目中，普通函数和 <code>@tool</code> 能覆盖大多数需求；<code>StructuredTool</code> 用于运行时组装，<code>BaseTool</code> 用于复杂组件。可信身份和权限通过 <code>ToolRuntime</code> 注入，不能交给模型生成。</p>
+<p>Schema 校验、异步 I/O、错误分类、幂等和权限治理也不能漏。讲清这些内容，才能说明你理解工具如何安全、稳定地运行在生产环境中。</p>
+<h2 id="参考资料">📚 参考资料</h2>
+<ul>
+<li><a href="https://docs.langchain.com/oss/python/langchain/tools" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Tools</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/agents" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Agents</a></li>
+<li><a href="https://reference.langchain.com/python/langchain-core/tools/structured/StructuredTool" target="_blank" rel="noreferrer noopener">LangChain API：StructuredTool</a></li>
+<li><a href="https://reference.langchain.com/python/langchain-core/tools/base/BaseTool" target="_blank" rel="noreferrer noopener">LangChain API：BaseTool</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/middleware" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Middleware</a></li>
+</ul>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#tool-注册了什么">Tool 注册了什么？</a><a class="toc-level-3" href="#常用方式怎么选">常用方式怎么选？</a><a class="toc-level-3" href="#为什么优先使用-tool">为什么优先使用 @tool？</a><a class="toc-level-3" href="#何时使用高级定义">何时使用高级定义？</a><a class="toc-level-3" href="#可信参数如何注入">可信参数如何注入？</a><a class="toc-level-3" href="#异步工具怎么处理">异步工具怎么处理？</a><a class="toc-level-3" href="#错误应该怎么处理">错误应该怎么处理？</a><a class="toc-level-3" href="#注册后还要检查什么">注册后还要检查什么？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a><a class="toc-level-2" href="#参考资料">📚 参考资料</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/langchain/build_agent.html"><span>上一篇 · LangChain</span><strong>使用 LangChain 构建 Agent 的核心步骤是什么？</strong></a>
+      <a class="pagination-card next" href="../../articles/langchain/memory.html"><span>下一篇 · LangChain</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。">
+  <meta name="keywords" content="AI产品经理面试题,Agent Harness 是什么？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/25_harness.html">
+  <title>Agent Harness 是什么？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent Harness 是什么？｜AI产品经理面试题">
+  <meta property="og:description" content="Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/25_harness.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent Harness 是什么？｜AI产品经理面试题">
+  <meta name="twitter:description" content="Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/25_harness.html#article","headline":"Agent Harness 是什么？｜AI产品经理面试题","description":"Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/25_harness.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"Agent Harness 是什么？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/25_harness.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="is-active" href="#article-top"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 25 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟阅读</span>
+            <span>3,973 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Agent Harness 是什么？</h1>
+          <div class="article-deck">
+            <span>题目 25</span>
+            <p>Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你提到 Agent Harness，讲讲它是什么？</p>
+<p>🙋‍♂️我：就是给大模型接几个工具，模型就能自己完成任务了。</p>
+<p>👔面试官：模型返回一个工具请求，谁真正执行它，又是谁把结果交回模型？</p>
+<p>🙋‍♂️我：那就是写个循环，模型调用工具，一直跑到它说完成。</p>
+<p>👔面试官：下一轮给模型看哪些材料，执行到一半中断以后，任务怎么继续？</p>
+<p>🙋‍♂️我：这些交给 Agent 框架就行，用框架就等于有完整的 Harness。</p>
+<p>👔面试官：框架提供哪些能力是一回事，任务实际怎样运行是另一回事。权限、进度和完成判断由谁负责？</p>
+<p>咱们从一次模型调用讲起，逐步理解把模型接入真实任务需要哪些运行支撑。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。</p>
+<p>模型负责理解目标、判断下一步，输出回复或工具请求。Harness 接住这些输出，检查并安排实际执行，再把工具结果放进下一轮输入，继续调用模型。工具请求本身只是模型提出的动作，真正的文件读取、命令执行或接口调用，需要外部程序完成。</p>
+<p>任务变长以后，Harness 还需要组织每轮上下文，并配合任务记录保存进度，让中断后的运行能够接上已有结果。它也会落实动作权限、运行预算和结束判断，避免只凭模型说完成就结束任务。</p>
+<p>所以，模型提供理解与决策能力，工具提供具体操作，Harness 把它们组织成可持续运行的任务过程。框架可以提供这些组件，也可能直接封装好运行机制，具体要看它实际包含什么能力。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="一次模型调用-为什么还不等于任务执行">一次模型调用，为什么还不等于任务执行？</h3>
+<p>大模型收到目标和材料以后，可以分析问题、提出计划，也可以生成下一步需要调用的工具。但是仓库文件、数据库和外部服务都在模型之外，模型输出了操作意图，这些对象不会因此自动发生变化。</p>
+<p>例如模型输出「读取文件」，只是描述了一个动作。即使输出采用了结构化格式，包含工具名 <code>read_file</code> 和文件路径，它仍然是一个请求，需要程序找到对应实现，实际打开文件。</p>
+<p>程序读取完成后，还要把内容交回模型。没有这个反馈，模型就不知道文件里实际写了什么，也无法根据新材料继续判断。</p>
+<p>这里存在两种不同能力：模型根据输入选择动作，外部程序让动作发生，并提供实际结果。模型擅长分析，并不能替代程序访问文件或启动进程的能力。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f056dec6_model-tool-request__b3e38aa658.webp" alt="Agent Harness 是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>因此，从模型推理走到 Agent 执行，需要在模型之外组织调用、动作和反馈。Agent Harness 所指的，就是围绕模型建立的这层运行支撑。它可以由开发者自己实现，也可以由已有 SDK 或系统提供。</p>
+<p>这里的「支撑」不只指模型能够访问哪些工具，还包括程序怎样使用这些工具、怎样处理结果，以及怎样继续运行。理解了这一点，就不会把提供一个工具列表，当成整个任务执行机制已经完成。</p>
+<h3 id="harness-怎样把模型和工具接成执行循环">Harness 怎样把模型和工具接成执行循环？</h3>
+<p>一次工具执行只完成一个动作，而多步任务需要根据结果继续选择。Harness 的核心工作，就是安排这种连续的交接。</p>
+<p>每一轮开始，运行程序准备当前输入，包括目标、约束、相关材料和可用工具说明，再调用模型。模型返回工具请求后，程序解析工具名和参数，进行必要检查，然后调用实际工具。</p>
+<p>工具执行结束，程序取得结果，再按照模型接口的要求，把请求与结果放进后续输入。下一轮模型看到真实观察，才能决定继续使用工具、调整做法，还是给出最终回复。</p>
+<p>这条过程可以概括为：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">准备输入 -&gt; 调用模型 -&gt; 处理模型输出 -&gt; 执行工具
+   ↑                                         ↓
+   &lt;-             纳入实际执行结果            &lt;-
+</code></pre></div><p>负责推进这个循环的是运行程序。模型根据当前信息选择下一步，程序安排下一次调用，并处理等待、取消、执行失败等情况。</p>
+<p><strong>固定的是交接机制，具体动作可以根据观察变化。</strong> 模型读到新的材料以后，可能需要补查信息，也可能发现原来的判断不成立。Harness 不必提前写死每一步使用哪个工具，但需要规定请求怎样解析、操作怎样执行、结果怎样返回。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f140fa50_tool-feedback-loop__5a44036550.webp" alt="Agent Harness 是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>反馈的内容会影响后续判断。工具返回「找不到文件」，与返回「读取成功但内容为空」，意味着不同事实；命令超时，也不能直接当成命令从未执行。运行程序需要尽量区分实际状态，避免模型基于含糊的成功或失败继续推理。</p>
+<p>所以，Harness 的价值不只是多调用几次模型。它让每轮决策建立在前一次实际执行的结果上，把推理与环境变化接起来。</p>
+<h3 id="为什么还要管理上下文和任务状态">为什么还要管理上下文和任务状态？</h3>
+<p>循环运行以后，模型每轮收到的材料会逐渐增多。工具输出、历史分析和中间结果都可能很长，其中一些已经失效，一些暂时与当前步骤无关。</p>
+<p>把全部历史持续拼进输入，既会接近上下文容量，也会让当前信息与旧信息混在一起。例如一个错误已经解决，后续出现了新问题，模型需要知道哪个结果是当前的，不能把旧报错继续当作现状。</p>
+<p>因此，Harness 通常要在调用前组织上下文。保留目标、限制和当前相关证据，减少重复内容；较长的文件或日志可以存放在外部，只带必要内容和可读取的位置，后续再按需补查。</p>
+<p>这个步骤决定的是「模型这一轮看见什么」。它与任务状态的保存有关，但用途不同。</p>
+<p>任务状态记录的是「任务现在进行到哪里」，例如已执行的操作、未解决的问题、产物位置和验证结果。当前上下文则从这些记录和实际环境中选择本轮需要的信息。任务记录可以长期保存，每轮输入不必包含记录里的全部内容。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/d8210206_context-task-state__e82ab00f03.webp" alt="Agent Harness 是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这种区分对暂停和恢复很重要。程序中断以后，不能只给模型一句「继续」，还需要读取进度，并核对当前产物。新一轮运行才能知道哪些操作已经完成、哪些结论还没有验证。</p>
+<p>聊天里说「准备保存文件」，不代表文件已经保存；记录里写着「请求已发出」，也不代表外部系统已经成功处理。恢复时仍然要核对实际状态，才能决定是继续下一步，还是补查未决操作。</p>
+<p>状态可以保存在文件、数据库或外部会话服务中，工具也可以运行在另一个执行环境。Harness 可以调用这些组件来组织任务，并不要求所有能力都放在同一个进程里。</p>
+<p>简单任务可能只需要短循环和少量历史，长任务才更需要持久进度与恢复机制。理解 Harness 时，应看任务需要哪些运行支撑，而不是把一组复杂模块当成每种实现都必须具备的固定清单。</p>
+<h3 id="为什么执行边界和结束判断也属于运行支撑">为什么执行边界和结束判断也属于运行支撑？</h3>
+<p>模型能够提出动作，不意味着每个动作都应执行。请求可能格式不正确，也可能访问不允许的资源，或者超过用户授权的范围。</p>
+<p>Harness 需要在实际执行路径上落实约束，例如哪些工具可用、哪些文件能修改、什么操作需要确认。工具或执行环境再通过权限与隔离机制控制实际访问。Prompt 可以告诉模型遵守要求，真正阻止越界操作仍然需要程序检查与环境限制。</p>
+<p>这并不要求程序判断每个动作的全部业务含义，但明确的权限边界不能仅依赖模型自觉遵守。模型提供操作建议，执行层决定请求是否满足运行规则。</p>
+<p>持续运行还要有资源与停止控制。某个工具一直不返回，或者模型重复执行没有进展的操作，都需要处理。时间、步数和费用预算可以限制一次运行的消耗，取消请求也需要传递到对应执行过程。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f9097d36_execution-completion-controls__95f2939fd3.webp" alt="Agent Harness 是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这里要分清「运行停止」和「任务完成」。达到预算只说明这一轮不能继续，不能把任务标成成功；模型输出「完成」，也只是一个需要结合结果判断的结论。</p>
+<p>对于有明确验收条件的任务，运行系统可以通过测试、产物检查或业务状态查询提供依据。有些结果需要人判断，也可以保存产物并交给人审查。验证能力取决于任务，Harness 负责组织判断所需的过程与信息，不会自动知道所有业务结果是否正确。</p>
+<p>这层控制让执行循环有明确边界，也让最终结果有可追溯依据。工具成功、模型认为完成、任务满足要求，是不同层面的判断，需要在运行过程中区分。</p>
+<h3 id="harness-与模型-prompt-工具和框架是什么关系">Harness 与模型、Prompt、工具和框架是什么关系？</h3>
+<p>这些概念容易混在一起，是因为它们通常出现在同一套产品中。但从承担的职责看，可以分别理解。</p>
+<p>模型负责处理输入、生成判断与下一步输出。Prompt 是模型收到的指令与要求，会影响它怎样理解目标和使用工具。工具则提供真实操作，例如查询数据、读取文件或调用接口。</p>
+<p>Harness 组织这些部分怎样配合：选择和准备输入，调用模型，处理输出，安排工具执行，再把结果用于下一轮。Prompt 的装配、工具的接入和相关运行策略，都可以是 Harness 的一部分。</p>
+<p>所以，这些词不是互相排斥的模块名称。一个 Harness 可以预置提示和工具，也可以让使用者替换它们；它还可以把存储与执行交给外部服务，再负责协调这些服务。</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>名称</th>
+<th>在任务中的主要作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>模型</td>
+<td>理解材料，形成判断，生成下一步输出</td>
+</tr>
+<tr>
+<td>Prompt</td>
+<td>向模型表达目标、约束与行为要求</td>
+</tr>
+<tr>
+<td>工具</td>
+<td>提供文件、数据和外部系统的实际操作</td>
+</tr>
+<tr>
+<td>Harness</td>
+<td>组织模型调用、动作执行、反馈与运行控制</td>
+</tr>
+<tr>
+<td>Agent</td>
+<td>模型与运行机制配合后，围绕目标工作的整体系统</td>
+</tr>
+</tbody>
+</table></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/d773069a_agent-component-roles__bcfce87c7e.webp" alt="Agent Harness 是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>框架或 SDK 与 Harness 的关系，则取决于封装范围。通用框架可能提供模型调用、工具注册和状态组件，开发者用它们搭建运行机制；已经预置循环、上下文处理和执行策略的 SDK，本身就可以提供 Harness 能力。不能只凭使用了某个框架，就判断任务运行的所有问题已经解决。</p>
+<p>不同项目对 Harness 的具体范围有不同叫法，理解时抓住它围绕模型组织实际执行的职责即可。</p>
+<p>同一个模型，拿到的材料、可用的操作和反馈方式不同，任务表现也可能不同。模型决定怎样分析当前信息，Harness 则影响它能看见什么、能执行什么，以及怎样根据结果继续工作。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头只接工具，漏掉了实际执行与反馈；只写循环，没有说明上下文、进度和运行边界；只提框架，则没有回答这些职责怎样在系统中落实。</p>
+<p>Agent Harness 的核心，是围绕模型组织调用、工具执行和结果反馈。任务变长以后，再通过上下文组织与任务记录支撑持续推进，并在执行路径上落实权限、预算和结束判断。</p>
+<p>模型提供理解与决策，工具提供实际操作，Harness 协调它们如何运行。这层分工说明了 Harness 为什么会影响 Agent 能看到的材料、能执行的动作，以及持续推进任务的能力。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#一次模型调用-为什么还不等于任务执行">一次模型调用，为什么还不等于任务执行？</a><a class="toc-level-3" href="#harness-怎样把模型和工具接成执行循环">Harness 怎样把模型和工具接成执行循环？</a><a class="toc-level-3" href="#为什么还要管理上下文和任务状态">为什么还要管理上下文和任务状态？</a><a class="toc-level-3" href="#为什么执行边界和结束判断也属于运行支撑">为什么执行边界和结束判断也属于运行支撑？</a><a class="toc-level-3" href="#harness-与模型-prompt-工具和框架是什么关系">Harness 与模型、Prompt、工具和框架是什么关系？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/24_database_security.html"><span>上一篇 · Agent</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/26_harness_design.html"><span>下一篇 · Agent</span><strong>如何设计一个完整的 Agent Harness？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

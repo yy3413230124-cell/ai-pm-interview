@@ -1,0 +1,9 @@
+node_modules/
+.DS_Store
+RECON/
+assets/images-redrawn/*.png
+assets/og-test.webp
+CLONE_*.md
+NOTES.md
+TEARDOWN.md
+*.log

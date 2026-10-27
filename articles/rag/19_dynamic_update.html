@@ -1,0 +1,304 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较…">
+  <meta name="keywords" content="AI产品经理面试题,RAG 知识库如何实现动态与持续更新？,RAG,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/19_dynamic_update.html">
+  <title>RAG 知识库如何实现动态与持续更新？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="RAG 知识库如何实现动态与持续更新？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较…">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/19_dynamic_update.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RAG 知识库如何实现动态与持续更新？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较…">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/19_dynamic_update.html#article","headline":"RAG 知识库如何实现动态与持续更新？｜AI产品经理面试题","description":"我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较…","articleSection":"RAG 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/19_dynamic_update.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"},{"@type":"ListItem","position":3,"name":"RAG 知识库如何实现动态与持续更新？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/19_dynamic_update.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/rag.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> RAG 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#f08a24"></i>
+            <span>RAG</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="RAG 面试专题题目列表">
+            <a class="" href="./1_whatisrag.html"><span>01</span><strong>什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</strong></a><a class="" href="./2_rag_problems.html"><span>02</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a><a class="" href="./3_rag_vs_finetune.html"><span>03</span><strong>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</strong></a><a class="" href="./4_chunking.html"><span>04</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong></a><a class="" href="./5_semantic_cuts.html"><span>05</span><strong>怎么规避语义被切割掉的问题？</strong></a><a class="" href="./6_embedding.html"><span>06</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a><a class="" href="./7_embedding_algos.html"><span>07</span><strong>Embedding 有哪几种算法你了解过吗？</strong></a><a class="" href="./8_vectordb.html"><span>08</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong></a><a class="" href="./9_vectordb_practice.html"><span>09</span><strong>讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</strong></a><a class="" href="./10_online_workflow.html"><span>10</span><strong>你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</strong></a><a class="" href="./11_retrieval_types.html"><span>11</span><strong>请你介绍一下向量检索和关键词检索的区别？</strong></a><a class="" href="./12_query_rewrite.html"><span>12</span><strong>如何润色用户的 Query（Query Rewrite）？目的是什么？</strong></a><a class="" href="./13_multi_retrieval.html"><span>13</span><strong>什么是多路召回？具体怎么做？</strong></a><a class="" href="./14_retrieval_opt.html"><span>14</span><strong>RAG 检索优化策略有哪些？</strong></a><a class="" href="./15_advanced_paradigms.html"><span>15</span><strong>了解哪些更复杂的 RAG 范式？</strong></a><a class="" href="./16_graph_db.html"><span>16</span><strong>在什么场景下，你会选择使用图数据库来增强传统的向量检索？</strong></a><a class="" href="./17_hallucination.html"><span>17</span><strong>如何规避 RAG 系统中大模型的幻觉？</strong></a><a class="" href="./18_evaluation.html"><span>18</span><strong>怎么量化你的 RAG 效果？</strong></a><a class="is-active" href="#article-top"><span>19</span><strong>RAG 知识库如何实现动态与持续更新？</strong></a><a class="" href="./20_hardest_parts.html"><span>20</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a><a class="" href="./21_knowledge_conflict.html"><span>21</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a><a class="" href="./22_rag_long_context.html"><span>22</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a><a class="" href="./23_rag_vs_file_search.html"><span>23</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/rag.html">RAG</a><span>/</span>
+            <span>第 19 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟阅读</span>
+            <span>4,113 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>RAG 知识库如何实现动态与持续更新？</h1>
+          <div class="article-deck">
+            <span>题目 19</span>
+            <p>我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较…</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你们 RAG 知识库上线之后，文档更新了怎么办？总不能每次改个文档就把整个知识库重建一遍吧。</p>
+<p>🙋‍♂️我：可以直接找到变了的那个 chunk，更新它的向量就行了。</p>
+<p>👔面试官：你以为改了一段文字，chunk 的边界还能和之前一模一样？文档内容一变，切割结果可能完全不同，你根本没法把旧 chunk 和新 chunk 一一对应起来做局部更新。</p>
+<p>🙋‍♂️我：那我把整个文档对应的所有 chunk 都删掉，然后重新入库？但是系统怎么知道哪些文档变了呢？</p>
+<p>👔面试官：这还算靠点谱，但你怎么感知文档变更？总不能让人告诉你吧。</p>
+<p>接下来看看 RAG 知识库动态更新的完整方案。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先拆清知识来源、用户问题与更新频率，再解释召回、生成和引用的取舍，最后用命中率、答案正确率、引用覆盖率和延迟定义上线标准。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较高的场景，我会用消息队列比如 Kafka 做变更事件驱动，实现秒级的入库。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>知识库更新这个问题，很多同学做 RAG Demo 时不会碰到，一旦上生产就必须面对。文档本身是会变的，产品手册改版、政策文件更新、FAQ 内容迭代，如果知识库不及时跟进，RAG 就会一直给用户返回过期信息。所以动态更新能力是 RAG 系统投入生产的必备条件，而不是锦上添花的功能。</p>
+<h3 id="为什么更新-rag-知识库比更新普通数据库麻烦">为什么更新 RAG 知识库比更新普通数据库麻烦？</h3>
+<p>在讲具体方案之前，先搞清楚一个关键问题：为什么 RAG 知识库的更新不能像普通数据库那样直接 UPDATE？原因在于，普通数据库更新一条记录，直接 UPDATE 就行，数据是独立的，改一条不影响别的。但 RAG 知识库的麻烦在于：原始文档和向量库之间不是一对一的关系，而是一对多的关系。</p>
+<p>一篇文档会被切割成几十甚至上百个 chunk，每个 chunk 分别 Embedding 后存入向量库。当文档内容发生变化时，你不能简单地「更新一条记录」，因为文档结构变了，切割结果可能完全不同，chunk 的数量、边界、内容都会变。</p>
+<p>所以 RAG 知识库在工程上最可靠的更新逻辑是<strong>先删掉旧文档对应的所有 chunk，再重新切割入库</strong>，即「先删后增」，而不是在原来的 chunk 上做局部更新。理论上如果 Chunking 策略完全稳定（比如按固定 token 窗口切），某些场景可以做局部更新，但生产环境里 chunk 边界一变就全乱套，与其在这种不确定性上博弈，不如直接走「先删后增」简单可靠。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776850537192-af6e0006-6cc7-48b5-9cb5-c23fda5f3700__2f925e69f2.webp" alt="RAG 知识库如何实现动态与持续更新？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>抽象来看，知识库的变更只有三种操作类型。新增是最简单的，文档以前不存在，走一遍完整的「切割 -&gt; Embedding -&gt; 写入」流程就行，没有任何历史包袱。</p>
+<p>修改是最容易踩坑的操作，值得多说几句。很多同学第一次做这个功能，直觉上认为「只改了一段文字，更新那一个 chunk 就好了」，这个思路在实际中行不通。</p>
+<p>原因很简单：文档内容一改，切割边界就变了，原来第 3 个 chunk 的内容可能现在分散在第 3 和第 4 个 chunk 里，你根本没法把旧 chunk 和新 chunk 一一对应起来做「局部打补丁」。就像装修时把一堵墙拆了重建，不能指望原来的插座位置还能对上，整面墙的电路要重新布。所以修改的正确做法是推倒重来：把这篇文档之前入库的所有 chunk 全部删掉，然后重新按新内容切割入库。操作虽然暴力，但是可靠，也是唯一不会出 bug 的做法。</p>
+<p>删除最直接，文档下线了，把它对应的所有 chunk 从向量库中清除，不能留着「僵尸 chunk」，否则用户还是会检索到这些已经失效的内容。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/ce5317b029029d03ee11ad9d7d94fb95__5b059564c3.webp" alt="RAG 知识库如何实现动态与持续更新？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="如何知道文档是否发生了变化">如何知道文档是否发生了变化？</h3>
+<p>搞清楚了更新策略是「先删后增」，下一个绕不开的工程问题就是：系统怎么知道一篇文档「变没变」？</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776850585738-1505b92d-2257-4d28-b049-3572308ea4f1__c4a774a9ec.webp" alt="RAG 知识库如何实现动态与持续更新？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>最常用的方案是<strong>内容 hash</strong>。每次文档入库时，计算文档内容的 MD5 或 SHA256 摘要，把这个 hash 值和文档 ID、对应的 chunk ID 列表一起存下来（存在 Redis、数据库都行）。下次检测到这篇文档时，重新计算 hash 和存储的值对比：相同说明内容没变，跳过；不同说明内容有更新，触发重处理流程。</p>
+<p>你可能会担心，每次都算 hash 性能会不会有问题？完全不会。hash 运算非常快，哪怕只改了文档里的一个标点符号，hash 值就会完全不同，不会漏掉任何变更，计算成本极低。</p>
+<p>实际工程里还有一个进一步优化：先用「最后修改时间」这个轻量字段做粗筛，只对时间戳发生变化的文档才计算 hash。比如数据源每晚同步一次，上百万篇文档里真正改过的可能只有几千篇，这样能把 99% 的文档过滤掉，hash 只对小部分计算，开销再降一个量级。</p>
+<h3 id="文档-id-和-chunk-id-的设计">文档 ID 和 chunk ID 的设计</h3>
+<p>有了变更检测的方案，还有一个容易被忽视但非常关键的设计问题：<strong>chunk ID 的命名规范</strong>。这个东西一开始不设计好，后面做更新的时候会非常痛苦。</p>
+<p>为什么？因为删除一篇文档的所有 chunk 时，你需要能快速找出「这篇文档对应了哪些 chunk」。</p>
+<p>常见的做法是让 chunk ID 带上文档 ID 作为前缀，比如 <code>product_manual_v3_chunk_001</code>、<code>product_manual_v3_chunk_002</code>，这样按前缀就能批量查找和删除对应的所有 chunk。</p>
+<p>另一种做法是在每个 chunk 的 metadata 里存上文档 ID 字段（比如 <code>source_doc_id: &quot;product_manual_v3&quot;</code>），向量库一般都支持按 metadata 字段过滤批量删除，效果是一样的。无论选哪种方式，关键是<strong>从一开始就把文档和 chunk 的关联关系设计好</strong>，等到需要更新时再临时想办法，会很狼狈。</p>
+<h3 id="两种主流的变更感知方式">两种主流的变更感知方式</h3>
+<p>前面说了怎么检测变更（hash）和怎么处理变更（先删后增），那系统怎么在第一时间感知到文档需要更新？有两种主流方案，各有适用场景。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776850625161-7f6c92be-b7d4-4ccc-a60a-4100ef447d0d__ee0d81a70b.webp" alt="RAG 知识库如何实现动态与持续更新？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>第一种是定时轮询（Polling）</strong>。系统按固定时间间隔（比如每天凌晨两点、每小时一次）扫描所有文档，对比 hash 值，把有变化的文档重新处理。这种方案实现简单，不依赖任何外部系统，适合文档更新频率低、对实时性要求不高的场景，比如内部知识库、产品文档这类一周才改几次的内容。缺点是有延迟，文档改完之后要等到下一个轮询周期才会生效；而且如果文档数量很多，全量扫描本身也是一笔开销，大多数文档根本没变，却每次都要算一遍 hash。</p>
+<p><strong>第二种是事件驱动（Event-Driven）</strong>。数据源有变更时，主动发出一条消息（通过 Kafka、RabbitMQ、或者 Webhook），知识库更新服务订阅这些消息，收到事件立刻处理。这种方案延迟低，文档变更后几秒内就能在知识库里生效，适合实时性要求高的场景，比如客服知识库（运营刚更新了退款政策，要求立刻在客服机器人里生效）、新闻资讯类应用（新文章发布就要入库）。代价是需要数据源支持发消息的能力，系统架构也更复杂一些。</p>
+<p>不少现代化的内容管理工具（Confluence、Notion、语雀等）都支持 Webhook，文档保存时会自动向你配置的地址推送一条 HTTP 请求，天然适合做事件驱动更新，不需要引入消息队列这么重的组件。</p>
+<h3 id="全量重建是最后的手段">全量重建是最后的手段</h3>
+<p>除了增量更新，还有一种「核弹级」方案：定期把整个知识库推倒重建。把所有文档重新切割、Embedding、写入，相当于从零开始建一遍。</p>
+<p>你可能会想，全量重建这么暴力，谁会用？其实这个方案的优点恰恰在于逻辑最简单，不需要维护文档和 chunk 的对应关系，不需要 hash 检测，也不用担心有旧 chunk 漏删的问题。缺点也很明显：如果知识库文档量大，重建一次要消耗大量时间和 Embedding API 费用；重建过程中知识库不可用（或者用旧数据），会影响线上服务。</p>
+<p>实际场景里，全量重建一般在两种情况下用：知识库规模很小（几十篇文档，重建几分钟搞定）；或者做了重大架构调整（比如换了 Embedding 模型、改了 Chunking 策略），新旧向量不兼容，必须全量重建。平时不推荐依赖这个方案。</p>
+<h3 id="灰度更新-稳妥地切换新版本">灰度更新：稳妥地切换新版本</h3>
+<p>对于核心的生产知识库，直接删旧数据、写新数据风险还是太大了。万一新切割的内容有问题，想回滚都来不及。那怎么办？更稳妥的做法是<strong>不直接删旧数据，而是先并行写入新版本，验证没问题再切换</strong>。</p>
+<p>具体操作是：把新版本的 chunk 写入时打上 <code>version=new</code> 的标签，旧版本保留 <code>version=old</code>。在验证阶段，用一批测试问题同时跑新旧两个版本，对比答案质量，确认新版本没有引入退化。验证通过后，把检索时的版本过滤条件从 <code>old</code> 切换到 <code>new</code>，最后再清理掉旧版本的 chunk。</p>
+<p>这个方案有点类似软件发布里的蓝绿部署，好处是：出了问题可以立刻回滚（把版本过滤条件切回去），切换是秒级的，不需要重新入库。对于知识库质量要求很高的场景，比如金融、医疗领域的问答系统，这种谨慎的更新策略是很有必要的。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776850658577-890c41d5-cda3-4c36-acef-850b62366f7a__32a879d50f.webp" alt="RAG 知识库如何实现动态与持续更新？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>把几种更新方案的特点做个对比，实际选型时可以对照着看：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>方案</th>
+<th>延迟</th>
+<th>实现复杂度</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>定时轮询</td>
+<td>分钟 - 小时级</td>
+<td>低</td>
+<td>文档更新频率低，实时性要求不高</td>
+</tr>
+<tr>
+<td>Webhook 触发</td>
+<td>秒级</td>
+<td>中</td>
+<td>数据源支持 Webhook，如 Confluence、Notion</td>
+</tr>
+<tr>
+<td>消息队列</td>
+<td>秒级</td>
+<td>中高</td>
+<td>大规模、高并发更新，生产环境首选</td>
+</tr>
+<tr>
+<td>全量重建</td>
+<td>分钟 - 小时级</td>
+<td>低</td>
+<td>文档量小，或知识库结构大改，不推荐常用</td>
+</tr>
+</tbody>
+</table></div><p>总结一下：生产环境推荐「事件驱动 + hash 变更检测 + 先删后增」的组合方案，兼顾实时性和数据一致性。新增和删除操作相对简单，修改操作记住一个原则，永远先删掉旧的所有 chunk，再重新入库，不要尝试「局部更新」，这是最可靠也最不容易出 bug 的做法。</p>
+<hr>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头对话的问题，知识库更新绝对不能尝试「只更新变了的那个 chunk」，因为文档内容一变，chunk 的切割边界就完全不同了，没法做局部更新。</p>
+<p>正确的做法是给每个文档算内容 hash 来检测变更，检测到变化后先把旧文档对应的所有 chunk 删掉，再重新切割入库，也就是「先删后增」。变更感知方面，低频场景用定时轮询就够了，高频场景用 Kafka 或 Webhook 做事件驱动，实现秒级入库。生产环境推荐「事件驱动 + hash 检测 + 先删后增」的组合方案，同时要做好 chunk ID 与文档 ID 的关联设计，这样删除和更新才有据可查。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么更新-rag-知识库比更新普通数据库麻烦">为什么更新 RAG 知识库比更新普通数据库麻烦？</a><a class="toc-level-3" href="#如何知道文档是否发生了变化">如何知道文档是否发生了变化？</a><a class="toc-level-3" href="#文档-id-和-chunk-id-的设计">文档 ID 和 chunk ID 的设计</a><a class="toc-level-3" href="#两种主流的变更感知方式">两种主流的变更感知方式</a><a class="toc-level-3" href="#全量重建是最后的手段">全量重建是最后的手段</a><a class="toc-level-3" href="#灰度更新-稳妥地切换新版本">灰度更新：稳妥地切换新版本</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/rag/18_evaluation.html"><span>上一篇 · RAG</span><strong>怎么量化你的 RAG 效果？</strong></a>
+      <a class="pagination-card next" href="../../articles/rag/20_hardest_parts.html"><span>下一篇 · RAG</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

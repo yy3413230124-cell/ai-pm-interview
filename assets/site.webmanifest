@@ -1,0 +1,18 @@
+{
+  "name": "AI产品经理面试图谱",
+  "short_name": "AI PM面试",
+  "description": "面向 AI 产品经理的面试题库，覆盖 Agent、RAG、工具调用、大模型工程、LangChain 与 AI 编程。每道题包含追问演练、原理拆解和产品经理作答提示。",
+  "lang": "zh-CN",
+  "start_url": "/ai-pm-interview/",
+  "display": "standalone",
+  "background_color": "#f5f6f7",
+  "theme_color": "#4687f2",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

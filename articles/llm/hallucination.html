@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解大模型的幻觉本质是：模型生成了听起来很合理但实际是错的内容，这是 LLM 的固有缺陷，不是某个 bug。">
+  <meta name="keywords" content="AI产品经理面试题,大模型为什么会出现幻觉？怎么缓解？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/hallucination.html">
+  <title>大模型为什么会出现幻觉？怎么缓解？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型为什么会出现幻觉？怎么缓解？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解大模型的幻觉本质是：模型生成了听起来很合理但实际是错的内容，这是 LLM 的固有缺陷，不是某个 bug。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/hallucination.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型为什么会出现幻觉？怎么缓解？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解大模型的幻觉本质是：模型生成了听起来很合理但实际是错的内容，这是 LLM 的固有缺陷，不是某个 bug。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/hallucination.html#article","headline":"大模型为什么会出现幻觉？怎么缓解？｜AI产品经理面试题","description":"我理解大模型的幻觉本质是：模型生成了听起来很合理但实际是错的内容，这是 LLM 的固有缺陷，不是某个 bug。","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/hallucination.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"大模型为什么会出现幻觉？怎么缓解？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/hallucination.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="" href="./position_encoding.html"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="" href="./llm_training.html"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="" href="./scaling_law_emergence.html"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="" href="./post_training.html"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="" href="./dpo_vs_ppo.html"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="" href="./decoding_strategies.html"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="is-active" href="#article-top"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 18 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟阅读</span>
+            <span>6,700 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>大模型为什么会出现幻觉？怎么缓解？</h1>
+          <div class="article-deck">
+            <span>题目 18</span>
+            <p>我理解大模型的幻觉本质是：模型生成了听起来很合理但实际是错的内容，这是 LLM 的固有缺陷，不是某个 bug。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲大模型为什么会出现幻觉？怎么缓解？</p>
+<p>🙋‍♂️我：幻觉就是模型胡说八道嘛，主要是训练数据有错误，所以模型学错了。缓解办法是用 RAG 加上外部知识库。</p>
+<p>👔面试官：……「训练数据有错误」？那如果训练数据 100% 正确，模型就不会幻觉了吗？再说，RAG 是工程方案，但你现在让我从「模型本身」角度讲幻觉的根因，不是让你讲 RAG 系统。</p>
+<p>🙋‍♂️我：哦哦，那可能是模型的概率采样有随机性，所以会乱选词？</p>
+<p>👔面试官：那把 Temperature 调到 0 是不是就不会幻觉了？为什么很多 LLM 在 Temperature=0 的时候也会一本正经地胡说八道？这个根因你能讲出来吗？</p>
+<p>🙋‍♂️我：呃……不太清楚。</p>
+<p>👔面试官：我再换个角度问你。同一个事实问题，比如「鲁迅是谁的笔名」，模型有时候答对、有时候答错。这两次答案对应模型概率分布的什么不同？模型对「自己不知道的事」内部有没有信号？为什么模型不会主动说「我不知道」？这些都搞清楚了，再来谈缓解方案。</p>
+<p>这一通追问下来才发现，「幻觉」根本不是「模型乱说」这一层能糊弄过去的。它的根源在 LLM 是概率续写器不是数据库，缓解也得训练、推理、系统三层一起上，少哪层都不行。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解大模型的幻觉本质是：<strong>模型生成了听起来很合理但实际是错的内容</strong>，这是 LLM 的固有缺陷，不是某个 bug。</p>
+<p>幻觉的根因可以归到三个层面。</p>
+<p>第一是<strong>训练数据层面</strong>：互联网语料本身就有错误、矛盾、过时的信息，模型把这些都「学进去」当作事实记忆。</p>
+<p>第二是<strong>生成机制层面</strong>：LLM 本质是「按概率续写下一个 token」，不是「查询知识库」。模型对「自己知不知道某件事」没有显式信号，碰到不熟悉的问题，会按训练时见过的相似上下文「编一个看起来合理的答案」。这就是为什么 Temperature=0 也会幻觉，因为概率最高的那条路径本身就是错的。</p>
+<p>第三是<strong>对齐目标层面</strong>：SFT 和 RLHF 训练时，「自信地回答」往往比「我不知道」得分更高，模型被无形中训练成了「不会拒答」。</p>
+<p>幻觉分三类：<strong>事实性幻觉</strong>（编造不存在的事实，把人物事件张冠李戴）、<strong>推理性幻觉</strong>（推理链条错乱、前后矛盾）、<strong>上下文不一致</strong>（违背用户给的明确条件）。</p>
+<p>缓解方案要分三层组合用。</p>
+<p><strong>训练层</strong>：对齐数据里专门加入「不知道就说不知道」的样例，做校准（Calibration）训练，让模型学会拒答。</p>
+<p><strong>推理层</strong>：让模型先做必要的分步分析再答（最终可以只展示简要依据）、Temperature 调低减少随机偏差、Self-Consistency 多次采样投票（错误答案不一定容易收敛）、约束解码（限制只能输出特定 vocabulary）。</p>
+<p><strong>系统层</strong>：RAG 接入外部知识库（让模型「看着资料答」而不是「凭记忆答」）、答案后处理核查、强制带引用来源。</p>
+<p>最关键的认知是，<strong>幻觉不可能完全消除</strong>，因为它是 LLM 概率生成机制的固有副产物。工程上的目标是「降低发生率 + 让用户能识别」，不是「彻底消灭」。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="幻觉到底是什么-为什么-llm-必然会幻觉">幻觉到底是什么？为什么 LLM 必然会幻觉</h3>
+<p>要讲清楚幻觉，得先把它的定义说精确。学术界对 LLM 幻觉的定义是：</p>
+<blockquote>
+<p><strong>模型生成了与训练事实、用户输入、或者已知世界不一致的内容，但语言上看起来很流畅合理。</strong></p>
+</blockquote>
+<p>关键的两个特征：第一，<strong>内容错</strong>；第二，<strong>听起来对</strong>。如果只是错但一眼看出来错（比如语法错乱），那是普通的生成质量问题，不算幻觉。幻觉特别指那种「读起来很顺、引用看起来很专业、但仔细查证发现是编的」的输出。</p>
+<p>举几个真实的例子：</p>
+<ul>
+<li>让 ChatGPT 推荐一本书，它给出书名「《时间之河》by 王小波」，听起来像那么回事，但王小波从没写过这本书</li>
+<li>让模型解释「2026 年北京冬奥会有哪些项目」，模型一本正经列出十几项，但 2026 年根本没有冬奥会</li>
+<li>让模型写一篇医学综述，文章里引用了「Smith et al., 2018」这个文献，去 PubMed 查根本不存在</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_01_hallucination_example_e08763cd__deae743e89.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>要理解为什么 LLM 会幻觉，得记住一句关键的话：<strong>模型不是数据库</strong>。</p>
+<p>数据库的工作模式是「输入查询 -&gt; 返回精确匹配的记录 -&gt; 找不到就明确报错」。LLM 不是这样，它的工作模式是「输入上下文 -&gt; 按概率续写最可能的下一个 token -&gt; 一直续写直到结束」。模型从来没有「查询失败」这个状态，它永远会输出点什么，因为它的全部使命就是「续写」。</p>
+<p>这是幻觉的元根源。再往下，可以拆成三个具体的成因层面。</p>
+<h3 id="根因一-训练数据本身就有错">根因一：训练数据本身就有错</h3>
+<p>最容易理解的一层是训练数据问题。</p>
+<p>LLM 的训练数据来自互联网（Common Crawl）+ 各种公开语料 + 书籍 + 代码仓库。数据量是 TB 级别的，里面什么货色都有：</p>
+<ul>
+<li>维基百科里有过时的、错误的、被破坏的版本</li>
+<li>新闻里有谣言、虚假报道、带立场的扭曲叙述</li>
+<li>论坛、博客、社交媒体里满是民科、阴谋论、错误的常识</li>
+<li>不同来源之间互相矛盾（同一个事件的不同说法、同一个数据的不同版本）</li>
+<li>时间过期的信息（2020 年的「今年是 2020 年」、十年前的「最新研究」）</li>
+</ul>
+<p>模型在预训练时把这些<strong>全都学进了参数里</strong>，没有「真假区分」机制。等推理时它说出来的，可能就是某个 2015 年错误论坛帖子的回声。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_02_training_noise_15c72868__d08664da1b.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>但要注意，<strong>训练数据问题只是冰山一角</strong>。即使数据 100% 正确干净，模型还是会幻觉。下面是更深层的根因。</p>
+<h3 id="根因二-生成机制是-续写-不是-查询">根因二：生成机制是「续写」不是「查询」</h3>
+<p>这是幻觉最深的根因，也是面试里最容易问倒人的地方。</p>
+<p>LLM 的本质是 <strong>next-token prediction</strong>：给一段上下文，输出下一个 token 是什么的概率分布，按某种解码策略选一个 token，拼到上下文后面，循环直到结束。</p>
+<p>这里有一个被很多人忽略的事实：<strong>模型对「自己知不知道某件事」根本没有显式信号</strong>。</p>
+<p>你问「鲁迅是谁的笔名？」，模型的处理流程不是「查一下知识库 -&gt; 找到周树人 -&gt; 输出周树人」，而是「在我的参数里，给定『鲁迅是谁的笔名？』这个上下文，下一个 token 最高概率是什么？」如果训练时模型见过很多次「鲁迅是周树人的笔名」，那「周」这个 token 的概率会很高，回答正确；如果模型对这个事实记得不牢（比如训练时只见过 1-2 次），「周」的概率可能没那么高，模型会按概率从分布里挑一个看起来合理的名字续上去，得出「鲁迅是茅盾的笔名」之类的错误答案。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_03_llm_not_database_a966ffe5__fde9f7fb28.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>模型这种「永远会输出点什么」的特性带来一个反直觉的结果：<strong>Temperature=0 也会幻觉</strong>。</p>
+<p>为什么？因为 Temperature=0 等价于贪心解码，每步选概率最高的 token。但「概率最高的 token」不等于「正确的 token」，只是「按训练数据统计、最可能出现在这个上下文之后的 token」。如果模型对某个事实记忆模糊，它脑中的概率分布可能是「茅 35% / 周 32% / 鲁 18% / 巴 15%」，Temperature=0 会铁定选「茅」，输出「鲁迅是茅盾的笔名」，错得很自信。</p>
+<p>这就是为什么把温度调低不能根除幻觉。<strong>温度只能减少「同一个错误重复出现的随机性」，不能修正「错误本身」</strong>。模型记错了就是记错了，温度调低反而让错误答案更稳定地输出。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_04_highest_probability_not_correct_a2b063ff__cb71194655.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>更进一步的是「<strong>参数化知识 vs 检索式知识</strong>」的对比。</p>
+<p>LLM 的所有事实记忆都「<strong>编码在 1700 亿个参数里</strong>」（参数化知识），这种存储方式是：</p>
+<ul>
+<li><strong>模糊的</strong>：知识不是 key-value 存的，是分布式编码在权重里的，记得多准取决于训练时见过多少次</li>
+<li><strong>不可检索的</strong>：模型自己不知道某条知识在哪几个权重里</li>
+<li><strong>不可验证的</strong>：模型输出一个事实时，没法回过头标「这条来自训练数据的某段」</li>
+</ul>
+<p>而 RAG 这种<strong>检索式知识</strong>就完全不同：每个事实有明确出处，找到了就找到了，找不到就明确返回空。这是为什么 RAG 能显著缓解幻觉，它把「模糊的参数化记忆」换成了「精确的检索结果」。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_05_parameterized_vs_retrieval_f76e6ea4__4b995dfc26.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="根因三-对齐目标的副作用">根因三：对齐目标的副作用</h3>
+<p>第三层根因更隐蔽：<strong>对齐训练（SFT + RLHF）反而会鼓励模型「自信地回答」，加剧幻觉</strong>。</p>
+<p>什么意思？SFT 的训练数据是（指令，期望回答）对，但绝大多数标注员写期望回答时，都会写「自信、详细、专业」的回答，很少写「我不知道」。结果是模型学到了「碰到问题就要给出详细回答」的行为模式，根本没学过「碰到不会的就拒答」。</p>
+<p>到了 RLHF 阶段更糟。人类标注员对回答打偏好排名时，<strong>「详细、自信、专业」的回答几乎永远比「我不确定」得分高</strong>，哪怕详细回答其实是错的。因为人类标注员自己也不一定知道答案对不对，他们打分的依据更多是「读起来像不像专家」。</p>
+<p>奖励模型学到的就是「自信 = 高分，谨慎 = 低分」。PPO 把这个偏好放大到主模型，最终的模型变成「永远自信、永远不拒答」，于是幻觉率反而上升。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_06_rlhf_confidence_bec2e9ef__8b139aec56.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>Anthropic 在 2023 年的论文 <em>Language Models (Mostly) Know What They Know</em> 里专门研究过这个问题，提出了「<strong>Calibrated Refusal（校准的拒答）</strong>」概念：让模型在对齐训练时学习「该说不知道的时候就说不知道」，让它的「自信度」和「实际正确率」对齐。至于 Claude 具体用了哪些训练配方，公开资料不会把内部细节讲完，所以面试里可以说「Claude 这类模型体现了更强的拒答校准倾向」，不要断言某个产品一定就是某一套论文流程的直接结果。</p>
+<p>到这里，三个根因层面都讲完了：训练数据有噪声、生成机制是「续写不是查询」、对齐目标鼓励「不拒答」。下面看看具体能产生哪些类型的幻觉。</p>
+<h3 id="三类幻觉的典型表现">三类幻觉的典型表现</h3>
+<p>学术界一般把 LLM 幻觉分成三大类：</p>
+<p><strong>1. 事实性幻觉（Factual Hallucination）</strong></p>
+<p>模型编造不存在的事实，或把已知事实张冠李戴。最常见、最容易被识破：</p>
+<ul>
+<li>编造不存在的人物（「李白曾担任唐朝丞相」）</li>
+<li>编造不存在的论文（「Zhang et al. 2019 在 Nature 发表」）</li>
+<li>时间错误（把发生在 2010 年的事说成 2015 年）</li>
+<li>地理错误（「乌克兰的首都是莫斯科」）</li>
+</ul>
+<p><strong>2. 推理性幻觉（Reasoning Hallucination）</strong></p>
+<p>事实层面没问题，但推理过程错乱、前后矛盾、逻辑跳跃。在数学题、代码题里尤其常见：</p>
+<ul>
+<li>数学题前面算对了，后面突然算错</li>
+<li>代码生成里前半段定义了变量 x，后半段引用了从来没定义过的 y</li>
+<li>推理链断了一步，最后结论强行得出</li>
+</ul>
+<p><strong>3. 上下文不一致（Faithfulness Hallucination）</strong></p>
+<p>最隐蔽的一类，不违反客观事实，但<strong>违反用户在 Prompt 里给的明确条件</strong>：</p>
+<ul>
+<li>用户说「我已经吃饱了」，模型还推荐你去吃饭</li>
+<li>用户给了一段文档说「请只根据下面的资料回答」，模型答的是它自己脑袋里的知识，不是文档里的</li>
+<li>系统 Prompt 写了「不要泄露内部信息」，模型还是把内部 Prompt 复述了出来</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_07_hallucination_types_688c4d10__8ea3bbf7eb.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>理解了根因和分类，缓解方案就有了对症下药的落点。下面分三层来看。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_08_three_layer_mitigation_1bf264e1__9096addcc8.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="缓解方案-训练层">缓解方案：训练层</h3>
+<p>最根本的缓解办法是在训练阶段就教会模型「不知道就说不知道」。具体有几种做法：</p>
+<p><strong>1. 在 SFT 数据里加入大量「拒答样例」</strong></p>
+<p>主动给训练数据里塞「我不确定」「这个我没把握」「建议你查一下专业资料」这种回答，让模型学到「拒答也是合格回答」。Anthropic 在 Claude 的训练里大量这么做。</p>
+<p><strong>2. 校准（Calibration）训练</strong></p>
+<p>用专门的偏好数据，让标注员对「正确且自信」「错误但谨慎」「错误且自信」打分，让奖励模型学到「错误且自信」要严厉扣分。这样训出来的模型会主动避免「自信地说错话」。</p>
+<p><strong>3. 用奖励模型筛掉幻觉回答</strong></p>
+<p>收集模型生成的回答，用第二个模型（或者人工）去事实核查，把出现幻觉的回答标记为低分，作为对齐训练的负样本。这是 Anthropic 的 Constitutional AI 流程的一部分。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_09_training_layer_mitigation_de138918__e7104dcaa6.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>训练层缓解的优点是治本，但代价是训练成本高，且效果上限受训练数据质量限制。所以工程上还需要推理层和系统层的辅助。</p>
+<h3 id="缓解方案-推理层">缓解方案：推理层</h3>
+<p>推理层缓解不需要改模型，只需要在推理时调整解码行为或提示工程：</p>
+<p><strong>1. CoT（链式思考）暴露推理错误</strong></p>
+<p>让模型先做分步分析，再给出最终结论。这样模型更不容易跳步，最终答案错的时候也更容易通过简要依据追溯问题。对外产品里不一定展示完整 CoT，可以展示关键推理步骤或检查结果。CoT 对推理性幻觉有帮助，但不能保证一定正确。</p>
+<p><strong>2. Temperature 调低</strong></p>
+<p>虽然前面说过 Temperature=0 不能根除幻觉，但调低能减少「随机偏差」带来的幻觉（即「模型本来知道，但因为随机抽到了低概率的错答案」这种情况）。对事实性问答用 Temperature=0~0.3 是工程标配。</p>
+<p><strong>3. Self-Consistency 多次采样投票</strong></p>
+<p>对同一个问题，用 Temperature=0.7 采样 N 次（典型 N=5~10），最后取多数投票。逻辑是「正确答案更容易通过多种推理路径得到，错误答案相对更分散」。在数学推理任务上经常能提升准确率，但提升幅度取决于模型、题目和采样次数，不要把 5-15 个百分点当成固定收益。</p>
+<p><strong>4. 约束解码（Constrained Decoding）</strong></p>
+<p>如果输出格式有严格约束（比如 JSON、SQL、特定 schema），用约束解码限制模型每步只能从合法 vocabulary 里选 token。这样能根除「输出格式错误」这一类幻觉。vLLM、TGI 等推理框架都支持。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_10_inference_layer_mitigation_57e49c6c__f017b0e728.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>推理层缓解的优点是不改模型、可以即插即用，缺点是上限有限，对「模型记忆模糊」这种根本问题没办法。</p>
+<h3 id="缓解方案-系统层">缓解方案：系统层</h3>
+<p>系统层缓解是最工程化的方案，把 LLM 当成「会犯错的组件」，外面加防护栏：</p>
+<p><strong>1. RAG：让模型「看着资料答」</strong></p>
+<p>最有效的系统层方案之一。在生成前先去外部知识库检索相关资料，把资料拼进 Prompt，让模型基于资料回答。这样把「靠模糊参数记忆」换成了「靠可追溯的检索结果」，通常能显著降低事实性幻觉。但它不是固定能下降一个数量级，效果取决于检索召回、文档质量、Rerank、Prompt 约束和引用校验。RAG 的具体工程细节非常多（Chunking、向量检索、Rerank、Prompt 设计），是另一个独立的大话题，本题不展开。</p>
+<p><strong>2. 后处理事实核查（Fact-Checking）</strong></p>
+<p>模型输出后，用另一个 LLM 或者检索系统去核查里面提到的事实声明。比如模型说「Smith et al. 2018 在 Nature 发表了 X」，后处理系统去 PubMed 查这篇论文是否存在。如果核查不过，把这部分内容标红或删掉。</p>
+<p><strong>3. 强制带引用来源</strong></p>
+<p>在 Prompt 里要求模型每条事实声明后面跟引用编号，对应到检索系统返回的具体文档。用户可以点开引用查证，这样即使有幻觉，用户也能识别出来。Perplexity AI 就是这么做的。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_11_rag_grounding_42364787__96358e07ca.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>系统层缓解的优点是工程上最有效、可观测、可追溯，缺点是引入了额外的延迟和系统复杂度。但对企业级应用来说，几乎是必选项。</p>
+<h3 id="工程实践-为什么幻觉不可能完全消除">工程实践：为什么幻觉不可能完全消除</h3>
+<p>最后讲一个面试里很容易加分的点：<strong>幻觉永远不会被「彻底消灭」</strong>。</p>
+<p>原因回到最开始那句话，<strong>LLM 的本质是按概率续写下一个 token</strong>，这个机制天然就带着「会编」的可能性。无论你再怎么对齐、怎么 RAG、怎么核查，只要模型还是按概率生成的，就一定有概率生成错误内容。</p>
+<p>工程上现实的目标是：</p>
+<ul>
+<li><strong>降低发生率</strong>（从 30% 降到 5% 是巨大的胜利）</li>
+<li><strong>让用户能识别</strong>（带引用、加可信度标记、对不确定回答主动声明）</li>
+<li><strong>限定使用场景</strong>（高风险场景如医疗、法律必须有人类把关）</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/hallucination_12_reduce_not_eliminate_bf5f27fa__9b06869b09.webp" alt="大模型为什么会出现幻觉？怎么缓解？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>讲到这里，能在面试里说出「幻觉不可能消除，工程目标是降低发生率 + 让用户识别」这句话，就比绝大多数候选人深刻一个层次了。这个认知背后是「LLM 的概率本质」，是面试官想听到的。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，问到大模型为什么会出现幻觉、怎么缓解，最重要的是先讲清楚<strong>幻觉的定义和元根源</strong>。幻觉不是简单的「模型出错」，而是「生成了流畅合理但实际错误的内容」。元根源是 <strong>LLM 不是数据库，是续写器</strong>，它的全部使命就是按概率输出下一个 token，没有「查询失败」这个状态，永远会输出点什么。这一句先讲到，就把幻觉的本质点出来了。</p>
+<p>接下来讲<strong>三个具体根因</strong>。训练数据本身有错（互联网语料里有噪声、矛盾、过时信息）；生成机制是「续写不是查询」（参数化记忆模糊，所以 Temperature=0 也会幻觉）；对齐目标的副作用（RLHF 训练时人类标注偏好「自信回答」，模型被无形训练成「不会拒答」）。这三层根因层层递进，<strong>第二层和第三层是面试里能加分的关键</strong>，能讲出来比一般候选人深刻。</p>
+<p>然后讲<strong>缓解方案分三层组合用</strong>。训练层（拒答数据增强、Calibration 校准、奖励模型筛幻觉），推理层（分步分析、温度调低、Self-Consistency、约束解码），系统层（RAG、事实核查、强制带引用）。每一层都不是银弹，工业级应用通常组合用。这里不要硬说某个闭源模型具体用了哪几招，公开资料没写的就保持谨慎。</p>
+<p>最关键的一句话是：<strong>幻觉不可能完全消除，因为它是 LLM 概率生成机制的固有产物</strong>。工程目标是「降低发生率 + 让用户能识别」，不是「彻底消灭」。能讲到这一层，面试官就知道你不是在背工具，是真的理解 LLM 的本质。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#幻觉到底是什么-为什么-llm-必然会幻觉">幻觉到底是什么？为什么 LLM 必然会幻觉</a><a class="toc-level-3" href="#根因一-训练数据本身就有错">根因一：训练数据本身就有错</a><a class="toc-level-3" href="#根因二-生成机制是-续写-不是-查询">根因二：生成机制是「续写」不是「查询」</a><a class="toc-level-3" href="#根因三-对齐目标的副作用">根因三：对齐目标的副作用</a><a class="toc-level-3" href="#三类幻觉的典型表现">三类幻觉的典型表现</a><a class="toc-level-3" href="#缓解方案-训练层">缓解方案：训练层</a><a class="toc-level-3" href="#缓解方案-推理层">缓解方案：推理层</a><a class="toc-level-3" href="#缓解方案-系统层">缓解方案：系统层</a><a class="toc-level-3" href="#工程实践-为什么幻觉不可能完全消除">工程实践：为什么幻觉不可能完全消除</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/cot.html"><span>上一篇 · 大模型工程</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/moe.html"><span>下一篇 · 大模型工程</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

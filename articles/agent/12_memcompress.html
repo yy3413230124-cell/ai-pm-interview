@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。">
+  <meta name="keywords" content="AI产品经理面试题,Agent 记忆压缩通常有哪些方法？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/12_memcompress.html">
+  <title>Agent 记忆压缩通常有哪些方法？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent 记忆压缩通常有哪些方法？｜AI产品经理面试题">
+  <meta property="og:description" content="记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/12_memcompress.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent 记忆压缩通常有哪些方法？｜AI产品经理面试题">
+  <meta name="twitter:description" content="记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/12_memcompress.html#article","headline":"Agent 记忆压缩通常有哪些方法？｜AI产品经理面试题","description":"记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/12_memcompress.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"Agent 记忆压缩通常有哪些方法？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/12_memcompress.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="is-active" href="#article-top"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 12 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟阅读</span>
+            <span>5,033 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Agent 记忆压缩通常有哪些方法？</h1>
+          <div class="article-deck">
+            <span>题目 12</span>
+            <p>记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你项目里 Agent 对话历史越来越长，context 快撑满了怎么办？有没有做记忆压缩？</p>
+<p>🙋‍♂️我：有，我们做了滑动窗口，只保留最近几轮对话，太早的就丢掉。</p>
+<p>👔面试官：那如果用户三天前确认的一个关键决策被你这么丢了，Agent 回头又提那个已经被否决的方案，怎么办？</p>
+<p>🙋‍♂️我：那就把窗口调大一点，多保留一些对话。</p>
+<p>👔面试官：窗口调大治标不治本，你知道滑动窗口的本质缺陷是什么吗？「硬截断」意味着什么？</p>
+<p>🙋‍♂️我：嗯……那可以用摘要压缩，让 LLM 把历史总结一下，信息就保留下来了。摘要之后应该就够用了。</p>
+<p>👔面试官：摘要是一种方案，但你说「够用了」——有没有考虑过，有些场景里摘要本身也会丢失关键细节？还有没有其他角度的压缩思路？</p>
+<p>被问出这个问题说明面试官在考你方案的全貌，记忆压缩其实有四个不同维度的方法，咱来系统梳理一遍。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。</p>
+<p>摘要压缩是把长对话总结成简短摘要；滑动窗口是只保留最近 N 轮对话；重要性过滤是打分筛选，只留重要内容；结构化抽取是把关键信息抽成结构化数据存起来。</p>
+<p>我在实际项目里最常用的是摘要压缩和滑动窗口，而且经常组合用，滑动窗口丢弃前先做一次摘要，尽量不丢重要信息。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>想象这样一个场景：你在用一个 AI 助手帮你推进一个复杂项目，聊了一个多小时，确认了技术方案、梳理了需求、定下了几个重要决策。然后有一刻，AI 突然开始「忘事」了，把你早就敲定的方案搞错，重新提出已经被你否决的思路。你感觉很困惑，明明刚才还在聊，它怎么就不记得了？</p>
+<p>这个现象的根源，就是 context window 的限制。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/fe1a5be1152a95bb41d736709951a375__e8364e692a.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>LLM 每次生成回答，并不是像人脑一样有持续的记忆，它依赖的是「每次调用时传入的完整对话历史」。你和它聊的每一句话，都被打包成 messages 列表传进去，模型读完这些内容，才能生成下一条回复。</p>
+<p>这个 messages 列表是有硬上限的，GPT-4o 是 128K token，Claude 家族默认是 200K token，其中 Claude Sonnet 4.5/4.6 和 Opus 4.5/4.6 在付费计划里可以扩展到 1M token（超过 200K 的部分按更高费率计费）。超过上限就得截断，默认的截断策略是「从最老的对话开始丢」，于是那个三十分钟前确认的技术方案，就这么被扔掉了。</p>
+<p>更现实的压力还有成本。就算没有超过 token 上限，对话越长，每次调 LLM 的费用就越高，因为你把越来越多的历史塞进了输入。高频使用场景下，这是货真价实的成本压力。</p>
+<p>记忆压缩要解决的，就是「空间有限、成本有压力」这两件事：在保留关键信息的前提下，减少历史记录占用的 token 数量。</p>
+<h3 id="第一种方法-滑动窗口-最简单的方案-也是最粗糙的">第一种方法：滑动窗口，最简单的方案，也是最粗糙的</h3>
+<p>滑动窗口是最符合直觉的做法，就像手机聊天记录默认只显示最近 200 条：超出就从最老的开始删，只保留最近 N 轮对话。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305211547706__q_af168ec96f23__dd17307973.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>好处是实现极其简单，不需要任何额外的 LLM 调用，也没有额外开销。坏处是「硬截断」，对话内容按时间一刀切，三周前确认的关键决策和昨天随口说的一句话，在这个方案里是被同等对待的，超出窗口就都消失了。</p>
+<p>可以用一个词概括它的特性：「金鱼记忆」。它只记得最近发生的事，越往前越模糊，再久一点就什么都没了。对于短对话、或者历史信息不重要的场景，这个方案足够用，成本最低。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/01_sliding_window_truncation__0611149147.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="第二种方法-摘要压缩-丢之前先提炼一遍">第二种方法：摘要压缩，丢之前先提炼一遍</h3>
+<p>摘要压缩是对滑动窗口「硬截断」的改进。核心思路是：不直接丢弃即将超出窗口的历史，而是先让 LLM 把这段历史总结成一段精华摘要，用摘要替换原始对话，再继续往前。</p>
+<p>类比一下：你的笔记本快写满了，你没有把前面的页直接撕掉，而是先把前半本的要点重新整理成一页纸的精华总结，然后把前半本收起来，带着这页总结继续记录后面的内容。后来翻回去看，这页总结虽然不如原版详细，但关键脉络都在。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305211636880__q_7a68262f9d6f__b629642787.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>代价是摘要会丢失细节。LLM 在总结时，会按照自己判断的「重要性」来决定保留什么、省略什么。有些细节当时看起来不重要、被摘要略过了，后来却刚好需要，这时候就找不回来了。</p>
+<p>这个方案单独用时，通常的做法是「旧的压缩成摘要，近的保持完整」，最近几轮对话往往和当前任务关系最密切，保持原文；更早的历史相关性低，压缩成摘要。</p>
+<p>进阶一点的做法是<strong>层级式摘要</strong>（Hierarchical Summarization）。不是对所有旧历史做一次性摘要，而是分层处理：最近 10 轮保持原文，10 到 50 轮的历史压缩成一份「中期摘要」，50 轮之前的历史进一步压缩成更精炼的「长期摘要」。</p>
+<p>每一层的信息密度不同，越久远的越精炼，但核心决策和关键结论始终被保留。这有点像公司的会议纪要体系：今天的会议有详细的逐条记录，上个月的会议只留要点摘要，去年的只留关键决策备忘。</p>
+<p>层级式摘要的好处是，Agent 既能精确回忆近期细节，也能粗略回忆远期要点，比一刀切的摘要颗粒度更合理。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/02_hierarchical_summary__c7157660cc.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>最常见的工程组合：滑动窗口 + 摘要</strong></p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305211659056__q_7a68262f9d6f__a7aba4b903.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>在实际工程里，这两种方法通常一起用，而不是单独用其中一种。滑动窗口负责控制对话历史的总长度上限，摘要压缩负责在历史被丢弃之前做一次提炼，把关键信息留下来。这样既有长度控制，又不是直接硬截断，是目前最常见的工程方案。</p>
+<h3 id="第三种方法-重要性过滤-按价值筛选-不按时间筛选">第三种方法：重要性过滤，按价值筛选，不按时间筛选</h3>
+<p>滑动窗口和摘要压缩有一个共同的思路：都是在「时间维度」处理历史，按照发生的先后顺序来决定保留什么。但时间不等于重要性。三周前的一句关键决策，可能远比昨天的几句闲聊更有价值，但在滑动窗口里它会先被丢掉。</p>
+<p>重要性过滤换了一个角度，按内容的实际价值来决定去留：给每条对话记录打一个重要性分数，低于阈值的淘汰，高分的保留。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/03_importance_filtering__c2f6da4b17.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>类比整理房间：一个人不会按照购买时间来决定扔什么东西，而是按照「这个东西现在还有没有用」来决定去留。一件五年前买的工具，如果还在用，就留着；一本上周买的书，如果一页没看还不打算看，就可以扔。</p>
+<p>打分的方式有两种。一种是规则打分：包含「决定」「确认」「需求」等关键词的记录加分，被后续对话引用次数多的加分，纯闲聊降分。规则快、没有额外开销，但比较粗糙，边界情况容易判断失误。</p>
+<p>另一种是让 LLM 来打分：逐条判断每条记录的重要程度。准确率更高，但每条记录都需要一次 LLM 调用，开销大，通常在批量清理历史时做，而不是实时处理每条消息。</p>
+<p>还有一种更激进的重要性过滤思路叫<strong>观察遮蔽</strong>（Observation Masking）。它的做法不是删除低分内容，而是在构造 prompt 时选择性地「隐藏」某些历史条目。</p>
+<p>比如当前任务是写代码，Agent 会把之前关于需求讨论的对话标记为「与当前步骤无关」，构造 prompt 时直接跳过这些条目，只把和代码相关的历史传进去。任务进入测试阶段时，再把测试相关的历史「显示」出来，代码实现的细节对话则被遮蔽。</p>
+<p>这样做的好处是信息没有被真正删除，只是在不同阶段动态选择「当前最需要看到什么」，既节省了 token，又避免了不可逆的信息丢失。</p>
+<p>另一个值得了解的概念是<strong>主动压缩</strong>（Proactive Compression）。前面说的所有方法都是被动触发的，等 context 快满了才开始压缩。主动压缩的思路是，Agent 在每一步执行完之后，主动判断哪些中间过程可以压缩。</p>
+<p>比如 Agent 调用了一个搜索工具，返回了 2000 token 的原始搜索结果，Agent 在读完之后立刻把搜索结果压缩成 200 token 的要点摘要，替换掉原始内容。这样 context 的增长速度从一开始就被控制住了，而不是等到快满了才临时抱佛脚。</p>
+<p>主动压缩特别适合工具调用频繁的 Agent，因为工具返回的原始数据往往很长，但真正有用的信息只占一小部分。</p>
+<h3 id="第四种方法-结构化抽取-换一种载体存信息">第四种方法：结构化抽取，换一种载体存信息</h3>
+<p>前三种方法有一个共同的前提假设：历史信息最好以「对话文本」的形式保留。结构化抽取的思路完全不同，它先问一个更本质的问题：我们真的需要保留对话文本本身吗？</p>
+<p>很多场景里，真正有价值的不是对话文字，而是对话中传递的事实和状态。比如「用户偏好用 Python」「预算上限是 5 万」「已确认方案 B」「需要兼容移动端」。把这些信息主动提取出来，存成结构化字段，后续注入 prompt 时直接用这些字段，比传一大段对话文本要高效得多，信息密度也高得多。</p>
+<p>类比医生记录病历的方式：医生不会把和病人的所有对话逐字记录下来，而是整理成结构化的病历档案，「主诉：头痛三天，现病史：无发热，过敏史：青霉素，初步诊断：紧张性头痛」。这份档案的信息密度远高于原始对话文字，下次就诊时医生直接读病历，不需要把上次的全程录音重听一遍。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/04_structured_extraction__83b21ddbdd.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这种方案的信息损失最小，只要字段定义合理，重要信息全部被精确保留，没有摘要带来的模糊化。代价是开发成本最高：你需要预先定义「什么是重要字段」，这需要对业务场景有深入理解，而且不同类型的任务所需的字段可能完全不同，通用性较低。</p>
+<h3 id="四种方法的关系梳理">四种方法的关系梳理</h3>
+<p>这四种方法不是互斥的，也不是按优劣排列的，而是从三个不同维度来解决问题的。</p>
+<p>滑动窗口和摘要压缩解决的是「历史太长，怎么截」的问题，前者直接截，后者截之前先提炼。重要性过滤解决的是「内容不等价，怎么挑」的问题，打破时间顺序，按价值筛选。结构化抽取解决的是「对话文本本身是不是最佳载体」的问题，换一种更高效的形式来存储信息。</p>
+<p>这三个维度可以组合：比如先用重要性过滤筛掉低价值内容，再用摘要压缩处理剩余历史，同时对特定类型的关键信息做结构化抽取。实际系统里，往往是多种方法配合使用的。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/05_compression_matrix__34efd3df8a.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>Prompt Caching：在「计算层」的互补手段</strong></p>
+<p>除了上面这些「信息层」的压缩策略，还有一个工程上值得了解的技术叫 Prompt Caching，Anthropic 的 Claude 和 OpenAI 都已支持。</p>
+<p>理解它之前，先知道一个背景：LLM 每次处理请求，都需要把输入的所有 token「过一遍模型」来做计算，这个过程叫 prefill，是延迟和成本的主要来源之一。一个常见的场景是：你有一段固定的 system prompt 加上越来越长的对话历史，每次调用时这段历史都会被重新计算一遍，哪怕它和上一次调用时完全一样。</p>
+<p>Prompt Caching 的思路是：如果 prompt 的前缀部分在多次请求之间是一样的，就把这部分的计算结果缓存起来，下次请求如果前缀匹配，直接复用缓存，不重新计算。费用和延迟都大幅降低，某些场景下能降到原来的十分之一。</p>
+<p>具体到费用上，以 Anthropic Claude 为例，命中 Prompt Cache 的 token 费用大约是正常输入 token 的十分之一，写入缓存时会有一次性的额外费用（5 分钟有效期的缓存大约是正常费用的 1.25 倍，1 小时有效期的大约是 2 倍），但只要这段 prompt 在后续被复用两次以上，总体成本就已经回本了。对于 Agent 这种场景来说，system prompt 加上长期记忆注入的部分在多轮对话中基本不变，天然适合被缓存，收益非常可观。</p>
+<p>这和前面的记忆压缩是两个不同层次的优化。记忆压缩在「信息层」工作，决定哪些内容值得被保留在对话历史里；Prompt Caching 在「计算层」工作，对已经决定要带进去的内容减少重复计算的开销。两者解决的不是同一个问题，可以同时使用，是互补关系，不是替代。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/06_prompt_caching_layers__3621a6a6f2.webp" alt="Agent 记忆压缩通常有哪些方法？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>工程实践决策参考</strong></p>
+<p>选方案的时候，可以按这个思路来判断：对话不长、业务简单的场景，滑动窗口就足够了，实现成本最低；对话会很长但不想硬截断的场景，摘要加滑动窗口的组合是最稳健的工程选择；如果业务里有明确定义的「关键信息」（用户偏好、确认事项、状态字段），结构化抽取的信息密度最高，效果也最好；高频调用、长 prompt、成本敏感的系统，Prompt Caching 的收益非常可观，值得优先考虑。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>这道题的坑在于，很多人只知道滑动窗口，回答到这里就停了。面试官想考的是你对「压缩」这件事有没有完整的认识。</p>
+<p>回答时要覆盖四种方法，并且能说清楚它们解决的是不同维度的问题：滑动窗口和摘要压缩解决「历史太长怎么截」，前者直接硬截，后者截之前先提炼；重要性过滤解决「内容不等价怎么挑」，打破时间顺序按价值保留；结构化抽取解决「对话文本是不是最佳载体」，换一种信息密度更高的形式存储。</p>
+<p>另外，Prompt Caching 要和记忆压缩区分清楚，它是「计算层」的优化，对已经决定带进去的内容减少重复计算，和「信息层」的压缩是互补关系，不是替代关系，这个区别如果能主动点出来，会给面试官留下很好的印象。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#第一种方法-滑动窗口-最简单的方案-也是最粗糙的">第一种方法：滑动窗口，最简单的方案，也是最粗糙的</a><a class="toc-level-3" href="#第二种方法-摘要压缩-丢之前先提炼一遍">第二种方法：摘要压缩，丢之前先提炼一遍</a><a class="toc-level-3" href="#第三种方法-重要性过滤-按价值筛选-不按时间筛选">第三种方法：重要性过滤，按价值筛选，不按时间筛选</a><a class="toc-level-3" href="#第四种方法-结构化抽取-换一种载体存信息">第四种方法：结构化抽取，换一种载体存信息</a><a class="toc-level-3" href="#四种方法的关系梳理">四种方法的关系梳理</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/11_single_multi.html"><span>上一篇 · Agent</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/13_handcode.html"><span>下一篇 · Agent</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

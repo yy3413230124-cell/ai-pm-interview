@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="覆盖 Agent 概念、设计范式、记忆、上下文、评测、稳定性与多 Agent 协作，把工程追问一条线讲透。">
+  <meta name="keywords" content="AI产品经理面试题,Agent面试题,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html">
+  <title>Agent 面试专题｜AI产品经理面试题</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../assets/site.webmanifest">
+  <link rel="stylesheet" href="../styles/fonts.css">
+  <link rel="stylesheet" href="../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent 面试专题｜AI产品经理面试题">
+  <meta property="og:description" content="覆盖 Agent 概念、设计范式、记忆、上下文、评测、稳定性与多 Agent 协作，把工程追问一条线讲透。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent 面试专题｜AI产品经理面试题">
+  <meta name="twitter:description" content="覆盖 Agent 概念、设计范式、记忆、上下文、评测、稳定性与多 Agent 协作，把工程追问一条线讲透。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html#page","url":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html","name":"Agent 面试专题｜AI产品经理面试题","description":"覆盖 Agent 概念、设计范式、记忆、上下文、评测、稳定性与多 Agent 协作，把工程追问一条线讲透。","inLanguage":"zh-CN","isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"},"mainEntity":{"@type":"ItemList","numberOfItems":30,"itemListElement":[{"@type":"ListItem","position":1,"name":"什么是 Agent？与大模型有什么本质不同？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/1_whatisagent.html"},{"@type":"ListItem","position":2,"name":"Agent 的基本架构由哪些核心组件构成？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/2_components.html"},{"@type":"ListItem","position":3,"name":"Workflow，Agent，Tools 这三个的概念和区别介绍一下？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/3_workflow_tools.html"},{"@type":"ListItem","position":4,"name":"了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/4_patterns.html"},{"@type":"ListItem","position":5,"name":"Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/5_react.html"},{"@type":"ListItem","position":6,"name":"ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/6_three_patterns.html"},{"@type":"ListItem","position":7,"name":"复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/7_tasksplit.html"},{"@type":"ListItem","position":8,"name":"请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/8_memory.html"},{"@type":"ListItem","position":9,"name":"Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/9_memory_storage.html"},{"@type":"ListItem","position":10,"name":"什么是 Multi-Agent？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/10_multiagent.html"},{"@type":"ListItem","position":11,"name":"说说 Single-Agent 和 Multi-Agent 的设计方案？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/11_single_multi.html"},{"@type":"ListItem","position":12,"name":"Agent 记忆压缩通常有哪些方法？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/12_memcompress.html"},{"@type":"ListItem","position":13,"name":"在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/13_handcode.html"},{"@type":"ListItem","position":14,"name":"如何赋予 LLM 规划能力？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/14_planning.html"},{"@type":"ListItem","position":15,"name":"讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/15_reflection.html"},{"@type":"ListItem","position":16,"name":"如何设计多 Agent 的协作与动态切换机制？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/16_collab.html"},{"@type":"ListItem","position":17,"name":"Agent 的上下文工程怎么设计？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/17_context_engineering.html"},{"@type":"ListItem","position":18,"name":"Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/18_session_state.html"},{"@type":"ListItem","position":19,"name":"如何评估一个 Agent 的效果？评测集和指标怎么设计？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/19_evaluation.html"},{"@type":"ListItem","position":20,"name":"Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/20_loop_stability.html"},{"@type":"ListItem","position":21,"name":"线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/21_agent_latency_trace.html"},{"@type":"ListItem","position":22,"name":"Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/22_multi_agent_resilience.html"},{"@type":"ListItem","position":23,"name":"Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/23_task_hallucination.html"},{"@type":"ListItem","position":24,"name":"大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/24_database_security.html"},{"@type":"ListItem","position":25,"name":"Agent Harness 是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/25_harness.html"},{"@type":"ListItem","position":26,"name":"如何设计一个完整的 Agent Harness？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/26_harness_design.html"},{"@type":"ListItem","position":27,"name":"Agent 的自进化机制如何实现？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/27_self_evolution.html"},{"@type":"ListItem","position":28,"name":"Agent 应该在什么情况下请求人工确认？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/28_human_confirmation.html"},{"@type":"ListItem","position":29,"name":"Agent 的上下文压缩阈值应该如何确定？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/29_context_compression_threshold.html"},{"@type":"ListItem","position":30,"name":"相同输入为什么会得到不同的 Agent 执行结果？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/30_execution_variance.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"}]}]}</script>
+</head>
+<body class="category-page" data-root="../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../index.html">首页</a>
+          <a href="../index.html#library">面试题库</a>
+          <a class="is-active" href="../index.html#topics">知识专题</a>
+          <a href="../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../index.html">首页 <span>01</span></a>
+          <a href="../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <section class="category-hero" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69">
+      <div class="category-hero-copy reveal">
+        <a class="breadcrumb" href="../index.html">首页</a>
+        <span class="category-index">01</span>
+        <span class="eyebrow">INTERVIEW TOPIC · AGENT</span>
+        <h1>Agent 面试专题</h1>
+        <p>Agent 这个方向现在有多火不用我多说了吧，基本上只要面的是 AI 工程相关的岗位，Agent 就是绕不过去的必考题。但说实话，我看了不少同学的面经分享，发现很多人答 Agent 的题目都有一个通病：听起来好像说得都对，但面试官一追问就露馅了，因为只记住了概念，没有真的搞懂背后的原理和工程取舍。</p>
+        <div class="category-actions">
+          <a class="button button-primary" href="#question-list">查看 30 道题 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+          <button class="button" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg> 随机抽题</button>
+        </div>
+      </div>
+      <div class="category-art" aria-hidden="true">
+        <span class="category-art-label">Agent</span>
+        <strong>30</strong>
+        <span>QUESTIONS</span>
+        <i class="category-art-orbit"></i>
+        <i class="category-art-grid"></i>
+      </div>
+    </section>
+    <section class="section category-library" id="question-list">
+      <div class="section-heading">
+        <div><span class="section-kicker">ALL QUESTIONS</span><h2>Agent 题目列表</h2></div>
+        <p>从自主闭环、ReAct 到多 Agent 治理</p>
+      </div>
+      <div class="question-grid">
+        
+    <article class="question-card" data-question-card data-category="agent" data-search="什么是agent与大模型有什么本质不同我理解agent本质上是一个能自主完成目标的ai系统跟传统ai最核心的区别在于自主性和能行动简要回答详细解析普通大模型的局限性agent特别在哪为什么agent现在才爆发agent生态的最新趋势面试总结" data-href="articles/agent/1_whatisagent.html">
+      <a class="card-cover" href="../articles/agent/1_whatisagent.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：什么是 Agent？与大模型有什么本质不同？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">01</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/1_whatisagent.html">什么是 Agent？与大模型有什么本质不同？</a></h3>
+        <p>我理解 Agent 本质上是一个能自主完成目标的 AI 系统，跟传统 AI 最核心的区别在于「自主性」和「能行动」。</p>
+        <div class="card-footer">
+          <span>QUESTION 01</span>
+          <a href="../articles/agent/1_whatisagent.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的基本架构由哪些核心组件构成我理解agent的基本架构有四个核心组件llm工具记忆规划模块简要回答详细解析llm核心工具系统记忆系统规划模块面试总结" data-href="articles/agent/2_components.html">
+      <a class="card-cover" href="../articles/agent/2_components.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的基本架构由哪些核心组件构成？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">02</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/2_components.html">Agent 的基本架构由哪些核心组件构成？</a></h3>
+        <p>我理解 Agent 的基本架构有四个核心组件：LLM、工具、记忆、规划模块。</p>
+        <div class="card-footer">
+          <span>QUESTION 02</span>
+          <a href="../articles/agent/2_components.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="workflowagenttools这三个的概念和区别介绍一下我理解这三个概念是粒度从小到大的三层结构简要回答详细解析第一层tools最小的能力积木第二层agent拿着工具自己做决定的人第三层workflow把所有人组织起来的总指挥三者怎么组合agenticworkflow才是生产主流面试总结" data-href="articles/agent/3_workflow_tools.html">
+      <a class="card-cover" href="../articles/agent/3_workflow_tools.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Workflow，Agent，Tools 这三个的概念和区别介绍一下？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">03</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/3_workflow_tools.html">Workflow，Agent，Tools 这三个的概念和区别介绍一下？</a></h3>
+        <p>我理解这三个概念是粒度从小到大的三层结构。</p>
+        <div class="card-footer">
+          <span>QUESTION 03</span>
+          <a href="../articles/agent/3_workflow_tools.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="了解哪些其他的agent设计范式agent和workflow的区别是什么我理解agent和workflow最核心的区别是谁来决定下一步workflow是我提前把流程写死的每一步怎么走都是固定的确定性高好控制agent是让llm自己决定下一步做什么灵活但不可控简要回答详细解析workflow和agent的区别agent三种设计范式面试总结" data-href="articles/agent/4_patterns.html">
+      <a class="card-cover" href="../articles/agent/4_patterns.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">04</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/4_patterns.html">了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</a></h3>
+        <p>我理解 Agent 和 Workflow 最核心的区别是「谁来决定下一步」。Workflow 是我提前把流程写死的，每一步怎么走都是固定的，确定性高、好控制；Agent 是让 LLM 自己决定下一步做什么，灵活但不可控。</p>
+        <div class="card-footer">
+          <span>QUESTION 04</span>
+          <a href="../articles/agent/4_patterns.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent推理模式有哪些react是啥具体是怎么实现的agent的推理模式我用过几种简要回答详细解析什么是推理模式cot是什么react是什么planandexecute先规划再执行面试总结" data-href="articles/agent/5_react.html">
+      <a class="card-cover" href="../articles/agent/5_react.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">05</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/5_react.html">Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</a></h3>
+        <p>Agent 的推理模式我用过几种。</p>
+        <div class="card-footer">
+          <span>QUESTION 05</span>
+          <a href="../articles/agent/5_react.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="reactplanandexecutereflection三种范式有什么核心区别实际项目中该如何选型我理解这三者是agent开发里最主流的三种设计范式核心区别在于决策和执行的关系简要回答详细解析一基础款react单步迭代范式二复杂任务款planandexecute规划执行范式三质量增强款reflection反思迭代范式进阶动态replan和reflexiontoken消耗对比选型指南面试总结" data-href="articles/agent/6_three_patterns.html">
+      <a class="card-cover" href="../articles/agent/6_three_patterns.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">06</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/6_three_patterns.html">ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</a></h3>
+        <p>我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。</p>
+        <div class="card-footer">
+          <span>QUESTION 06</span>
+          <a href="../articles/agent/6_three_patterns.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="复杂任务怎么做的任务拆分为什么要拆分效果如何提升我理解任务拆分的原因是llm一次性处理太复杂的任务很容易出错把大任务拆成小步骤每步聚焦一件事准确率会明显提升简要回答详细解析为什么任务要拆分任务拆分两种思路自适应拆分做不好就继续拆执行中的replan机制拆分结果的验证标准面试总结" data-href="articles/agent/7_tasksplit.html">
+      <a class="card-cover" href="../articles/agent/7_tasksplit.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">07</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/7_tasksplit.html">复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</a></h3>
+        <p>我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。</p>
+        <div class="card-footer">
+          <span>QUESTION 07</span>
+          <a href="../articles/agent/7_tasksplit.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="请你介绍一下aiagent的记忆机制并说明在实际开发中应该如何设计记忆模块agent需要记忆才能在多步任务中保持状态跨任务积累知识简要回答详细解析没有记忆的agent有多不好用四种记忆类型从最短暂到最持久实际设计记忆模块的三个核心问题contextwindow管理短期记忆的工作台不够大怎么办知识图谱让记忆之间产生关联记忆整合从碎片到知识完整记忆模块的配合方式面试总结" data-href="articles/agent/8_memory.html">
+      <a class="card-cover" href="../articles/agent/8_memory.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">08</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 20 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/8_memory.html">请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</a></h3>
+        <p>Agent 需要记忆才能在多步任务中保持状态、跨任务积累知识。</p>
+        <div class="card-footer">
+          <span>QUESTION 08</span>
+          <a href="../articles/agent/8_memory.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的长短期记忆系统怎么做的记忆是怎么存的粒度是多少怎么用的我理解记忆系统分两层简要回答详细解析短期记忆长期记忆面试总结" data-href="articles/agent/9_memory_storage.html">
+      <a class="card-cover" href="../articles/agent/9_memory_storage.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">09</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/9_memory_storage.html">Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</a></h3>
+        <p>我理解记忆系统分两层。</p>
+        <div class="card-footer">
+          <span>QUESTION 09</span>
+          <a href="../articles/agent/9_memory_storage.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="什么是multiagent多智能体系统multiagent就是多个agent协作完成任务每个agent各有分工有的负责搜索有的负责写代码有的负责做评审简要回答详细解析multiagent核心思路面试总结" data-href="articles/agent/10_multiagent.html">
+      <a class="card-cover" href="../articles/agent/10_multiagent.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：什么是 Multi-Agent？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">10</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/10_multiagent.html">什么是 Multi-Agent？</a></h3>
+        <p>多智能体系统（Multi-Agent）就是多个 Agent 协作完成任务，每个 Agent 各有分工，有的负责搜索、有的负责写代码、有的负责做评审。</p>
+        <div class="card-footer">
+          <span>QUESTION 10</span>
+          <a href="../articles/agent/10_multiagent.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="说说singleagent和multiagent的设计方案singleagent适合任务流程清晰复杂度适中的场景实现简单好维护multiagent适合需要专业分工任务量大或者需要并行执行的复杂场景简要回答详细解析singleagentmultiagent的中心化方案去中心化方案为什么听起来更灵活却很少在工程上用怎么做选型决策面试总结" data-href="articles/agent/11_single_multi.html">
+      <a class="card-cover" href="../articles/agent/11_single_multi.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：说说 Single-Agent 和 Multi-Agent 的设计方案？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">11</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/11_single_multi.html">说说 Single-Agent 和 Multi-Agent 的设计方案？</a></h3>
+        <p>Single-Agent 适合任务流程清晰、复杂度适中的场景，实现简单、好维护；Multi-Agent 适合需要专业分工、任务量大或者需要并行执行的复杂场景。</p>
+        <div class="card-footer">
+          <span>QUESTION 11</span>
+          <a href="../articles/agent/11_single_multi.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent记忆压缩通常有哪些方法记忆压缩常见有四种方法摘要压缩滑动窗口重要性过滤结构化抽取简要回答详细解析第一种方法滑动窗口最简单的方案也是最粗糙的第二种方法摘要压缩丢之前先提炼一遍第三种方法重要性过滤按价值筛选不按时间筛选第四种方法结构化抽取换一种载体存信息四种方法的关系梳理面试总结" data-href="articles/agent/12_memcompress.html">
+      <a class="card-cover" href="../articles/agent/12_memcompress.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 记忆压缩通常有哪些方法？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">12</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/12_memcompress.html">Agent 记忆压缩通常有哪些方法？</a></h3>
+        <p>记忆压缩常见有四种方法：摘要压缩、滑动窗口、重要性过滤、结构化抽取。</p>
+        <div class="card-footer">
+          <span>QUESTION 12</span>
+          <a href="../articles/agent/12_memcompress.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="在工程实践中为什么有时候选择手搓agent而不是直接用成熟框架我的感受是框架用起来快但有几个实际痛点简要回答详细解析痛点在什么时候开始出现手搓的本质优势完全掌控同一个需求框架写vs手搓写差别在哪什么时候用框架什么时候手搓面试总结" data-href="articles/agent/13_handcode.html">
+      <a class="card-cover" href="../articles/agent/13_handcode.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">13</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/13_handcode.html">在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</a></h3>
+        <p>我的感受是框架用起来快，但有几个实际痛点。</p>
+        <div class="card-footer">
+          <span>QUESTION 13</span>
+          <a href="../articles/agent/13_handcode.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="如何赋予llm规划能力给llm加规划能力主要靠这几种思路简要回答详细解析cot最简单的激活方式加一句话就够了tot从一条链到一棵树解决走错方向的问题got从树到图解决推理结果不能复用的问题三者的演进关系工程里真正常用的规划模式planandexecute面试总结" data-href="articles/agent/14_planning.html">
+      <a class="card-cover" href="../articles/agent/14_planning.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：如何赋予 LLM 规划能力？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">14</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/14_planning.html">如何赋予 LLM 规划能力？</a></h3>
+        <p>给 LLM 加规划能力主要靠这几种思路。</p>
+        <div class="card-footer">
+          <span>QUESTION 14</span>
+          <a href="../articles/agent/14_planning.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="讲讲agent的反思机制为什么要用反思具体怎么实现反思机制我的理解是让agent在完成一个步骤或整个任务后自我评估输出质量判断有没有问题不达标就重试或调整策略简要回答详细解析核心循环生成评估改进两个粒度步骤级vs任务级多agent互评为什么他人审视比自我检查更好进阶reflexion和lats把反思做得更深工程权衡怎么用才合理面试总结" data-href="articles/agent/15_reflection.html">
+      <a class="card-cover" href="../articles/agent/15_reflection.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">15</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/15_reflection.html">讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</a></h3>
+        <p>反思机制我的理解是：让 Agent 在完成一个步骤或整个任务后，自我评估输出质量，判断有没有问题，不达标就重试或调整策略。</p>
+        <div class="card-footer">
+          <span>QUESTION 15</span>
+          <a href="../articles/agent/15_reflection.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="如何设计多agent的协作与动态切换机制协作靠两件事消息传递和共享状态消息传递是agent完成自己的工作后把结果发出去下一个agent取用共享状态是所有agent共同读写一个状态对象记录任务进展和中间结果简要回答详细解析先说协作agent之间怎么传递信息状态管理多agent共享状态的设计要点再说切换orchestrator怎么决定叫谁handoff模式agent之间的接力棒工程上怎么用面试总结" data-href="articles/agent/16_collab.html">
+      <a class="card-cover" href="../articles/agent/16_collab.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：如何设计多 Agent 的协作与动态切换机制？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">16</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/16_collab.html">如何设计多 Agent 的协作与动态切换机制？</a></h3>
+        <p>协作靠两件事：消息传递和共享状态。消息传递是 Agent 完成自己的工作后把结果发出去，下一个 Agent 取用；共享状态是所有 Agent 共同读写一个状态对象，记录任务进展和中间结果。</p>
+        <div class="card-footer">
+          <span>QUESTION 16</span>
+          <a href="../articles/agent/16_collab.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的上下文工程怎么设计我会把agent的上下文工程设计成一个运行时装配流程而不是把所有信息长期堆在一个prompt里每次模型调用前先根据当前子任务从指令用户需求结构化任务状态短期对话长期memory工具定义与结果rag证据中挑选本轮需要的内容再完成优先级排序来源简要回答详细解析上下文不是聊天记录而是agent的工作台一份可用的上下文由哪些部分组成先选再拼不要把所有东西一股脑塞进去排序不只是排版而是在表达优先级todo为什么能让模型更聚焦做好隔离防止外部数据变成指令token预算要在装配前分不是超长后才截断把上下文装配做成每一步都运行的闭环contextengineering和promptengineering有什么区别面试总结" data-href="articles/agent/17_context_engineering.html">
+      <a class="card-cover" href="../articles/agent/17_context_engineering.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的上下文工程怎么设计？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">17</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/17_context_engineering.html">Agent 的上下文工程怎么设计？</a></h3>
+        <p>我会把 Agent 的上下文工程设计成一个运行时装配流程，而不是把所有信息长期堆在一个 Prompt 里。每次模型调用前，先根据当前子任务，从指令、用户需求、结构化任务状态、短期对话、长期 Memory、工具定义与结果、RAG 证据中挑选本轮需要的内容，再完成优先级排序、来源…</p>
+        <div class="card-footer">
+          <span>QUESTION 17</span>
+          <a href="../articles/agent/17_context_engineering.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的多轮对话状态如何管理如何防止跑偏并支持中断恢复我会先把信息分成四类而不是把所有内容都塞进messages对话历史保留用户和模型说过的原话业务状态保存已经确认的实体与约束任务状态记录目标当前步骤和工具执行进度长期记忆只保存跨任务仍然有价值的用户偏好与历史经验简要回答详细解析为什么把聊天记录全塞给模型还不够四类信息为什么要分开管理一份可用的任务状态应该有什么每来一条新消息状态怎么更新状态机和自然语言历史谁说了算怎样用意图锚点防止越聊越偏中断以后怎样恢复到正确位置线上实现还要补哪些细节面试总结" data-href="articles/agent/18_session_state.html">
+      <a class="card-cover" href="../articles/agent/18_session_state.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">18</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/18_session_state.html">Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</a></h3>
+        <p>我会先把信息分成四类，而不是把所有内容都塞进 messages：对话历史保留用户和模型说过的原话，业务状态保存已经确认的实体与约束，任务状态记录目标、当前步骤和工具执行进度，长期记忆只保存跨任务仍然有价值的用户偏好与历史经验。</p>
+        <div class="card-footer">
+          <span>QUESTION 18</span>
+          <a href="../articles/agent/18_session_state.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="如何评估一个agent的效果评测集和指标怎么设计我评估agent时不会只看最终答案而是分四层简要回答详细解析为什么只看最终答案会被骗四层评测把问题定位到具体环节评测集怎么建题目和真值怎么设计三种评分手段谁擅长什么指标怎么组合才能成为发布门禁从离线回归到线上badcase的闭环它和通用llmrag评测有什么区别面试总结" data-href="articles/agent/19_evaluation.html">
+      <a class="card-cover" href="../articles/agent/19_evaluation.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：如何评估一个 Agent 的效果？评测集和指标怎么设计？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">19</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/19_evaluation.html">如何评估一个 Agent 的效果？评测集和指标怎么设计？</a></h3>
+        <p>我评估 Agent 时不会只看最终答案，而是分四层。</p>
+        <div class="card-footer">
+          <span>QUESTION 19</span>
+          <a href="../articles/agent/19_evaluation.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent为什么会出现路径震荡重复调用和死循环怎么检测和治理agent出现路径震荡常见原因是目标和停止条件模糊工具失败后只返回空结果任务状态没有随执行结果更新或者多agent的职责边界不清交接时形成aba的循环简要回答详细解析路径震荡到底是什么agent为什么会原地打转怎么在运行中发现无进展循环检测到之后怎么把agent拉出来系统要在循环发生前做什么面试总结" data-href="articles/agent/20_loop_stability.html">
+      <a class="card-cover" href="../articles/agent/20_loop_stability.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">20</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/20_loop_stability.html">Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</a></h3>
+        <p>Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -&gt; B -&gt; A 的循环。</p>
+        <div class="card-footer">
+          <span>QUESTION 20</span>
+          <a href="../articles/agent/20_loop_stability.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="线上agent延迟明显升高时如何通过trace定位和优化我会先确认慢的是ttft也就是用户多久看到第一个token还是总时延也就是任务从接收到完成一共用了多久然后按任务类型模型版本工具租户和发布时间切分p50p95p99先判断是整体都变慢还是只有少量长尾请求出问题简要回答详细解析先别急着看trace得先说清楚慢是什么一条agenttrace应该长什么样从告警到根因定位顺序不能反过来六类常见瓶颈trace上分别怎么看找到瓶颈之后怎么优化才不会治错病优化完成后怎么证明真的有效面试时容易踩哪些坑面试总结" data-href="articles/agent/21_agent_latency_trace.html">
+      <a class="card-cover" href="../articles/agent/21_agent_latency_trace.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">21</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/21_agent_latency_trace.html">线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</a></h3>
+        <p>我会先确认慢的是 TTFT，也就是用户多久看到第一个 Token，还是总时延，也就是任务从接收到完成一共用了多久。然后按任务类型、模型版本、工具、租户和发布时间切分 P50、P95、P99，先判断是整体都变慢，还是只有少量长尾请求出问题。</p>
+        <div class="card-footer">
+          <span>QUESTION 21</span>
+          <a href="../articles/agent/21_agent_latency_trace.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="multiagent系统如何处理子agent超时失联和并发修改冲突我会先把通信问题和一致性问题分开心跳中断只能说明协调器暂时看不到子agent不能直接证明它已经停止任务分配时应该带租约和递增的执行代次子agent定期续租租约过期后协调器才能安排接管旧执行者即使恢复也不能再用过期代次提交结果简要回答详细解析超时失联和失败真的是一回事吗为什么任务租约比永久锁更适合故障接管为什么重试一定要和幂等checkpoint一起设计子agent失效后谁来接管任务多个agent改同一个仓库先别急着上锁worktree乐观并发和锁应该怎么配合为什么必须有一个最终提交者线上怎么判断这套机制有没有生效面试总结" data-href="articles/agent/22_multi_agent_resilience.html">
+      <a class="card-cover" href="../articles/agent/22_multi_agent_resilience.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">22</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/22_multi_agent_resilience.html">Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</a></h3>
+        <p>我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。</p>
+        <div class="card-footer">
+          <span>QUESTION 22</span>
+          <a href="../articles/agent/22_multi_agent_resilience.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的任务幻觉是什么如何避免没有执行工具却声称任务已经完成agent的任务幻觉是指它把计划尝试或者一段看起来成功的工具输出当成了真实完成并向用户作出与外部状态不一致的声明它和普通文本幻觉的区别在于普通幻觉主要是事实说错了任务幻觉还可能让用户误以为退款发信改代码这些动作已经发生简要回答详细解析先分清三种容易混在一起的幻觉模型只能表达意图外部状态才是事实用状态机堵住从计划直接跳到完成一条可信的证据链应该记录什么执行成功以后为什么还要再验证一次超时以后最危险的操作是不加判断地再执行一次最终回复也要经过证据约束怎么评测系统真的压住了任务幻觉面试总结" data-href="articles/agent/23_task_hallucination.html">
+      <a class="card-cover" href="../articles/agent/23_task_hallucination.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">23</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 13 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/23_task_hallucination.html">Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</a></h3>
+        <p>Agent 的「任务幻觉」是指它把计划、尝试或者一段看起来成功的工具输出，当成了真实完成，并向用户作出与外部状态不一致的声明。它和普通文本幻觉的区别在于，普通幻觉主要是事实说错了，任务幻觉还可能让用户误以为退款、发信、改代码这些动作已经发生。</p>
+        <div class="card-footer">
+          <span>QUESTION 23</span>
+          <a href="../articles/agent/23_task_hallucination.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="大模型或agent连接数据库时如何防止越权敏感数据泄漏和查询幻觉我不会把prompt当成安全边界也不会让模型拿着高权限账号直接执行任意sql用户身份和租户范围来自可信的登录态由网关传给策略层模型只负责表达查询意图真正的授权要在模型之外逐次校验简要回答详细解析先把模型放回它该在的位置身份租户和最小权限要一层层收紧能用业务工具时就别直接开放任意sqlsql校验要看语法树不能只看字符串开头数据库里的文字也可能是一条提示词注入敏感数据要在进入模型之前就变少查询没有越权也可能回答得完全不对写操作为什么必须走另一条更窄的通道审计和测试要覆盖哪些真实攻击面试总结" data-href="articles/agent/24_database_security.html">
+      <a class="card-cover" href="../articles/agent/24_database_security.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">24</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/24_database_security.html">大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</a></h3>
+        <p>我不会把 Prompt 当成安全边界，也不会让模型拿着高权限账号直接执行任意 SQL。用户身份和租户范围来自可信的登录态，由网关传给策略层；模型只负责表达查询意图，真正的授权要在模型之外逐次校验。</p>
+        <div class="card-footer">
+          <span>QUESTION 24</span>
+          <a href="../articles/agent/24_database_security.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agentharness是什么agentharness可以理解为围绕大模型的一套运行支撑核心是组织模型调用和工具执行的循环让模型能根据实际结果连续推进任务简要回答详细解析一次模型调用为什么还不等于任务执行harness怎样把模型和工具接成执行循环为什么还要管理上下文和任务状态为什么执行边界和结束判断也属于运行支撑harness与模型prompt工具和框架是什么关系面试总结" data-href="articles/agent/25_harness.html">
+      <a class="card-cover" href="../articles/agent/25_harness.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent Harness 是什么？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">25</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/25_harness.html">Agent Harness 是什么？</a></h3>
+        <p>Agent Harness 可以理解为围绕大模型的一套运行支撑，核心是组织模型调用和工具执行的循环，让模型能根据实际结果连续推进任务。</p>
+        <div class="card-footer">
+          <span>QUESTION 25</span>
+          <a href="../articles/agent/25_harness.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="如何设计一个完整的agentharness我会把harness的核心做成一个执行循环程序准备上下文调用模型接住它的工具请求执行后把结果交回去再让模型决定下一步比如修复bug模型负责判断要读哪些代码怎么改程序负责读文件应用修改和运行测试简要回答详细解析从修复一个bug看清要搭建哪些运行部分用执行循环把一次推理接成多步任务每轮装配上下文让模型看见当前有效的信息通过工具执行器把模型请求变成真实操作单独保存任务状态才能暂停和恢复把完成条件和运行预算放进循环记录每轮过程让架构能够被检查和改进面试总结" data-href="articles/agent/26_harness_design.html">
+      <a class="card-cover" href="../articles/agent/26_harness_design.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：如何设计一个完整的 Agent Harness？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">26</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/26_harness_design.html">如何设计一个完整的 Agent Harness？</a></h3>
+        <p>我会把 Harness 的核心做成一个执行循环：程序准备上下文，调用模型，接住它的工具请求，执行后把结果交回去，再让模型决定下一步。比如修复 Bug，模型负责判断要读哪些代码、怎么改，程序负责读文件、应用修改和运行测试。</p>
+        <div class="card-footer">
+          <span>QUESTION 26</span>
+          <a href="../articles/agent/26_harness_design.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的自进化机制如何实现我会在agent的任务执行之外加一条持续改进流程任务完成后把用户纠正测试结果和实际执行记录放在一起找出问题出在哪一步再提炼成有适用范围有证据的经验后续遇到同类任务时把相关经验放进上下文让它在决策之前就能避开以前的错误简要回答详细解析这次答对和下次少犯错是两件事从执行记录里找到真正的失败原因把失败过程整理成有适用范围的经验在下一次决策之前把经验用起来从一条经验扩展成一套更好的做事流程用新任务检验改进而不是重做一道旧题经验更新策略更新和模型训练改变了什么让更新可发布可追踪也可撤回面试总结" data-href="articles/agent/27_self_evolution.html">
+      <a class="card-cover" href="../articles/agent/27_self_evolution.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的自进化机制如何实现？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">27</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/27_self_evolution.html">Agent 的自进化机制如何实现？</a></h3>
+        <p>我会在 Agent 的任务执行之外，加一条持续改进流程。任务完成后，把用户纠正、测试结果和实际执行记录放在一起，找出问题出在哪一步，再提炼成有适用范围、有证据的经验。后续遇到同类任务时，把相关经验放进上下文，让它在决策之前就能避开以前的错误。</p>
+        <div class="card-footer">
+          <span>QUESTION 27</span>
+          <a href="../articles/agent/27_self_evolution.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent应该在什么情况下请求人工确认我会先看这一步是不是在用户已经授权的范围内目标和参数明确操作也符合执行规则时agent可以继续完成任务不需要每次调用工具都重复确认需要停下来问的是关键对象或要求有歧义准备执行的动作超出了原来的授权或者业务规则要求人工审批的情况简要回答详细解析自主执行与人工确认怎样划分控制权澄清审批和人工接管解决的是不同问题审批时机要结合已有授权和操作后果判断面对不确定性先区分事实缺口和人的选择一次有效确认要让批准范围足够明确用任务状态连接暂停批准和恢复执行批准之后还要区分权限和结果事实减少重复确认要保存有效的委托范围面试总结" data-href="articles/agent/28_human_confirmation.html">
+      <a class="card-cover" href="../articles/agent/28_human_confirmation.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 应该在什么情况下请求人工确认？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">28</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/28_human_confirmation.html">Agent 应该在什么情况下请求人工确认？</a></h3>
+        <p>我会先看这一步是不是在用户已经授权的范围内。目标和参数明确、操作也符合执行规则时，Agent 可以继续完成任务，不需要每次调用工具都重复确认。需要停下来问的，是关键对象或要求有歧义、准备执行的动作超出了原来的授权，或者业务规则要求人工审批的情况。</p>
+        <div class="card-footer">
+          <span>QUESTION 28</span>
+          <a href="../articles/agent/28_human_confirmation.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="agent的上下文压缩阈值应该如何确定压缩阈值应该根据剩余空间和接下来要做的任务来确定没有一个通用的80当前输入除了聊天记录还有指令工具定义和工具结果先把这些内容的实际token占用算清楚再给模型输出和下一步可能增加的内容留出空间简要回答详细解析上下文为什么会越用越大在算阈值之前先看窗口里到底装了什么窗口剩下的空间还要留给模型输出工具结果突然变大为什么要更早处理还有空间也可能值得压缩吗触发以后压到哪里决定下一轮会不会又压缩怎样知道这个阈值真的适合当前任务面试总结" data-href="articles/agent/29_context_compression_threshold.html">
+      <a class="card-cover" href="../articles/agent/29_context_compression_threshold.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：Agent 的上下文压缩阈值应该如何确定？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">29</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/29_context_compression_threshold.html">Agent 的上下文压缩阈值应该如何确定？</a></h3>
+        <p>压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。</p>
+        <div class="card-footer">
+          <span>QUESTION 29</span>
+          <a href="../articles/agent/29_context_compression_threshold.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="agent" data-search="相同输入为什么会得到不同的agent执行结果我会先确认这里的相同输入指的是同一句用户问题还是完整运行条件都相同agent还会用到系统指令历史记忆工具定义和任务状态这些内容变化模型实际收到的请求就已经不同了后续工具读到的数据也可能变化所以相同用户文本不一定应该得到相同结果简要回答详细解析相同输入有三个层次先明确比较范围模型生成的是一串选择采样会产生不同续写temperature为0和固定seed各自控制哪部分工具观察和并发调度是模型之外的变化来源多步闭环会把一次局部差异带到后面的决策排查结果差异先找到最早的可观察分歧分层回放才能分别检查模型工具和运行逻辑稳定性要分层定义逐字一致只是其中一层面试总结" data-href="articles/agent/30_execution_variance.html">
+      <a class="card-cover" href="../articles/agent/30_execution_variance.html" style="--cat:#4687f2;--soft:#eaf2ff;--acid:#d9ff69" aria-label="阅读：相同输入为什么会得到不同的 Agent 执行结果？">
+        <span class="cover-kicker">01 / AGENT</span>
+        <span class="cover-index">30</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟</span>
+        </div>
+        <h3><a href="../articles/agent/30_execution_variance.html">相同输入为什么会得到不同的 Agent 执行结果？</a></h3>
+        <p>我会先确认这里的相同输入，指的是同一句用户问题，还是完整运行条件都相同。Agent 还会用到系统指令、历史、记忆、工具定义和任务状态，这些内容变化，模型实际收到的请求就已经不同了。后续工具读到的数据也可能变化，所以相同用户文本不一定应该得到相同结果。</p>
+        <div class="card-footer">
+          <span>QUESTION 30</span>
+          <a href="../articles/agent/30_execution_variance.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+      </div>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../index.html#library">全部面试题</a>
+            <a href="../index.html#topics">六类专题</a>
+            <a href="../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../category/agent.html">Agent</a>
+            <a href="../category/rag.html">RAG</a>
+            <a href="../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../assets/search-index.js"></script><script src="../app.js" defer></script>
+</body>
+</html>

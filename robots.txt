@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://yy3413230124-cell.github.io/ai-pm-interview/sitemap.xml

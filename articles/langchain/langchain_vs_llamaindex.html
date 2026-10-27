@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。">
+  <meta name="keywords" content="AI产品经理面试题,LangChain 和 LlamaIndex 有什么区别？,LangChain,AI产品经理,LangChain 框架面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_llamaindex.html">
+  <title>LangChain 和 LlamaIndex 有什么区别？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="LangChain 和 LlamaIndex 有什么区别？｜AI产品经理面试题">
+  <meta property="og:description" content="LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_llamaindex.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LangChain 和 LlamaIndex 有什么区别？｜AI产品经理面试题">
+  <meta name="twitter:description" content="LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_llamaindex.html#article","headline":"LangChain 和 LlamaIndex 有什么区别？｜AI产品经理面试题","description":"LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。","articleSection":"LangChain 框架面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_llamaindex.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"LangChain 框架面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html"},{"@type":"ListItem","position":3,"name":"LangChain 和 LlamaIndex 有什么区别？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_llamaindex.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/langchain.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> LangChain 框架面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#1598c8"></i>
+            <span>LangChain</span>
+            <strong>12 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="LangChain 框架面试专题题目列表">
+            <a class="" href="./agent_frameworks.html"><span>01</span><strong>你了解过哪些 AI Agent 开发框架？</strong></a><a class="" href="./chain.html"><span>02</span><strong>请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。</strong></a><a class="" href="./langchain_architecture.html"><span>03</span><strong>LangChain 的底层架构与实现原理是什么？</strong></a><a class="" href="./build_agent.html"><span>04</span><strong>使用 LangChain 构建 Agent 的核心步骤是什么？</strong></a><a class="" href="./tool_registration.html"><span>05</span><strong>在 LangChain 中，如何为 Agent 注册工具？</strong></a><a class="" href="./memory.html"><span>06</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong></a><a class="is-active" href="#article-top"><span>07</span><strong>LangChain 和 LlamaIndex 有什么区别？</strong></a><a class="" href="./langchain4j.html"><span>08</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong></a><a class="" href="./langchain_vs_langgraph.html"><span>09</span><strong>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</strong></a><a class="" href="./langgraph_advantages.html"><span>10</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong></a><a class="" href="./version_evolution.html"><span>11</span><strong>LangChain 大版本升级有哪些核心变化？</strong></a><a class="" href="./deep_research.html"><span>12</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/langchain.html">LangChain</a><span>/</span>
+            <span>第 7 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,400 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>LangChain 和 LlamaIndex 有什么区别？</h1>
+          <div class="article-deck">
+            <span>题目 07</span>
+            <p>LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：LangChain 和 LlamaIndex 的核心区别是什么？</p>
+<p>🙋‍♂️我：LangChain 用来写 Chain，LlamaIndex 用来做 RAG。</p>
+<p>👔面试官：这是过时的二分。现在两者都能做 Agent、Tools、RAG 和 Workflow，应该怎么比较？</p>
+<p>🙋‍♂️我：既然功能差不多，那就选热度更高的。</p>
+<p>👔面试官：功能有交集，不代表设计重心相同。项目最难的是工具集成，还是数据解析和检索，才是选型关键。</p>
+<p>🙋‍♂️我：那项目选了 LangChain，就不能再使用 LlamaIndex，否则技术栈会冲突。</p>
+<p>👔面试官：框架不是只能二选一。LlamaIndex 的检索能力可以包装成 Tool，再交给 LangChain Agent 或 LangGraph 调度，关键是边界是否清楚。</p>
+<p>选型要看业务的主要风险，再判断哪套抽象更合适。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先判断团队需要的是快速验证还是长期可控编排，再讨论框架抽象与运行时可观测性，避免只回答“用过某个 Chain”。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>LangChain 和 LlamaIndex 现在都能构建 Agent、调用工具和实现 RAG，但它们的默认入口与优势重心不同。</p>
+<p>LangChain 更偏通用 Agent 组装。它统一模型、消息、工具、结构化输出和中间件等接口，适合快速连接不同模型供应商、业务 API 和外部工具。当前 LangChain Agent 底层运行在 LangGraph 之上，需要复杂状态、暂停恢复和人工审批时，可以进一步使用 LangGraph 编排。</p>
+<p>LlamaIndex 更偏数据与上下文增强。它在数据接入、文档解析、切分、索引、检索、重排和 Query Engine 等环节积累更深，适合企业知识库、复杂文档问答和数据密集型 Agent。它也提供 Agent 和 Workflow，因此不能简单说它只能做 RAG。</p>
+<p>选型时应看项目的主要难点：如果难点是模型与工具集成，优先评估 LangChain；如果难点是私有数据处理和检索质量，优先评估 LlamaIndex；如果两边都复杂，可以让 LlamaIndex 负责数据层，把检索能力封装成 Tool，再由 LangChain Agent 或 LangGraph 调度。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么容易混淆">为什么容易混淆？</h3>
+<p>两个框架都支持模型调用、Tools、RAG、Agent 和 Workflow，所以按照功能清单比较，很容易得出「它们差不多」的结论。</p>
+<p>选型时应该比较设计重心：LangChain 更关心如何统一模型与工具，并快速组装通用 Agent；LlamaIndex 更关心如何把私有数据加工成高质量上下文，再交给模型或 Agent 使用。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/562d0c84_langchain-vs-llamaindex-focus__151e015004.webp" alt="LangChain 和 LlamaIndex 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="核心区别是什么">核心区别是什么？</h3>
+<div class="table-shell"><table><thead>
+<tr>
+<th>维度</th>
+<th>LangChain</th>
+<th>LlamaIndex</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设计重心</td>
+<td>通用 Agent 组装和工具集成</td>
+<td>数据接入与上下文增强</td>
+</tr>
+<tr>
+<td>主要优势</td>
+<td>模型、Tools、中间件和第三方集成</td>
+<td>文档处理、索引、检索和重排</td>
+</tr>
+<tr>
+<td>常见场景</td>
+<td>工具型 Agent、SQL Agent、业务助手</td>
+<td>企业知识库、文档 Agent、复杂 RAG</td>
+</tr>
+<tr>
+<td>复杂流程</td>
+<td>通过 LangGraph 管理状态、恢复和人工介入</td>
+<td>使用 Workflows，或与 LangGraph 组合</td>
+</tr>
+</tbody>
+</table></div><p>这张表比较的是优势重心，不是能力边界。LangChain 也有完整的 RAG 组件，LlamaIndex 也能创建 Agent；区别在于哪一套抽象更贴近项目的主要问题。</p>
+<h3 id="langchain-强在哪里">LangChain 强在哪里？</h3>
+<p>如果项目需要接入多个模型、搜索、数据库、浏览器、MCP Server 和公司内部 API，最大的工程成本往往是不同接口之间的适配。</p>
+<p>LangChain 通过相对统一的 Model、Message、Tool 和 Structured Output 接口屏蔽差异，再用 <code>create_agent</code> 组装模型与工具。Middleware 可以统一加入权限、重试、摘要、动态模型选择和人工审批。</p>
+<p>因此，项目如果要快速构建工具型 Agent，同时连接多个模型与外部服务，LangChain 会更顺手。这里的主要难点是让模型选对工具、填对参数，并把权限、重试和审批统一接入调用过程。</p>
+<p>等流程复杂到需要精细控制分支、并行和恢复时，团队还可以继续下沉到 LangGraph，不必推翻已经定义好的模型与工具。</p>
+<p>LangGraph 是 LangChain Agent 的底层运行时。简单的模型与工具循环使用 <code>create_agent</code> 即可；出现复杂分支、并行、暂停恢复和人工审批时，可以显式编写状态图。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/eb1eb16e_langchain-langgraph-layering__0324b58066.webp" alt="LangChain 和 LlamaIndex 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="llamaindex-强在哪里">LlamaIndex 强在哪里？</h3>
+<p>真实 RAG 项目的困难通常不止是把文档放进向量数据库。数据刚进来时，就要处理 PDF 表格、跨页内容、切分方式和元数据；同一制度存在多个版本时，还要判断哪一份仍然有效。</p>
+<p>到了查询阶段，系统又要决定走向量检索、关键词检索还是结构化数据库。多路结果回来后，还得过滤、重排并处理冲突。也就是说，难点沿着「数据进入 -&gt; 建立索引 -&gt; 发起检索 -&gt; 组织上下文」一路传递，而不是某一个向量库能单独解决。</p>
+<p>LlamaIndex 将数据处理链路拆得更细，可以概括为：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">数据接入 -&gt; 解析与切分 -&gt; 索引 -&gt; 检索与重排 -&gt; Query Engine -&gt; Agent
+</code></pre></div><p>LlamaIndex 把「如何得到高质量上下文」作为核心工程问题。企业文档、多数据源路由和复杂检索是它更自然的应用入口。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/51991f00_llamaindex-data-pipeline__1c48648575.webp" alt="LangChain 和 LlamaIndex 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>LlamaIndex 也提供 Agent 和事件驱动 Workflow，可以让模型调用普通工具或数据查询能力。因此，准确的说法是「LlamaIndex 以数据为优势重心」，而不是「LlamaIndex 只能做 RAG」。</p>
+<h3 id="应该如何选型">应该如何选型？</h3>
+<p>可以直接问：这个项目最怕哪件事做不好？</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>项目主要风险</th>
+<th>优先评估</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>模型和业务工具太多，集成复杂</td>
+<td>LangChain</td>
+<td>通用组件和工具接口更自然</td>
+</tr>
+<tr>
+<td>文档解析、切分和检索质量差</td>
+<td>LlamaIndex</td>
+<td>数据与上下文链路抽象更细</td>
+</tr>
+<tr>
+<td>流程需要暂停恢复和人工审批</td>
+<td>LangGraph，可搭配 LangChain</td>
+<td>状态与执行控制是核心能力</td>
+</tr>
+<tr>
+<td>同时需要复杂检索和复杂流程</td>
+<td>LlamaIndex + LangChain/LangGraph</td>
+<td>数据层与编排层分别选择合适组件</td>
+</tr>
+</tbody>
+</table></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/085be90f_framework-selection-matrix__d69747b564.webp" alt="LangChain 和 LlamaIndex 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>如果只是简单知识库或单工具 Agent，没有必要为了架构完整同时引入两套框架。组合会增加依赖、追踪和调试成本，只有当两边确实解决独立难题时才值得。</p>
+<h3 id="两者如何组合">两者如何组合？</h3>
+<p>最常见的组合边界是 Tool。</p>
+<p>LlamaIndex 负责加载数据、构建索引和实现 Query Engine；对外暴露一个「查询企业知识库」的函数，再包装成 LangChain Tool。LangChain Agent 判断什么时候调用，外层如果还有审批、重试和恢复，则交给 LangGraph。</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># LlamaIndex Query Engine 被包装成 LangChain 可以调用的 Tool
+@tool
+def search_company_knowledge(question: str) -&gt; str:
+    &quot;&quot;&quot;查询企业知识库。&quot;&quot;&quot;
+    return str(query_engine.query(question))
+
+
+# LangChain Agent 负责判断何时查询知识库，何时调用订单工具
+agent = create_agent(
+    model=chat_model,
+    tools=[search_company_knowledge, lookup_order],
+)
+</code></pre></div><p>这段代码表达的重点是职责边界：LlamaIndex 管理数据与检索，LangChain 管理模型和工具选择。生产环境还需要补充租户权限、引用来源、超时和可观测性。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/78eb15fe_langchain-llamaindex-composition__8a21757320.webp" alt="LangChain 和 LlamaIndex 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="常见误区">常见误区</h3>
+<p>最容易出现的误区，是被框架名字或早期教程限制住。LangChain 并不只会把 Prompt 串成 Chain，当前主线已经转向 Agent，固定流程则继续由 Runnable 和 LCEL 承担。</p>
+<p>LlamaIndex 能连接向量库，也提供 Agent 和 Workflow。它最有辨识度的部分，仍然是对数据处理、索引、检索与上下文组织的抽象。</p>
+<p>既然两边能力有重叠，也就不能简单推导出「必须二选一」或「最好全部引入」。项目可以通过 Tool 或服务接口组合两套框架，可只有数据层和 Agent 编排层确实各自存在独立难题时，这种组合才有收益。否则，多一套依赖和追踪链路只会增加调试成本。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>不要再使用「LangChain 做 Chain，LlamaIndex 做 RAG」的过时标签。两者都能做 Agent、工具调用和 RAG，区别在于设计重心。</p>
+<p>LangChain 更偏通用 Agent 组装和广泛工具集成，复杂执行流程可以下沉到 LangGraph；LlamaIndex 更偏数据接入、解析、索引、检索和上下文增强，适合企业知识库与复杂 RAG。</p>
+<p>选型要落到业务：工具与模型集成是主要难点，优先考虑 LangChain；数据处理和检索质量是主要难点，优先考虑 LlamaIndex；两边都复杂时，让 LlamaIndex 管数据层，让 LangChain 或 LangGraph 管 Agent 和运行层。</p>
+<h2 id="参考资料">📚 参考资料</h2>
+<ul>
+<li><a href="https://docs.langchain.com/oss/python/langchain/overview" target="_blank" rel="noreferrer noopener">LangChain 官方概览</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/agents" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Agents</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/retrieval" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Retrieval</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank" rel="noreferrer noopener">LangGraph 官方概览</a></li>
+<li><a href="https://developers.llamaindex.ai/python/framework/" target="_blank" rel="noreferrer noopener">LlamaIndex Framework 官方概览</a></li>
+<li><a href="https://developers.llamaindex.ai/python/framework/getting_started/concepts/" target="_blank" rel="noreferrer noopener">LlamaIndex 官方文档：High-Level Concepts</a></li>
+<li><a href="https://developers.llamaindex.ai/python/framework/understanding/agent/" target="_blank" rel="noreferrer noopener">LlamaIndex 官方文档：Building an Agent</a></li>
+<li><a href="https://developers.llamaindex.ai/python/llamaagents/workflows/" target="_blank" rel="noreferrer noopener">LlamaIndex 官方文档：Workflows</a></li>
+</ul>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么容易混淆">为什么容易混淆？</a><a class="toc-level-3" href="#核心区别是什么">核心区别是什么？</a><a class="toc-level-3" href="#langchain-强在哪里">LangChain 强在哪里？</a><a class="toc-level-3" href="#llamaindex-强在哪里">LlamaIndex 强在哪里？</a><a class="toc-level-3" href="#应该如何选型">应该如何选型？</a><a class="toc-level-3" href="#两者如何组合">两者如何组合？</a><a class="toc-level-3" href="#常见误区">常见误区</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a><a class="toc-level-2" href="#参考资料">📚 参考资料</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/langchain/memory.html"><span>上一篇 · LangChain</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong></a>
+      <a class="pagination-card next" href="../../articles/langchain/langchain4j.html"><span>下一篇 · LangChain</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

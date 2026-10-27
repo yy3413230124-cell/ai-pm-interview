@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。">
+  <meta name="keywords" content="AI产品经理面试题,复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/7_tasksplit.html">
+  <title>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/7_tasksplit.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/7_tasksplit.html#article","headline":"复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？｜AI产品经理面试题","description":"我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/7_tasksplit.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/7_tasksplit.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="is-active" href="#article-top"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 7 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 14 分钟阅读</span>
+            <span>5,637 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</h1>
+          <div class="article-deck">
+            <span>题目 07</span>
+            <p>我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你说说任务拆分是怎么做的，为什么要拆分，有什么实际收益？</p>
+<p>🙋‍♂️我：就是把大任务切成小步骤，每步让 LLM 只做一件事，这样准确率高一些……</p>
+<p>👔面试官：「准确率高一些」太模糊了，你能解释一下为什么拆分之后准确率会提升吗？背后是什么原因？</p>
+<p>🙋‍♂️我：可能是因为……每步任务简单了，LLM 更容易做对？</p>
+<p>👔面试官：有点方向但不够准确。核心原因是 context window 有限，任务越大中间状态越多，模型很难持续追踪子目标，容易「桌面太乱」出错。那你知道任务拆分有哪两种思路吗，各自的适用场景是什么？</p>
+<p>🙋‍♂️我：一种是提前写死步骤，一种是让 LLM 自己规划步骤？</p>
+<p>👔面试官：对，静态拆分和动态拆分。那拆完之后还有一个关键优化点，步骤之间有依赖关系，识别出哪些可以并行，端到端延迟能降很多，这你考虑过吗？</p>
+<p>拆分粒度、并行优化、依赖分析，这三个点一起答出来，才是完整的任务拆分方案。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解任务拆分的原因是 LLM 一次性处理太复杂的任务很容易出错，把大任务拆成小步骤，每步聚焦一件事，准确率会明显提升。</p>
+<p>拆分方式主要有两种：一种是静态拆分，提前把步骤写死；另一种是动态拆分，让 LLM 自己根据目标规划步骤，更灵活但也更难控制。</p>
+<p>拆完之后步骤之间可能有依赖关系，我的经验是把能并行的步骤并发跑，端到端延迟可以降很多，有时能降 40% 到 60%。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么任务要拆分">为什么任务要拆分？</h3>
+<p>先从一个具体的失败案例说起，感受一下为什么任务拆分是必要的。</p>
+<p>你让一个 LLM 一次性完成「帮我写一份竞品分析报告」，它需要搜索多家竞品的信息、整理核心功能对比、分析各自优缺点、写结论。听起来是一件事，但其实是四件完全不同的事混在一起。</p>
+<p>LLM 收到这个任务，往往会出现这几种毛病：在搜索阶段就开始掺杂分析意见，在写对比表格时突然引入新的竞品信息，报告写到一半忘掉了前面整理的某个关键数据点，最后输出一篇结构混乱的文章，读下来感觉什么都有、什么都不深。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/2d164a643eab31e9b65baa3e0412d2a8__561b1bf87d.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这不是偶发的问题，而是有系统性原因的。LLM 的工作台，也就是 context window，是有大小限制的，能同时处理的信息量是有上限的。</p>
+<p>任务越大，中间状态越多，桌面就越乱：搜索结果、分析意见、写了一半的段落全部堆在一起，LLM 很难持续追踪「我现在在做哪个子目标」。就像让一个人同时记住十件事并全部做对，比让他每次只专注做一件事出错率高得多。</p>
+<p>任务拆分要解决的，就是这个「桌面太乱」的问题。把一个大目标切成多个小步骤，每个步骤只做一件事，LLM 的全部注意力都集中在这一件事上，桌面保持干净，质量自然高。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/2858abbe048e9c645fba20da1075e98d__c6f2ec469e.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>而且还有一个额外的好处：每一个步骤都是独立的输出，可以被单独检查和验证。某一步出了问题，重试那一步就行，不需要从头跑整个任务。</p>
+<h3 id="任务拆分两种思路">任务拆分两种思路</h3>
+<p>任务拆分有两种思路，一种是你自己来拆，一种是让 LLM 来拆。</p>
+<p>这里顺便提一下两个常被拿来类比的推理范式：CoT（思维链）是让 LLM 在一个回答内部把推理过程逐步写出来，本质上是&quot;一次生成里的内部拆分&quot;，不涉及多步工具调用；ToT（思维树）进一步允许模型同时探索多条推理路径再选优。这些更像&quot;LLM 内部怎么把一个复杂问题想清楚&quot;的方法，下面要讲的静态/动态拆分说的是&quot;Agent 怎么把一个大任务切成多个独立执行的步骤&quot;，两者粒度和目标不同，不要混为一谈。</p>
+<p><strong>静态拆分</strong>是你提前把任务流程设计好，固定成一个确定的 Workflow，每一步是什么、按什么顺序执行，全部事先写死。比如「写一篇技术博客」，固定拆成：搜索资料 -&gt; 整理大纲 -&gt; 逐段撰写 -&gt; 润色校对，四步顺序执行。好处是行为完全可预测，出了问题知道是哪一步的问题，好排查；坏处是灵活性低，遇到你没设计进流程的情况就容易卡住。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/bd3a96438935cfbbaeaae7ff79e22269__ef5b829d66.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>动态拆分</strong>则是把「任务拆解」这件事本身也交给 LLM 来做。你给它一个目标，让它先输出一个执行计划，再按计划一步步执行，这是 Plan-and-Execute 模式的核心思想。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f28a8a2f3564f9330cf8f3e5a0abe52a__c70b9d1525.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>用项目管理来类比。一个没有经验的程序员接到任务「开发用户登录系统」，可能会直接开始写代码，边写边想「接下来要做什么」，结果很容易漏掉某个环节，比如忘了写错误处理，或者到最后才想起来要做密码加密。但一个有经验的工程师会先写项目计划：需求分析 -&gt; 数据库设计 -&gt; 接口设计 -&gt; 编码实现 -&gt; 安全测试，把整体结构想清楚了再开始动手。</p>
+<p>Plan-and-Execute 就是给 LLM 引入这个「先规划再执行」的习惯，把「想清楚要做什么」和「真正去做」分成两个独立的阶段。</p>
+<p>整个 Plan-and-Execute 流程分三个阶段，每个阶段的角色和职责都非常清晰。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260305205319788__q_7a68262f9d6f__2e3aac908a.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<ul>
+<li>
+<p>第一阶段叫「规划」，你可以把它理解成项目启动会。把目标告诉 LLM，让它像一个经验丰富的项目经理一样，输出一份有序的步骤列表。这一步只做规划，不做任何实际执行，LLM 的全部注意力集中在「想清楚要做什么」上。比如你说「帮我做一份 AI 行业调研报告」，规划模块可能会输出这样的计划：先调研行业现状和市场规模，再分析头部公司的产品和策略，接着梳理技术趋势和发展方向，然后汇总写结论和建议，最后排版润色输出成品。每一步都有明确的目标，但不开始干活。</p>
+</li>
+<li>
+<p>第二阶段叫「执行」，相当于各部门按照项目经理的分工开始干活。拿着规划好的步骤列表，逐步执行每个步骤，每一步都要把前面所有步骤的结果作为 context 传进去，LLM 始终知道整件事做到哪里了，不会「失忆」。这个阶段的关键是每一步只聚焦于自己的任务，不会像 ReAct 那样走着走着就被岔路吸引走了。</p>
+</li>
+<li>
+<p>第三阶段叫「汇总」，就像项目验收会。所有步骤跑完之后，把各步骤的产出整合在一起，生成最终输出。这一步的作用不仅是拼接，还要解决各步骤之间的衔接问题，确保最终输出是一个连贯的整体，而不是几段互不相关的内容生硬地拼在一起。</p>
+</li>
+</ul>
+<p>动态拆分的优势是灵活性强，LLM 可以根据具体任务的特点制定最合适的计划；劣势是规划质量不稳定，规划一旦出了问题，后续所有执行步骤都建立在错误的基础上。</p>
+<p>步骤拆好之后，还有一件重要的事：分析步骤之间的依赖关系。有些步骤必须等前一步完成才能开始，有些步骤之间没有依赖，可以同时进行。识别出可以并行的步骤，是降低总耗时的关键。</p>
+<p>用厨师做饭来建立直觉。你要同时处理三件事：烧水、切菜、腌肉。如果傻傻地串行，等水烧开了再切菜，切完菜再腌肉，总时间是三件事之和。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f3f31ec645ee9e0e9492140caec58a1c__6820f7d0e6.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>但一个有经验的厨师会这样：先烧水，烧水的同时切菜腌肉，水开了三件事都好了，直接下锅。总时间由「最长的那条路径」决定，也就是烧水的时间，因为切菜和腌肉都在等水开的过程中完成了。并行执行降低的不是「每步的时间」，而是「关键路径的总时间」。</p>
+<p>回到 Agent 的场景，假设你有步骤 1、2、3、4，其中步骤 3 依赖步骤 1 的结果，步骤 4 依赖步骤 2 和步骤 3：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">import asyncio
+
+async def execute_parallel_steps(independent_steps: list):
+    # asyncio.gather 让多个步骤同时开始执行，不等某一个完成再启动下一个
+    # 这就像厨师烧水的同时切菜，两件事并发进行
+    tasks = [execute_step_async(step) for step in independent_steps]
+    results = await asyncio.gather(*tasks)  # 等所有并发步骤都完成，一起拿结果
+    return results
+
+ 依赖图：步骤 1 和步骤 2 相互独立，可以并行
+ 步骤 3 需要步骤 1 的结果才能开始
+ 步骤 4 需要步骤 2 和步骤 3 都完成才能开始
+
+ 步骤1 ──────────────┐
+                      ├──&gt; 步骤3 ──┐
+ 步骤2 ──────────────┘             ├──&gt; 步骤4（最终输出）
+          └──────────────────────  ┘
+</code></pre></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/b2ff20224b4d4c85283b435086fc5455__34e8127fc3.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>如果这四步全部串行，总时间是四步之和。识别出依赖关系并行执行后，关键路径变成「步骤1/2（并行）-&gt; 步骤3 -&gt; 步骤4」，假设每步各需要 3 秒，串行是 12 秒，并行之后是 9 秒。步骤越多、可并行的越多，节省的时间越可观，实际项目里降低 40% 到 60% 的端到端延迟是很常见的数字（前提是任务本身的依赖关系稀疏、工具 I/O 占主要耗时；如果所有步骤都强依赖上一步，并行空间基本为零，优化效果也就无从谈起）。</p>
+<p>要让并行真正落地，前提是先把依赖关系画成一张有向无环图（DAG），每个节点是一个步骤，边表示「依赖」。没有依赖的节点就能同时跑，依赖它们的节点要等父节点完成。这一步做得对不对直接决定了并行优化的天花板。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/103a1a9f7a05bb3f148baeb38bf6c48c__06bab5e7b2.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>任务不是拆得越细越好，粒度的把握很重要。拆太细有两个代价：步骤越多，LLM 调用次数越多，总 token 消耗上升；步骤太碎，每步只做一件极小的事，LLM 看不到全局，产出的各部分也容易衔接生硬。但拆太粗又回到了原来的问题：每步负责的事太多，出错概率上升，出了问题也无法定位是哪一步的责任。</p>
+<p>实践中通常把「原子操作」作为划分单步的标准：这个步骤只做一件独立的事，边界清晰，做完有明确的输出，和其他步骤不互相依赖。</p>
+<p>具体举例感受一下区别。「搜索竞品 A 的产品信息」是原子的，只做一件事（搜索），有明确的输入和输出，做完就完了。</p>
+<p>「整理竞品分析」不是原子的，它包含了搜索信息、筛选关键点、格式化输出三件事，还没开始就已经有三个子任务了。</p>
+<p>判断一个步骤是不是原子的，有一个简单方法：你能给它写一个清晰的函数签名吗？能的话，它大概是原子的；如果你发现函数里还要分好几个阶段、处理好几类情况，那大概需要再拆。</p>
+<h3 id="自适应拆分-做不好就继续拆">自适应拆分：做不好就继续拆</h3>
+<p>前面讲的静态拆分和动态拆分，都有一个隐含的假设：拆分在任务开始时就一次性完成了，执行过程中不会再调整拆分粒度。但实际项目中经常遇到这样的情况：你提前拆好了三步，执行到第二步时发现这一步比预想的复杂得多，LLM 一次做不好，需要再拆细一些。或者反过来，某一步其实很简单，拆得太细反而浪费了调用次数。</p>
+<p>更好的做法是：不要在开始时就把所有步骤的粒度定死，而是在执行过程中根据每一步的实际难度动态调整。核心逻辑很简单：先让执行器尝试完成当前任务，如果做得好就继续往下走，不做多余的拆分；如果明显做不好，比如超过了最大步数还没完成，或者输出质量不达标，就把这个「做不好的任务」交给规划器，让规划器把它进一步拆成更小的子任务，然后对每个子任务重复同样的流程：先试，做不好就再拆。</p>
+<p>用一个生活中的例子来感受。假设你让 Agent 完成「帮我做一份完整的竞品分析报告」。执行器直接尝试一口气写完，发现质量很差，数据不准、结构混乱。</p>
+<p>于是规划器介入，把任务拆成三步：先「搜集各竞品的核心数据」，再「做功能对比分析」，最后「写总结和建议」。执行器尝试「搜集各竞品的核心数据」，发现竞品太多一次搜不完，质量还是不行。</p>
+<p>规划器再次介入，把「搜集数据」进一步拆成「搜集竞品 A 的数据」「搜集竞品 B 的数据」「搜集竞品 C 的数据」。这一次每一步都足够简单，执行器可以顺利完成了。</p>
+<p>整个过程就像一棵递归展开的任务树，只有真正做不好的节点才会被继续拆分，简单的节点一步到位。这个思路有一个很巧妙的特性：任务越复杂，递归拆分的层数就越深；任务越简单，可能一层都不拆。计算开销是和任务的实际难度成正比的，而不是一刀切地对所有任务都做同样深度的拆分。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/e59bd91e9e0cd8d1ee6e75ba51b93f50__c0affba5b8.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="执行中的-replan-机制">执行中的 Replan 机制</h3>
+<p>拆分完成只是第一步，执行过程中还有一个经常被忽略的关键环节：计划需不需要调整？</p>
+<p>前面讲并行优化的时候，隐含了一个前提：计划一旦定好就按部就班执行。但现实中，步骤的执行结果经常会让原来的计划变得不合理。比如你规划了「先查竞品 A 的定价，再查竞品 B 的定价，最后做对比分析」，执行第一步时发现竞品 A 已经停止运营了，那后面的对比分析就没意义了，整个计划需要重新调整。</p>
+<p>Replan 机制就是在每个步骤执行完之后，把当前步骤的结果和剩余的计划一起交给规划模块，让它判断「基于当前的新信息，后面的计划还合理吗」。如果合理就继续执行，如果不合理就生成一份新的剩余步骤计划。这个机制保证了计划始终和实际情况同步，不会出现「死守一份过时计划」的尴尬。</p>
+<p>代价是每步都多了一次「评估计划」的 LLM 调用，token 消耗会增加。实践中的折中做法是：不是每步都触发 Replan，而是设置触发条件，比如当某步的输出和预期差异很大时，或者当步骤执行失败时，才启动 Replan。这样既能应对意外，又不会无谓地增加消耗。</p>
+<h3 id="拆分结果的验证标准">拆分结果的验证标准</h3>
+<p>拆完步骤之后，怎么判断拆得好不好？靠感觉是不行的，需要有明确的验证标准。</p>
+<p>一个好的拆分结果应该满足三个条件。</p>
+<p>第一个是「完备性」，也就是所有步骤加在一起，能不能覆盖原始任务的全部要求，有没有遗漏。比如用户说「帮我写一份竞品分析报告，包含市场份额、产品功能对比和定价策略三个维度」，你拆出来的步骤里必须每个维度都有对应的步骤在负责，少了任何一个都算拆分不完备。检查方法很直接：把所有步骤的描述拼在一起，和原始任务描述做逐项对照，看有没有某个要求在任何步骤里都没被提到。</p>
+<p>第二个是「独立性」，也就是每个步骤的职责边界是不是清晰，有没有两个步骤在做同一件事，或者某个步骤的输出和另一个步骤的输出有重叠。</p>
+<p>举个反面例子：步骤 2 是「搜索竞品 A 的产品功能」，步骤 3 是「分析竞品 A 的核心能力」，这两步的边界就很模糊，「产品功能」和「核心能力」大概率会搜到同样的内容，导致重复劳动。更好的拆法是步骤 2 只负责「搜索竞品 A 的全部信息」，步骤 3 负责「从搜索结果中提炼功能对比表」，一个负责搜集，一个负责加工，各管各的。</p>
+<p>职责重叠不仅浪费 token，还容易导致最终汇总时出现矛盾，比如两个步骤对同一个功能给出了不一样的评价。</p>
+<p>第三个是「可验证性」，也就是每个步骤执行完之后，能不能用一个简单的标准判断它做对了没有。这一点在实际项目中特别容易被忽视，但它直接决定了你能不能做自动重试和质量把控。</p>
+<p>比如你拆了一个步骤叫「搜索竞品 A 的定价信息」，如果没有完成标准，执行完之后你只能人工看一眼判断做得好不好。但如果你在拆分时就定义了「输出中必须包含价格数字和计费模式（按量/包月/免费增值）」，执行完之后自动检查输出是否包含这两个要素就行了，缺了就自动触发重试。</p>
+<p>好的做法是在拆分每个步骤时，同时写好它的「验收标准」，就像写单元测试的断言一样，步骤定义和验收标准成对出现。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/35337d6ce220a5ceaec0328ddcb17577__0b73e8644e.webp" alt="复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答任务拆分这道题，要答出三个层次才完整。</p>
+<p>第一层是「为什么拆」：LLM 的 context window 有上限，任务越大中间状态越多、越容易出错，而且拆开后每步可以独立验证和重试。</p>
+<p>第二层是「怎么拆」：静态拆分适合流程固定的场景，直接写死步骤；动态拆分用 Plan-and-Execute 让 LLM 自己规划，灵活但规划质量不稳定。</p>
+<p>第三层是「拆完还要做的事」：分析步骤依赖关系，把能并行的步骤并发跑，关键路径时间可以降 40% 到 60%。</p>
+<p>最后再补一句「粒度把握很重要，以原子操作为标准，既不能太细也不能太粗」，这道题就回答得很漂亮了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么任务要拆分">为什么任务要拆分？</a><a class="toc-level-3" href="#任务拆分两种思路">任务拆分两种思路</a><a class="toc-level-3" href="#自适应拆分-做不好就继续拆">自适应拆分：做不好就继续拆</a><a class="toc-level-3" href="#执行中的-replan-机制">执行中的 Replan 机制</a><a class="toc-level-3" href="#拆分结果的验证标准">拆分结果的验证标准</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/6_three_patterns.html"><span>上一篇 · Agent</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/8_memory.html"><span>下一篇 · Agent</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解大模型的解码策略本质上是回答一个问题：模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？">
+  <meta name="keywords" content="AI产品经理面试题,大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/decoding_strategies.html">
+  <title>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解大模型的解码策略本质上是回答一个问题：模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/decoding_strategies.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解大模型的解码策略本质上是回答一个问题：模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/decoding_strategies.html#article","headline":"大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？｜AI产品经理面试题","description":"我理解大模型的解码策略本质上是回答一个问题：模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/decoding_strategies.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/decoding_strategies.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="" href="./position_encoding.html"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="" href="./llm_training.html"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="" href="./scaling_law_emergence.html"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="" href="./post_training.html"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="" href="./dpo_vs_ppo.html"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="is-active" href="#article-top"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="" href="./hallucination.html"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 12 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟阅读</span>
+            <span>6,338 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</h1>
+          <div class="article-deck">
+            <span>题目 12</span>
+            <p>我理解大模型的解码策略本质上是回答一个问题：模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样这几种各自在什么场景用？</p>
+<p>🙋‍♂️我：解码策略就是怎么从模型输出的概率分布里选一个 token。最简单的是贪心，每次选概率最高的那个；复杂一点是 Beam Search，会保留几个候选；还有采样的，有 Temperature、Top-K、Top-P 这些。</p>
+<p>👔面试官：……你只列了名字，没说本质。贪心和采样的区别是「确定 vs 随机」，那 Beam Search 是确定还是随机？为什么 LLM 现在很少用 Beam Search 了？翻译模型时代为什么大家都用 Beam Search？</p>
+<p>🙋‍♂️我：哦哦，Beam Search 应该是确定的，能更准。LLM 不用是因为……更慢吧？</p>
+<p>👔面试官：「更慢」是表面原因。深一点说，Beam Search 在翻译时代很受欢迎是因为翻译任务有「单一最优译文」的特性，但生成式对话/写作任务没有「单一最优答案」，Beam Search 的「保留多个高概率路径」反而成了缺陷。这个本质区别你能讲清楚吗？</p>
+<p>🙋‍♂️我：呃……我没想这么深。</p>
+<p>👔面试官：那再问一个：贪心解码和「Temperature=0 的采样」是同一回事吗？为什么 LLM 工程实践里大多数推理 API 默认用 Temperature 采样而不是贪心？回去搞清楚再来。</p>
+<p>问到这里我自己也清醒了，解码策略表面是「下一个 token 怎么挑」，本质是「不同生成任务想要什么样的结果」。把这层捋顺，每种策略适合在哪用就自然出来了。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解大模型的解码策略本质上是回答一个问题：<strong>模型在每一步输出了一个 vocabulary 大小的概率分布，我们怎么从中选下一个 token？</strong></p>
+<p>主流方案分两大类。</p>
+<p>第一类是<strong>确定性策略</strong>，输入相同输出永远相同。</p>
+<ul>
+<li><strong>贪心解码（Greedy Decoding）</strong>：每一步选概率最高的 token。简单、可复现，但容易重复啰嗦、缺乏多样性</li>
+<li><strong>Beam Search</strong>：每一步保留 Top-B 条候选路径（B=4、8 等），最后选总概率最高的整条序列。比贪心更接近全局最优，但对生成式任务有「天然缺陷」</li>
+</ul>
+<p>第二类是<strong>随机性策略</strong>，引入随机性让输出有多样性。</p>
+<ul>
+<li><strong>Temperature 采样</strong>：通过缩放概率分布的「锐度」，控制随机性强度。Temperature 越低越确定，越高越发散</li>
+<li><strong>Top-K 采样</strong>：每步只从概率最高的 K 个 token 里采样，截断长尾</li>
+<li><strong>Top-P（Nucleus）采样</strong>：每步累加概率到 P 为止，从这个「核」里采样，自适应截断</li>
+</ul>
+<p>这两大类的核心区别是，<strong>确定性策略保证质量但牺牲多样性；随机性策略保证多样性但每次输出不同</strong>。</p>
+<p>LLM 工程实践里有个反直觉的现象：<strong>Beam Search 在大模型时代基本被弃用了</strong>。原因是 Beam Search 优化的是「整体序列概率最高」，但生成式任务（聊天、写作、推理）没有「单一最优答案」，Beam Search 给出的「最高概率序列」往往是「最 boring 的回答」，多样性差还容易陷入复读循环。</p>
+<p>所以现在的 LLM API 通常都会提供 <strong>Temperature + Top-P</strong> 这类采样参数，但默认值各家不完全一样，有的默认更稳定，有的默认更开放。更稳的工程表达是：精确任务（代码、数学、信息抽取）用 Temperature=0 或低温来提高可复现性；对话/创意任务用较高 Temperature 配合 Top-P 平衡多样性和质量。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="解码策略的本质-从概率分布里选下一个-token">解码策略的本质：从概率分布里选下一个 token</h3>
+<p>要讲清楚解码策略，得先回到大模型生成的最底层机制。</p>
+<p>LLM 是自回归生成的，每生成一个新 token，模型都会输出一个 vocabulary 大小（典型 5 万到 15 万）的概率分布，告诉你「下一个 token 是『苹』的概率 30%、是『香』的概率 25%、是『桃』的概率 20%……」。所谓的「解码策略」，就是回答<strong>怎么从这个概率分布里选一个 token 出来</strong>。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_01_architecture_e727320f__eb98aebbc0.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>不同的解码策略就是不同的「选择规则」。规则的差异不只是「选哪个」，更深层是<strong>对生成任务本质的不同假设</strong>：</p>
+<ul>
+<li>贪心和 Beam Search 假设「存在一个唯一最优答案」，目标是找到它</li>
+<li>Temperature/Top-K/Top-P 假设「答案有多种合理可能」，目标是从可能空间里采样</li>
+</ul>
+<p>理解了这个底层假设的差异，下面五种策略各自的取舍就好理解了。</p>
+<h3 id="贪心解码-最简单也最容易踩坑">贪心解码：最简单也最容易踩坑</h3>
+<p>贪心解码（Greedy Decoding）是最朴素的策略：<strong>每一步无脑选概率最高的那个 token</strong>，然后这个 token 拼到序列后面，进入下一步。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_02_flow_97cd9291__03b44c2537.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>贪心解码的优点：</p>
+<ul>
+<li><strong>极简</strong>：每步只挑最大值，时间复杂度 O(V)，几乎没开销</li>
+<li><strong>完全确定</strong>：相同输入永远得到相同输出，便于调试和复现</li>
+<li><strong>不引入随机性</strong>：API 调用结果稳定，对单元测试、批处理友好</li>
+</ul>
+<p>但贪心有一个臭名昭著的毛病，叫「<strong>复读机问题（Repetition Loop）</strong>」。</p>
+<p>举个具体例子。让 GPT-2 用贪心解码续写「I love my dog because」，常见的输出会是这样：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">I love my dog because he is so cute. He is so cute. He is so cute. He is so cute. ...
+</code></pre></div><p>为什么会这样？因为模型某一步生成了「He is so cute」，下一步在概率分布里发现「He is so cute」这个模式刚刚出现过、上下文里这个模式的概率很高，又选了它；再下一步又选了一遍。贪心策略一旦走进这种「自我加强的循环」，就出不来了，会一直无限重复。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_03_effect_97812091__7ec666ca8a.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>更隐蔽的问题是，贪心解码生成的文本<strong>乏味、保守、缺乏惊喜</strong>。因为模型每步都选最稳的那条路，最终生成的文本就是「最大众化的表达」，读起来很 boring。这对代码生成、信息抽取这类任务可能没问题，但对创意写作、对话场景就太单调了。</p>
+<p>不过贪心也有它的最佳战场：<strong>精确任务</strong>。比如代码生成、SQL 生成、JSON 抽取这种「输出有标准答案」的任务，贪心反而是首选，因为它确定、不会乱写。</p>
+<h3 id="beam-search-翻译时代的王者">Beam Search：翻译时代的王者</h3>
+<p>Beam Search 是贪心的扩展版本，思路是：<strong>每一步不只保留一条路径，而是保留 B 条最高概率的路径同时推进</strong>（B 叫「束宽」beam width，典型 B=4 或 B=8）。</p>
+<p>具体怎么做？看个例子，假设 B=3：</p>
+<ul>
+<li>第 1 步：模型预测下一个 token 的概率分布，保留前 3 个：「我」「你」「他」</li>
+<li>第 2 步：把这 3 个 token 各自当作前缀继续预测，得到 3×V 个候选（V 是 vocabulary 大小），从中挑总概率最高的 3 条路径，可能是「我喜」「我爱」「你爱」</li>
+<li>第 3 步：重复上述过程，3 个前缀各自展开，挑总概率最高的 3 条</li>
+<li>……一直进行到生成结束（遇到 EOS token）</li>
+<li>最后从 3 条最终路径里选<strong>整体概率乘积最高</strong>的那条作为输出</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_04_tree_2a85961f__c5e14c6ffa.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>Beam Search 的优点：</p>
+<ul>
+<li><strong>全局视野更好</strong>：能避开贪心走进死胡同的情况。比如某一步贪心选错了，Beam Search 还有其他 B-1 条备份路径可以走</li>
+<li><strong>接近全局最优</strong>：总体概率上比贪心高得多，输出更「合理」</li>
+</ul>
+<p>Beam Search 在 2014-2018 年的<strong>机器翻译时代</strong>是绝对主流，几乎所有翻译模型（Google NMT、Facebook fairseq、OpenNMT）都用 Beam Search。原因是翻译任务有一个独特属性：<strong>给定源语言句子，存在一个或几个「最优译文」</strong>，Beam Search 的「找概率最高序列」目标和翻译任务高度匹配。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_05_analogy_25ae8f5a__880f3de8e5.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>但到了 LLM 时代，Beam Search 几乎被弃用了。原因得单独讲一节。</p>
+<h3 id="为什么-llm-时代-beam-search-失宠了">为什么 LLM 时代 Beam Search 失宠了</h3>
+<p>这是一个面试里的高频追问点。表面理由是「Beam Search 慢」（B 倍计算量），但深层原因是<strong>生成式任务的本质和 Beam Search 的目标不匹配</strong>。</p>
+<p>Beam Search 的优化目标是「<strong>找到整体概率最高的那条序列</strong>」。这个目标在翻译时代很合理，因为「I love you -&gt; 我爱你」这种翻译任务确实有「最优答案」。但在 LLM 的开放式生成任务（写故事、对话、回答开放问题）里，<strong>根本不存在「最优答案」</strong>，存在的只是「一个广阔的合理回答空间」。</p>
+<p>更糟的是，Beam Search 在长序列上有一个反直觉的失效模式：<strong>它会输出最 boring、最重复的内容</strong>。</p>
+<p>为什么？因为「整体概率最高」往往等价于「每一步都选最稳的词」。最稳的词通常是「重复前面已经出现过的内容」，因为重复内容在概率分布上特别尖锐（模型对重复模式特别熟悉）。结果就是 Beam Search 在生成长文本时，会陷入和贪心类似的复读，甚至比贪心还严重。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_06_effect_e13bbc27__7a085d9a8b.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>实测过 LLM Beam Search 的人会发现，B 越大，输出越保守乏味，B=8 比 B=4 还差。这就是有名的**「Beam Search 困境（Beam Search Curse）」**。</p>
+<p>还有一个工程上的硬伤：<strong>Beam Search 和现代 LLM 推理优化不兼容</strong>。</p>
+<p>KV Cache 假设序列是「单一前缀往下生成」，Beam Search 要同时维护 B 条不同前缀，KV Cache 要复制 B 份，显存爆炸。Flash Attention、PagedAttention 这些优化也是为单序列设计的，Beam Search 改起来很麻烦。</p>
+<p>所以现在主流的 LLM 推理框架（vLLM、SGLang、TGI）虽然大多支持 Beam Search，但默认通常不开，开放式对话和写作场景也很少优先用它。更准确地说，Beam Search 不是彻底没用，而是从「默认主角」退回了「特定任务工具」，比如某些翻译、受约束生成、候选重排场景仍然可能用到。</p>
+<h3 id="采样族-用随机性换多样性">采样族：用随机性换多样性</h3>
+<p>LLM 时代的解码主流是<strong>采样</strong>，核心思路从「找最优」变成「按概率分布掷骰子」。</p>
+<p>最基础的采样叫<strong>普通采样（vanilla sampling）</strong>：直接按模型输出的概率分布随机抽。这样每次生成的结果都不一样，多样性是有了，但有一个新问题：<strong>长尾噪声</strong>。</p>
+<p>模型的概率分布往往有一个「长长的尾巴」，比如「下一个词」分布里前 20 个词概率合起来 90%，但后面还有几万个词分布着 10% 的概率，每个都极小。普通采样有概率从这堆极小概率的词里抽到一个完全不合理的词（比如生成中文时突然冒出「@$%」），让整段输出毁掉。</p>
+<p>为了解决长尾问题，业界发展出三种采样调节器：<strong>Temperature、Top-K、Top-P</strong>。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_07_comparison_70ae4437__ea89605b94.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>Temperature</strong> 控制的是分布的<strong>锐度</strong>。数学上 Temperature T 的作用是把每个 logit 除以 T 再做 softmax：</p>
+<ul>
+<li>T=0：等价于贪心（永远选最高）</li>
+<li>T=1：用模型原始分布采样</li>
+<li>T&lt;1（比如 0.5）：分布变尖锐，更倾向高概率词</li>
+<li>T&gt;1（比如 1.2）：分布变平坦，更倾向探索低概率词</li>
+</ul>
+<p><strong>Top-K</strong> 是固定截断：每步只从概率最高的 K 个 token 里采样，后面全部丢弃。比如 K=50，意味着每步从概率前 50 的词里挑。</p>
+<p><strong>Top-P（Nucleus 采样）</strong> 是自适应截断：从高到低累加概率，超过阈值 P（比如 0.9）就停，从这个「核」里采样。Top-P 的好处是候选集大小会根据分布形状自动调整，分布尖锐时候选集小（几个词就累加到 0.9），分布平坦时候选集大。</p>
+<p>这三种调节器的具体使用场景和参数选择，是另一个独立的话题。本题层面只需要记住：<strong>采样族通过引入随机性 + 截断长尾，在「多样性」和「质量」之间找到平衡</strong>。</p>
+<h3 id="实际选型-什么任务用什么策略">实际选型：什么任务用什么策略</h3>
+<p>工业界的解码策略选择，本质上是看任务对「确定性」和「多样性」的需求：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>任务类型</th>
+<th>推荐策略</th>
+<th>典型参数</th>
+<th>为什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>代码生成</strong></td>
+<td>贪心 / 低温采样</td>
+<td>Temperature=0~0.2</td>
+<td>代码有标准结构，要稳定可复现</td>
+</tr>
+<tr>
+<td><strong>SQL 生成 / JSON 抽取</strong></td>
+<td>贪心</td>
+<td>Temperature=0</td>
+<td>输出结构严格，错一个字符就报错</td>
+</tr>
+<tr>
+<td><strong>数学推理</strong></td>
+<td>贪心 / Self-Consistency 多次采样</td>
+<td>Temperature=0 或 0.7（多样性投票）</td>
+<td>单次贪心稳，多次采样投票更准</td>
+</tr>
+<tr>
+<td><strong>日常对话</strong></td>
+<td>Top-P 采样</td>
+<td>Temperature=0.7，Top-P=0.9</td>
+<td>既要自然又不能太离谱</td>
+</tr>
+<tr>
+<td><strong>创意写作</strong></td>
+<td>Top-P 采样</td>
+<td>Temperature=1.0~1.2，Top-P=0.95</td>
+<td>鼓励多样性和惊喜</td>
+</tr>
+<tr>
+<td><strong>头脑风暴</strong></td>
+<td>高温 Top-P 采样</td>
+<td>Temperature=1.2，Top-P=0.95</td>
+<td>越发散越好</td>
+</tr>
+<tr>
+<td><strong>机器翻译</strong></td>
+<td>贪心 / 低温采样</td>
+<td>Temperature=0~0.3</td>
+<td>翻译有相对标准答案</td>
+</tr>
+</tbody>
+</table></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_08_matrix_0e880f31__bad934dc79.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>实践中有个简单的判断口诀：</p>
+<ul>
+<li><strong>任务有标准答案</strong> -&gt; 贪心或 Temperature=0</li>
+<li><strong>任务有多种合理答案，要稳一些</strong> -&gt; Top-P=0.9 + Temperature=0.7</li>
+<li><strong>任务鼓励多样性</strong> -&gt; Top-P=0.95 + Temperature=1.0+</li>
+</ul>
+<p>OpenAI、Claude、Qwen 这些主流 API 都提供 Temperature / Top-P 这类参数，但默认值会随模型版本和产品形态变化，不能死记一个固定配置。工程上更可靠的做法是：先用官方默认值作为基线，再按任务是「精确」还是「开放」去调。</p>
+<h3 id="进阶策略-推测解码与-self-consistency">进阶策略：推测解码与 Self-Consistency</h3>
+<p>讲到这里，主流策略基本覆盖了。再简单提两个进阶方向，作为面试加分项。</p>
+<p><strong>推测解码（Speculative Decoding）</strong> 是一种推理加速技术。核心思路是用一个<strong>小的草稿模型</strong>（比如 7B）快速生成多个 token，再用<strong>大的目标模型</strong>（比如 70B）一次性验证这几个 token。如果草稿模型的预测和大模型一致，就直接用；不一致就以大模型为准。</p>
+<p>为什么这能加速？因为大模型的推理瓶颈是「访存」（每次只生成一个 token，要把整个权重从显存搬到计算单元），如果一次能验证 5 个 token，访存次数就少了 5 倍。实测下来，推测解码可以让大模型推理速度提升 2-3 倍，结果完全等价。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/decoding_strategies_09_flow_22585924__b076dd494a.webp" alt="大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>Self-Consistency</strong> 是用于推理类任务的解码增强。核心思路：对同一个数学题/逻辑题，用较高的 Temperature 采样生成 N 条独立的推理路径，最后取<strong>最终答案出现最多次</strong>的那个（多数投票）。</p>
+<p>直觉是：正确答案往往可以通过多种推理路径得到，错误答案是随机的，多条路径不太可能收敛到同一个错误。Self-Consistency 在 GSM8K 等数学推理任务上能比单次贪心提升 5-15 个百分点，代价是 N 倍 API 调用成本。</p>
+<p>这两个进阶策略都是「在主流采样基础上的加速/加强」，不替代基础解码策略，而是叠加使用。能在面试里提一句，会显得你跟得上工业界的最新实践。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，问到解码策略，最重要的是先把本质讲清楚。每生成一个 token 都对应一个 vocabulary 大小的概率分布，解码策略就是「怎么从这个分布里挑下一个 token」。不同策略对应「生成任务到底有没有最优答案」的不同假设，这是整道题的地基。</p>
+<p>讲完本质，自然过渡到贪心和 Beam Search 这两种确定性策略。贪心每步选最高，简单可复现但容易陷入复读循环；Beam Search 是贪心的并行版，保留 B 条候选最后选总分最高的整条序列。Beam Search 在翻译时代是王者，因为翻译有「单一最优译文」，所以「找概率最高序列」这个目标和任务本质契合。</p>
+<p>最关键的是讲清<strong>为什么 LLM 时代 Beam Search 失宠了</strong>，这是面试官最爱追问的点。生成式任务（对话、写作、推理）根本没有「单一最优答案」，Beam Search 优化的「整体概率最高」反而等价于「最 boring 的回答」，多样性差还容易陷入复读。再加上和 KV Cache、Flash Attention 等现代推理优化不兼容，工业界几乎弃用。能说出「<strong>任务本质和 Beam Search 算法目标不匹配</strong>」这一句，比单纯说「Beam Search 慢」深刻一个层次。</p>
+<p>最后讲采样族（Temperature/Top-K/Top-P）的整体定位。它们用随机性换多样性，配合长尾截断保证质量。实际选型上，精确任务（代码、SQL、JSON）用贪心或低温；对话/写作可以从官方默认值开始微调；创意任务再提高 Temperature，但要用测试集观察跑偏率。</p>
+<p>如果还想再加分，可以提一句推测解码（小模型起草 + 大模型验证，推理速度 2-3 倍）和 Self-Consistency（多次采样投票，推理任务准确率涨 5-15%）。能讲到这一层，面试官基本就没什么追问的余地了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#解码策略的本质-从概率分布里选下一个-token">解码策略的本质：从概率分布里选下一个 token</a><a class="toc-level-3" href="#贪心解码-最简单也最容易踩坑">贪心解码：最简单也最容易踩坑</a><a class="toc-level-3" href="#beam-search-翻译时代的王者">Beam Search：翻译时代的王者</a><a class="toc-level-3" href="#为什么-llm-时代-beam-search-失宠了">为什么 LLM 时代 Beam Search 失宠了</a><a class="toc-level-3" href="#采样族-用随机性换多样性">采样族：用随机性换多样性</a><a class="toc-level-3" href="#实际选型-什么任务用什么策略">实际选型：什么任务用什么策略</a><a class="toc-level-3" href="#进阶策略-推测解码与-self-consistency">进阶策略：推测解码与 Self-Consistency</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/dpo_vs_ppo.html"><span>上一篇 · 大模型工程</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/temperature_top_p_top_k.html"><span>下一篇 · 大模型工程</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。">
+  <meta name="keywords" content="AI产品经理面试题,Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/22_multi_agent_resilience.html">
+  <title>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？｜AI产品经理面试题">
+  <meta property="og:description" content="我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/22_multi_agent_resilience.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/22_multi_agent_resilience.html#article","headline":"Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？｜AI产品经理面试题","description":"我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/22_multi_agent_resilience.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/22_multi_agent_resilience.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="is-active" href="#article-top"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 22 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟阅读</span>
+            <span>4,998 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</h1>
+          <div class="article-deck">
+            <span>题目 22</span>
+            <p>我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：一个子 Agent 执行任务时超时或失联了，你会怎么处理？</p>
+<p>🙋‍♂️我：设一个超时时间，超过以后杀掉它，再启动一个新的 Agent 重跑任务。</p>
+<p>👔面试官：旧 Agent 可能只是网络断了，实际上还在运行。新 Agent 接管以后，两个实例一起写数据怎么办？</p>
+<p>🙋‍♂️我：那就给任务加分布式锁，同一时间只允许一个 Agent 执行。</p>
+<p>👔面试官：锁可能过期，旧 Agent 也可能恢复后继续提交。而且多个 Agent 修改不同文件时全部串行，Multi-Agent 还有什么意义？</p>
+<p>🙋‍♂️我：可以让每个 Agent 建一个 Git 分支，最后把所有分支合并到主分支，有冲突再解决。</p>
+<p>👔面试官：没有文本冲突不代表逻辑正确。一个 Agent 改接口，另一个还按旧接口写调用方，Git 可能顺利合并，程序却直接坏掉。谁负责最终集成和验收？重试产生的外部副作用又怎么去重？</p>
+<p>这道题真正想考的，不是你会不会写一个超时重试，而是你能不能让一群 Agent 在部分失败和并发执行时，仍然只把正确结果提交一次。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我会先把「通信问题」和「一致性问题」分开。心跳中断只能说明协调器暂时看不到子 Agent，不能直接证明它已经停止。任务分配时应该带租约和递增的执行代次，子 Agent 定期续租；租约过期后协调器才能安排接管，旧执行者即使恢复，也不能再用过期代次提交结果。</p>
+<p>接管不能简单从头重跑。我会保存任务 checkpoint，记录已经完成的步骤、产物版本和外部副作用。重试使用稳定的任务 ID、步骤 ID 和幂等键，遇到结果未知的写操作先查询外部系统，再决定继续、补偿还是人工确认。连续失败时还要支持换模型、换工具、拆小任务和人工接管等降级路径。</p>
+<p>多个 Agent 修改同一个仓库时，先按任务依赖和文件所有权尽量减少重叠写入，再让每个 Agent 在独立 worktree 或 branch 中工作。提交时校验基线版本，对普通文件采用乐观并发，对少数热点文件使用带租约的短锁。最终只有 Integrator 有权合入目标分支，它按依赖顺序合并，并运行静态检查、单元测试和集成测试。出现文本冲突或语义冲突时，把最新基线、冲突原因和失败测试交回对应 Agent 修正，而不是让多个 Agent 直接抢写主分支。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="超时-失联和失败-真的是一回事吗">超时、失联和失败，真的是一回事吗？</h3>
+<p>先想一个场景。协调器让代码 Agent 修改支付模块，十分钟后没有收到回复。这时能不能直接宣布它失败？不能，因为至少有三种可能：模型调用确实卡死了，Agent 进程已经退出，或者 Agent 仍在执行，只是心跳消息没传回来。</p>
+<p>前两种属于执行失败，最后一种更接近通信故障。协调器看到的是「暂时联系不上」，不是「旧执行者绝对不会再动」。如果这时直接派一个新 Agent 从头执行，旧 Agent 恢复网络后也可能提交，于是同一任务就有了两个执行者。</p>
+<p>这也是 Multi-Agent 容错最容易踩的坑。系统一看到超时就重试，看起来可用性提高了，实际上把一次故障变成了重复写入、结果覆盖甚至重复扣款。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/dc362ca8_coordinator-vs-reality__2ed225c45b.webp" alt="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>因此，系统至少要分别记录执行状态和通信状态。执行状态可以是 <code>PENDING -&gt; RUNNING -&gt; SUCCEEDED</code>，通信状态则记录最近心跳时间、租约到期时间和进程健康信息。两者不能混成一个简单的 <code>online</code> 字段。</p>
+<h3 id="为什么任务租约比永久锁更适合故障接管">为什么任务租约比永久锁更适合故障接管？</h3>
+<p>锁解决的是「现在谁能进门」，租约解决的是「这把临时钥匙到什么时候失效」。调度器把任务交给子 Agent 时，可以同时发出一份有期限的租约，里面至少包含 <code>task_id</code>、<code>worker_id</code>、<code>lease_expire_at</code> 和递增的 <code>generation</code>。</p>
+<p>子 Agent 正常工作时定期发送心跳并续租。协调器在一两次心跳没有到达时只标记为可疑，不立即重派；超过租约和宽限期后，才把任务放回队列，并给新的执行者分配更大的 <code>generation</code>。</p>
+<p>问题来了，旧 Agent 恢复后不知道自己已经过期，仍然提交结果怎么办？只靠锁的 TTL 挡不住它，因为旧进程可能早就进入临界区。更稳妥的做法，是让任务状态和产物存储都检查执行代次。旧 Agent 带着 <code>generation=7</code> 提交，而任务当前已经是 <code>generation=8</code>，存储层直接拒绝这次旧写入。这个递增代次也常被叫作 fencing token，可以理解为会失效的排队号码。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/891ccc7c_generation-lease-fencing__96bea5076d.webp" alt="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>超时也不应该只有一个数字。模型首字延迟、工具调用超时、整个子任务预算和租约时长，代表的是不同边界。一个深度检索任务可能二十分钟都合理，但单次 HTTP 调用卡住二十分钟通常不合理。生产系统会为每一层分别设置软超时和硬预算，软超时用于取消当前动作或切换路径，硬预算负责终止整项任务并升级处理。</p>
+<h3 id="为什么重试一定要和幂等-checkpoint-一起设计">为什么重试一定要和幂等、checkpoint 一起设计？</h3>
+<p>超时以后直接重跑，最大的风险不是多花一点 Token，而是重复产生副作用。比如 Agent 已经创建了工单，只是成功响应在网络中丢失。调度器看到超时后重新执行，又创建了一张内容相同的工单。</p>
+<p>所以每个可重试步骤都要有稳定身份。常见做法是用 <code>task_id + step_id + operation_type</code> 生成幂等键，同一个逻辑动作不管由哪个 Agent 接管，都携带同一个键。下游服务保存幂等键和第一次执行结果，后续重复请求直接返回原结果，而不是再次写入。</p>
+<p>但并不是所有外部系统都支持幂等键。这时 checkpoint 就很关键。它不能只保存一句「做到第三步」，还要记录已完成步骤、输入版本、产物位置、工具调用编号、外部资源 ID，以及写操作当前是 <code>planned</code>、<code>succeeded</code>、<code>failed</code> 还是 <code>unknown</code>。</p>
+<p>接管者遇到 <code>succeeded</code> 就跳过，遇到明确的 <code>failed</code> 才在预算内重试。遇到 <code>unknown</code> 不能凭感觉再执行一次，而要先按业务键查询外部系统。如果既无法查询，也无法幂等重放，就应该暂停并请求人工确认。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/0b6a1b04_checkpoint-recovery__c7de8d88bf.webp" alt="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这里还有一个常见误区，给任务加幂等键不等于系统就能实现严格的「只执行一次」。网络故障下，执行方通常无法仅凭超时判断远端是否成功。工程上更现实的目标是允许「至少一次」投递，再通过幂等、唯一约束、结果查询和补偿，把最终副作用收敛到业务可接受的一次。</p>
+<h3 id="子-agent-失效后-谁来接管任务">子 Agent 失效后，谁来接管任务？</h3>
+<p>租约到期只是允许接管，接下来还要决定怎么接。协调器应该先读取最近一次已提交的 checkpoint，而不是把原始 Prompt 原封不动地再发一遍。接管上下文要包含原目标、验收标准、已完成产物、当前阻塞、尝试过的路径和剩余预算。</p>
+<p>如果只是某个工具暂时限流，可以由同能力 Agent 在退避后继续。如果模型多次无法完成同一步，可以换更强模型，或把任务拆成更小的确定性步骤。如果外部依赖不可用，可以返回部分结果并明确缺失项。如果任务涉及付款、删除、发布等高风险动作，且历史结果无法确认，就应该停止自动接管，转给人工。</p>
+<p>接管也要限制次数。一个坏任务被十个 Agent 轮流接走，不叫高可用，只是把死循环扩大了。系统需要记录接管次数、连续失败类型和剩余预算；超过阈值后进入降级或人工处理，并保留完整 Trace，方便判断到底是工具故障、任务不可执行，还是模型能力不足。</p>
+<h3 id="多个-agent-改同一个仓库-先别急着上锁">多个 Agent 改同一个仓库，先别急着上锁</h3>
+<p>很多人看到并发修改，第一反应是「整个仓库加一把锁」。这样确实很安全，但所有 Agent 都排队干活，吞吐量也回到了单 Agent。</p>
+<p>更好的第一步，是在规划阶段减少写集合重叠。Planner 不只要拆任务，还要为每个子任务标出预计修改的模块、文件和接口，并声明任务所有权与文件所有权。比如 Agent A 负责服务端接口，Agent B 负责前端页面，Agent C 负责测试。公共类型文件、依赖清单和全局配置属于热点资源，默认由一个明确的 Owner 修改。</p>
+<p>这里要区分两种所有权。任务所有权回答「谁对这个子任务的最终结果负责」，文件所有权回答「当前阶段谁可以提交这个文件」。同一个任务可能修改多个文件，同一个文件也可能在不同阶段交给不同 Agent，但同一版本不能没有明确的写入者。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/a3d7d19a_multi-agent-worktree-isolation__f9ca2ad89d.webp" alt="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="worktree-乐观并发和锁应该怎么配合">worktree、乐观并发和锁应该怎么配合？</h3>
+<p>规划只能减少冲突，不能保证完全没有冲突。真正执行时，应该让每个 Agent 在独立的 Git worktree 或 branch 中工作，并记录开始时的 <code>base_commit</code>。这样 Agent A 的半成品不会污染 Agent B 的上下文，失败任务也不会在共享目录里留下难以识别的修改。</p>
+<p>普通文件可以采用乐观并发。Agent 提交时，Integrator 比较它的 <code>base_commit</code> 和当前目标分支。如果相关文件没有变化，就尝试合并；如果已经被其他任务修改，就要求基于新版本重新应用补丁，或把冲突上下文交回原 Agent 修正。</p>
+<p>少数高频热点资源，例如全局路由表、数据库迁移序号和依赖锁文件，可以加带租约的短锁。锁只保护真正不能并行的提交阶段，不应该覆盖 Agent 思考、生成代码和运行局部测试的整个过程。否则一个 Agent 调模型卡住，就会拖住所有任务。</p>
+<p>需要注意，Git 只能发现文本层面的冲突，发现不了语义冲突。Agent A 把函数参数从字符串改成对象，Agent B 在另一个文件继续按字符串调用，两个分支可能自动合并成功，但代码已经不一致。接口契约、Schema、测试和静态分析，才是识别这类问题的第二道防线。</p>
+<h3 id="为什么必须有一个最终提交者">为什么必须有一个最终提交者？</h3>
+<p>多个 Agent 都能直接往主分支写，系统就很难回答「当前仓库状态由谁负责」。更稳妥的设计，是只有 Integrator 或 Orchestrator 拥有最终提交权，其他 Agent 只产出候选分支、补丁和验证证据。</p>
+<p>Integrator 先按任务 DAG 和接口依赖确定合并顺序。例如先合入公共类型和服务端接口，再合入调用方，最后合入测试。每次合并后都运行格式检查、静态检查和受影响的单元测试，全部候选合并后再运行集成测试或端到端测试。</p>
+<p>如果出现文本冲突，Integrator 不应该让模型随意选择一边，而要保留两边意图、最新基线和冲突文件，让负责该模块的 Agent 重新生成补丁。如果自动合并成功但测试失败，则把失败用例、相关 Trace 和接口变更一并交回。直到验收条件通过，才生成唯一的最终提交。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/4dcdad71_integrator-quality-gates__61b9d016f8.webp" alt="Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这也解释了为什么通信问题和一致性问题不能用同一个办法解决。心跳、租约和超时主要解决「谁还活着、谁可以接管」；幂等键、执行代次、版本校验和合并验收解决「多个执行者出现时，结果怎么保持一致」。给消息中间件加重试，能提高消息到达率，却不能自动解决重复副作用和代码语义冲突。</p>
+<h3 id="线上怎么判断这套机制有没有生效">线上怎么判断这套机制有没有生效？</h3>
+<p>首先要让一项任务从分配到最终合并都有统一 Trace。Trace 里应该串起租约代次、心跳、每次执行尝试、checkpoint 版本、工具副作用、分支提交、冲突处理和测试结果。否则线上只看到「任务失败」，很难判断问题发生在失联、接管还是集成阶段。</p>
+<p>指标也要围绕风险来设计。除了完成率和耗时，还可以观察租约过期率、误判失联率、平均接管次数、重复副作用次数、旧代次写入被拒绝次数、分支冲突率、自动合并后的测试失败率，以及从故障发生到恢复完成的时间。</p>
+<p>最后要主动做故障演练。可以在测试环境中随机暂停心跳、延迟工具响应、让 Worker 在外部写入后崩溃，或让两个 Agent 修改同一接口。只有确认旧执行者无法覆盖新结果、接管者不会重复产生副作用、冲突代码无法越过验收门禁，这套容错机制才不只是写在设计文档里。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答这道题时，我会先指出：超时和失联只代表协调器暂时看不到子 Agent，不等于旧执行者已经停止。任务应该使用可续租的 lease 和递增执行代次，租约过期后才能接管，旧代次恢复后也不能覆盖新结果。</p>
+<p>接管流程要依赖 checkpoint，而不是盲目从头重跑。每个步骤使用稳定的任务 ID、步骤 ID 和幂等键；外部写入结果不确定时先查询，无法确认时转人工。重试次数必须有界，并支持换 Agent、换工具、拆任务和部分降级。</p>
+<p>并发修改代码时，先用任务所有权和文件所有权减少重叠，再用独立 worktree 或 branch 隔离工作区。普通文件通过基线版本做乐观并发，热点文件才使用短租约锁。Git 冲突只能发现文本问题，接口契约、静态检查、单元测试和集成测试还要负责发现语义冲突。</p>
+<p>最后由唯一的 Integrator 按依赖顺序合并和验收。心跳与租约解决的是通信和活性问题，幂等、版本与最终提交者解决的是一致性问题。把这两层讲清楚，才算真正回答了 Multi-Agent 系统怎样在故障和并发下稳定运行。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#超时-失联和失败-真的是一回事吗">超时、失联和失败，真的是一回事吗？</a><a class="toc-level-3" href="#为什么任务租约比永久锁更适合故障接管">为什么任务租约比永久锁更适合故障接管？</a><a class="toc-level-3" href="#为什么重试一定要和幂等-checkpoint-一起设计">为什么重试一定要和幂等、checkpoint 一起设计？</a><a class="toc-level-3" href="#子-agent-失效后-谁来接管任务">子 Agent 失效后，谁来接管任务？</a><a class="toc-level-3" href="#多个-agent-改同一个仓库-先别急着上锁">多个 Agent 改同一个仓库，先别急着上锁</a><a class="toc-level-3" href="#worktree-乐观并发和锁应该怎么配合">worktree、乐观并发和锁应该怎么配合？</a><a class="toc-level-3" href="#为什么必须有一个最终提交者">为什么必须有一个最终提交者？</a><a class="toc-level-3" href="#线上怎么判断这套机制有没有生效">线上怎么判断这套机制有没有生效？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/21_agent_latency_trace.html"><span>上一篇 · Agent</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/23_task_hallucination.html"><span>下一篇 · Agent</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

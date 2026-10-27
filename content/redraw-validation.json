@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "output_count": 814,
+  "missing_outputs": 0,
+  "non_white_backgrounds": 0,
+  "background_policy": "pure white or transparent",
+  "markdown_references_updated": 0,
+  "markdown_image_references": 1628,
+  "missing_image_references": [],
+  "old_image_references": 0,
+  "min_width": 1205,
+  "max_width": 4140,
+  "min_height": 373,
+  "max_height": 3774
+}

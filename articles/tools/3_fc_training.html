@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="Function Call 的能力主要靠两个训练阶段来培养，这两个阶段解决的是不同的问题。">
+  <meta name="keywords" content="AI产品经理面试题,大模型的 Function Call 能力是怎么训练出来的？,工具调用,AI产品经理,工具调用面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/3_fc_training.html">
+  <title>大模型的 Function Call 能力是怎么训练出来的？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型的 Function Call 能力是怎么训练出来的？｜AI产品经理面试题">
+  <meta property="og:description" content="Function Call 的能力主要靠两个训练阶段来培养，这两个阶段解决的是不同的问题。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/3_fc_training.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型的 Function Call 能力是怎么训练出来的？｜AI产品经理面试题">
+  <meta name="twitter:description" content="Function Call 的能力主要靠两个训练阶段来培养，这两个阶段解决的是不同的问题。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/3_fc_training.html#article","headline":"大模型的 Function Call 能力是怎么训练出来的？｜AI产品经理面试题","description":"Function Call 的能力主要靠两个训练阶段来培养，这两个阶段解决的是不同的问题。","articleSection":"工具调用面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/3_fc_training.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"工具调用面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/tools.html"},{"@type":"ListItem","position":3,"name":"大模型的 Function Call 能力是怎么训练出来的？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/3_fc_training.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/tools.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 工具调用面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#11a879"></i>
+            <span>工具调用</span>
+            <strong>22 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="工具调用面试专题题目列表">
+            <a class="" href="./1_function_calling.html"><span>01</span><strong>什么是 Function Calling ？原理是什么？</strong></a><a class="" href="./2_llm_tool_learning.html"><span>02</span><strong>LLM 是如何学会调用外部工具的？</strong></a><a class="is-active" href="#article-top"><span>03</span><strong>大模型的 Function Call 能力是怎么训练出来的？</strong></a><a class="" href="./4_what_is_mcp.html"><span>04</span><strong>什么是 MCP（模型上下文协议）？讲讲它的核心内容？</strong></a><a class="" href="./5_mcp_components.html"><span>05</span><strong>MCP 由哪几部分组成？</strong></a><a class="" href="./6_mcp_vs_fc.html"><span>06</span><strong>MCP 和 Function Calling 有什么区别？有没有实际跑过 MCP？</strong></a><a class="" href="./7_fc_vs_mcp_usage.html"><span>07</span><strong>Function Calling 也属于工具调用，请问什么场景下使用 Function Calling，什么场景下使用 MCP？</strong></a><a class="" href="./8_reasoning_no_mcp.html"><span>08</span><strong>为什么有些特定的推理模型不支持 MCP 协议？</strong></a><a class="" href="./9_skill.html"><span>09</span><strong>Skill 是什么？</strong></a><a class="" href="./10_mcp_vs_skill.html"><span>10</span><strong>MCP 和 Agent Skill 的区别是什么？</strong></a><a class="" href="./11_fc_skill_mcp.html"><span>11</span><strong>Function Calling、Skill、MCP 这三个有什么区别？</strong></a><a class="" href="./12_a2a_protocol.html"><span>12</span><strong>什么是 A2A 协议？它和 MCP 协议的区别是什么？</strong></a><a class="" href="./13_mcp_transport.html"><span>13</span><strong>MCP 协议通常采用什么通信方式？</strong></a><a class="" href="./14_sse_vs_websocket.html"><span>14</span><strong>说说 WebSocket 和 SSE 通信的区别及局限性？</strong></a><a class="" href="./15_webrtc_vs_ws.html"><span>15</span><strong>为什么要用 WebRTC 协议？它和 WebSocket（WS）在 AI 对话流中的核心差异是什么？</strong></a><a class="" href="./16_llm_gateway.html"><span>16</span><strong>有没有用过大模型的网关框架？网关层解决了什么问题？</strong></a><a class="" href="./17_tool_routing.html"><span>17</span><strong>工具很多时，Agent 如何做 Tool Routing，减少 Token 并避免选错工具？</strong></a><a class="" href="./18_tool_reliability.html"><span>18</span><strong>工具调用格式非法、参数错误、超时或失败时，Agent 如何容错？</strong></a><a class="" href="./19_cli_packaging.html"><span>19</span><strong>为什么要把 Agent 的工具执行流程封装成 CLI？</strong></a><a class="" href="./20_cli_vs_mcp.html"><span>20</span><strong>Agent 接入工具时应该如何选择 CLI 或 MCP？</strong></a><a class="" href="./21_execution_sandbox.html"><span>21</span><strong>Agent 的代码执行沙箱应该如何设计？</strong></a><a class="" href="./22_skill_loading.html"><span>22</span><strong>Agent 的 Skill 加载机制是如何实现的？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/tools.html">工具调用</a><span>/</span>
+            <span>第 3 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#11a879;--soft:#e2fbf1">工具调用</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟阅读</span>
+            <span>5,031 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>大模型的 Function Call 能力是怎么训练出来的？</h1>
+          <div class="article-deck">
+            <span>题目 03</span>
+            <p>Function Call 的能力主要靠两个训练阶段来培养，这两个阶段解决的是不同的问题。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：详细说说大模型的 Function Call 能力是怎么训练出来的？</p>
+<p>🙋‍♂️我：应该就是在预训练阶段，训练语料里包含了一些 API 调用的代码，模型自然就学会了吧？</p>
+<p>👔面试官：预训练学到的是「预测下一个 token」，模型最多能描述「我要调 API」，但不会输出结构化 JSON 调用请求。这是两个完全不同的东西，你把预训练和专项微调搞混了。</p>
+<p>🙋‍♂️我：哦，那就是 SFT 微调，给模型看很多工具调用的样本对吧？那训练数据只要包含正常的单工具调用场景就够了？</p>
+<p>👔面试官：单工具调用只是最基础的场景。多工具并行调用、工具调用失败后重试、不需要工具直接回答、多轮对话中的工具调用，这些场景训练数据里都要覆盖到，缺一个就会在对应场景翻车。而且你还是只提了 SFT，RLHF 阶段怎么解决「该不该调」的边界感问题，训练数据从哪来，这些关键环节一个都没讲到，回去好好整理一下。</p>
+<p>确实，Function Call 的训练远不止「喂点样本」这么简单。下面我把两个训练阶段、训练数据的构造和来源、以及各自解决什么问题，完完整整地讲一遍。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说清模型负责决策、代码负责执行，再划分工具权限、参数校验、失败重试和人工确认，最后用工具成功率、误调用率与成本验证方案。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>Function Call 的能力主要靠两个训练阶段来培养，这两个阶段解决的是不同的问题。</p>
+<p>第一个是 SFT，就是给模型喂大量「包含工具调用的完整对话样本」，每条样本覆盖工具定义、用户问题、模型应该输出的结构化 JSON 调用、工具执行结果、最终答案，让模型通过模仿学会整套流程。但光有 SFT 不够，模型可能学得过激，遇到什么问题都想调工具。</p>
+<p>第二个阶段是 RLHF，通过人类标注「哪种回答更好」来训练奖励模型，再用强化学习调整主模型，让它学会「能直接回答的就直接回答，需要实时数据才去调工具」这个边界感。</p>
+<p>一句话总结：SFT 教会怎么调，RLHF 教会什么时候调。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>很多人以为 Function Call 是大模型「聪明」之后自然就会的东西，其实不是。就算是 GPT-4，如果没有经过工具调用的专项训练，它遇到「北京今天天气怎么样」这个问题，顶多也就输出一句「我需要查询天气数据」，这是在<strong>描述</strong>一个意图，而不是在<strong>输出</strong>可以被程序解析和执行的结构化 JSON。这两件事之间有本质的差距。</p>
+<p>为什么预训练学不会这件事？关键原因是预训练语料里压根没有「标准工具调用 JSON」这种模式。预训练喂给模型的是互联网上的海量文本，里面有代码、有文档、有对话，但几乎没有「给定一组工具 schema，该在什么场景输出什么 JSON」这样的成对样本。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776865019457-dd7ec40c-18d1-4c24-858e-04206f991305__c0a9803150.webp" alt="大模型的 Function Call 能力是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>模型在预训练期间的所有权重更新，都是基于「预测下一个最可能的 token」这个目标，它记住的是人类文字里的统计规律，而「遇到天气问题就输出一段固定格式的 tool_calls JSON」不是人类文字里自然存在的模式，权重里根本没有相关经验可以调用。所以这件事必须靠专项微调来补。</p>
+<p>Function Call 的核心训练分两个阶段，每个阶段解决不同的问题，缺一不可。</p>
+<h3 id="阶段一-sft-让模型-学会怎么调">阶段一：SFT，让模型「学会怎么调」</h3>
+<p>SFT（Supervised Fine-Tuning，监督微调）的核心动作很简单：给模型喂大量正确示例，让它通过模仿来学习。对 Function Call 能力来说，就是构造「包含完整工具调用流程的对话样本」，一条样本里包含所有角色的消息。</p>
+<p>一条完整的训练样本大概是这样的结构：首先是 system 消息，里面注入了工具的定义，工具叫什么名字、是干什么用的、接受哪些参数。模型是从这里「认识」工具的，就像你给新员工一份工具手册，告诉他公司有哪些系统可以用。接着是 user 消息，就是用户的提问，比如「北京今天天气怎么样」。</p>
+<p>然后是关键的一步：assistant 的消息不是自然语言，而是结构化的 JSON 调用请求，类似 <code>{&quot;tool_calls&quot;: [{&quot;name&quot;: &quot;get_weather&quot;, &quot;arguments&quot;: {&quot;city&quot;: &quot;北京&quot;}}]}</code>，这是「正确答案」，是模型通过训练需要学会输出的内容。之后是 tool 角色的消息，是工具执行后返回的结果，比如「晴天，15°C，东北风 3 级」。最后 assistant 再出现一次，根据工具结果给出最终的自然语言答案。</p>
+<p>这套完整的对话结构覆盖了整个调用链路。模型通过反向传播（backpropagation）来学习：给定样本里的正确 JSON 调用，当模型输出的内容偏离这个正确答案时，损失函数就会产生惩罚信号，梯度往回传，一点点调整模型内部的参数权重，让下次输出更接近正确格式。</p>
+<p>大量样本反复训练，模型就把这套「看到工具定义 + 看到用户问题 -&gt; 输出规范 JSON」的模式「记住」了。就像背单词，看一遍不够，反复遇到、反复纠错，最终形成了肌肉记忆。</p>
+<h4>训练数据需要覆盖哪些场景</h4>
+<p>训练数据的多样性直接决定了 Function Call 能力的上限，不能只有「正常调一个工具」这一种情况。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776865167972-24b7c801-1d51-4c92-86d2-04a2099bcc9a__b38b334cda.webp" alt="大模型的 Function Call 能力是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>好的训练数据至少要覆盖这几类场景。最基础的当然是<strong>单工具调用</strong>，一个问题对应一个工具，这是入门款。但光有这个远远不够，还需要<strong>多工具并行调用</strong>的样本，比如用户问「帮我查北京和上海的天气」，模型应该一次性输出两个调用请求而不是傻乎乎地一个一个来，如果训练数据里没见过这种场景，模型就不知道可以并行。</p>
+<p>另一个容易忽略但非常关键的场景是<strong>工具调用失败后的处理</strong>。现实中工具不可能百分百成功，API 超时、参数格式不对、权限不足，各种错误都有可能出现，模型要能识别错误信息并换个方式处理，而不是直接崩掉或者傻傻地重复同样的调用。</p>
+<p>还有一类场景很多人想不到：<strong>不需要调工具、直接回答</strong>。这个其实非常重要，「1+1 等于几」「帮我总结这段话」这类问题完全不需要工具，模型得学会判断「我能自己解决，不用调」。如果训练数据里全是「调用工具」的正例，模型就会形成「遇到问题就调工具」的惯性，该直接回答的时候也去调，画蛇添足。</p>
+<p>最后是<strong>多轮对话中的工具调用</strong>，上下文里已经有过工具结果，模型要能正确理解和引用之前的结果，而不是无视历史重新调用。这些场景的覆盖程度，直接影响模型在实际使用中的表现，缺哪个就会在哪个场景下翻车。</p>
+<h4>训练数据从哪来</h4>
+<p>构造 Function Call 训练数据主要有两种方式。</p>
+<p>第一种是<strong>人工标注</strong>。给标注员提供用户问题和工具定义，让他们编写调用示例，再通过复核和工具执行来检查结果。人工标注便于针对复杂场景把控质量，适合构造种子数据和评测样本，但扩大规模需要投入更多人力，质量也取决于标注规范和审核流程。</p>
+<p>第二种是<strong>模型自动生成</strong>。给模型提供工具定义和少量示例，让它批量生成用户问题、调用参数和对话轨迹，再筛选出合格的样本用于训练。相比逐条人工编写，这种方式便于扩大数据规模，也有机会降低单条合格样本的成本，但仍要计算模型推理、工具执行和质量审核的开销。</p>
+<p>这里有两个容易混淆的概念。Self-Instruct 是一种让模型生成指令和回答、经过筛选后用于微调的方法；用能力更强的教师模型生成工具调用轨迹，再训练学生模型，则可以作为知识蒸馏的一种方式。两者都可能用到合成数据，但不能直接画等号。</p>
+<p>生成得多，也要检查是否正确。模型可能编造工具名、填错参数，或者虚构执行结果，这些错误如果混进训练集，学生模型就可能继续学到。入库前应检查工具名和参数是否符合 schema，在可控环境中验证调用及结果，再结合去重和人工抽查把关。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776865136230-153bb6fa-0ce3-4287-bbd1-9089195b86c8__30b5eb932f.webp" alt="大模型的 Function Call 能力是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="阶段二-rlhf-对齐-该不该调-的边界感">阶段二：RLHF，对齐「该不该调」的边界感</h3>
+<p>SFT 之后，模型已经学会了「怎么调工具」，但还有一个问题没解决：<strong>什么时候应该调工具，什么时候直接回答</strong>。</p>
+<p>SFT 的训练样本都是「正确调用」的例子，模型看多了，可能学得有点偏激，遇到什么问题都想调工具，不管有没有必要。</p>
+<p>「1+1 等于几」不应该调计算器，直接回答 2 就行；「帮我总结这段文字」完全不需要任何工具，直接做就行；只有「北京今天天气」这类需要实时数据的问题才应该调。</p>
+<p>这种「能直接回答就直接回答，需要外部数据才去调」的边界感，SFT 很难教好，因为光靠固定的正确样本没法覆盖所有边界情况。RLHF 就是来解决这个问题的。</p>
+<p>RLHF（Reinforcement Learning from Human Feedback，人类反馈强化学习）的流程分四步。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/image-20260306135147495__q_7a68262f9d6f__a52efcd645.webp" alt="大模型的 Function Call 能力是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<ul>
+<li>
+<p>第一步是生成多样回答。对同一个问题，让模型生成多种回答，有直接回答的，有调了工具的，有调了工具但参数填错的，故意覆盖各种情况。</p>
+</li>
+<li>
+<p>第二步是人类标注打分。标注员对这些回答进行排序，比如「北京今天天气怎么样」这道题，调了天气工具的回答排第一，因为不调工具就没法给出准确的实时数据；「1+1 等于几」这道题，直接回答 2 的排第一，调计算器工具的反而是画蛇添足，排末尾。</p>
+</li>
+<li>
+<p>第三步是训练奖励模型。用这批打分排序的数据，单独训练一个神经网络，叫做「奖励模型」（Reward Model，RM）。奖励模型学会了一件事：给定一个问题和一种回答，预测人类会给这个回答多少分。它不直接回答用户，只负责打分，相当于一个专门评判「哪种回答更好」的裁判。</p>
+</li>
+<li>
+<p>第四步是用强化学习调整主模型。拿奖励模型的打分信号，通过 PPO（Proximal Policy Optimization，近端策略优化）等强化学习算法持续调整主模型的参数，让主模型越来越倾向于输出「奖励模型打高分」的回答。</p>
+</li>
+</ul>
+<p>你可能会好奇，为什么偏偏是 PPO？</p>
+<p>强化学习算法那么多，选 PPO 有两个很务实的理由：一是它相对稳定，训练过程不容易崩（传统策略梯度算法很容易因为单步更新太大把模型直接调废）；二是它内置了一个 KL 散度约束，强迫新模型和旧模型的输出分布不要差得太远，这样就不会出现「为了讨好奖励模型，模型把自己训成只会重复几句套话的怪胎」这种退化情况。RLHF 本质上要让模型在「追求高奖励」和「保持语言能力」之间走钢丝，PPO 在这个平衡上是目前公认好用的工具。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1776865344168-5a9c5d56-a084-4ee1-b9b6-ff77ea015d1d__ea49a2cc0d.webp" alt="大模型的 Function Call 能力是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>经过足够多的迭代，模型就学会了那种边界感：该调工具时调，能直接回答时不折腾。</p>
+<h4>RLAIF：用 AI 代替人工打分</h4>
+<p>RLHF 最大的痛点是人工标注成本极高，标注员需要专业背景，打分慢、价格贵，很难大规模扩展。</p>
+<p>RLAIF（Reinforcement Learning from AI Feedback）是它的改进版。你可以这么理解：RLHF 是请一群专业的人类评委来给模型的回答打分，质量很高但请评委的成本也很高；RLAIF 就是换成了一个「AI 评委」，用更强的 AI 模型（比如 GPT-4）来代替人类标注员做这个打分的活儿，成本能低 10-100 倍，速度也快得多。</p>
+<p>不过代价也很明显：「AI 的偏见会传递」。如果打分的 AI 本身对某些场景的判断有偏差或者盲区，这些偏差也会被学进去。打个比方，如果 AI 评委觉得「遇到数学题都应该调计算器工具」，那被它训练的模型也会学到这个倾向，哪怕有些简单算术不用调工具。所以打分 AI 的质量很关键，选什么模型来当评委、怎么设计评分标准，都需要仔细考虑。现在业界很多模型训练都在混用 RLHF 和 RLAIF，在关键数据上用人工保质量，量大的地方用 AI 提效率，两者互补。</p>
+<h3 id="两个阶段各司其职">两个阶段各司其职</h3>
+<p>SFT 解决的是「会不会」的问题，RLHF 解决的是「该不该」的问题。</p>
+<p>只有 SFT 而没有 RLHF 的模型，可能遇到什么问题都冲动地调工具；反过来，只有 RLHF 而没有 SFT，模型连工具调用的格式都输不出来，奖励信号根本没地方发力。</p>
+<p>两个阶段配合起来，才能训练出「知道怎么调、也知道什么时候该调」的工具使用能力。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/ddbcf7ed6b96f546bd181008360db5f5__49495b06eb.webp" alt="大模型的 Function Call 能力是怎么训练出来的？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回看开头踩的雷，第一个误区是以为预训练就能学会 Function Call，实际上预训练只学了「预测下一个 token」，模型最多会描述意图，不会输出结构化 JSON，这必须靠 SFT 专项训练。第二个误区是以为训练数据只覆盖单工具调用就够了，实际上多工具并行、调用失败重试、不需要工具直接回答、多轮对话中的调用，这些场景都必须覆盖，缺哪个就在哪个场景翻车。</p>
+<p>面试回答这道题，要把两个训练阶段讲清楚。</p>
+<p>SFT 阶段通过「system 工具定义 + user 问题 + assistant JSON 调用 + tool 执行结果 + assistant 最终回答」这样的完整对话样本来训练，让模型通过反向传播学会整套流程。</p>
+<p>RLHF 阶段通过人类对多种回答的偏好排序训练奖励模型，再用 PPO 等强化学习算法调整主模型，建立「该不该调」的边界感。</p>
+<p>训练数据来源也要提到：人工标注适合构造种子数据和复杂场景样本，但人力成本较高；模型自动生成便于扩大数据规模，有机会降低单条合格样本的成本，但需要经过格式校验、执行验证和人工抽查，避免把错误样本用于训练。</p>
+<p>一句话总结：SFT 教会怎么调，RLHF 教会什么时候调。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#阶段一-sft-让模型-学会怎么调">阶段一：SFT，让模型「学会怎么调」</a><a class="toc-level-3" href="#阶段二-rlhf-对齐-该不该调-的边界感">阶段二：RLHF，对齐「该不该调」的边界感</a><a class="toc-level-3" href="#两个阶段各司其职">两个阶段各司其职</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/tools/2_llm_tool_learning.html"><span>上一篇 · 工具调用</span><strong>LLM 是如何学会调用外部工具的？</strong></a>
+      <a class="pagination-card next" href="../../articles/tools/4_what_is_mcp.html"><span>下一篇 · 工具调用</span><strong>什么是 MCP（模型上下文协议）？讲讲它的核心内容？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

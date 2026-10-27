@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。">
+  <meta name="keywords" content="AI产品经理面试题,ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/6_three_patterns.html">
+  <title>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/6_three_patterns.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/6_three_patterns.html#article","headline":"ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？｜AI产品经理面试题","description":"我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/6_three_patterns.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/6_three_patterns.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="is-active" href="#article-top"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 6 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 16 分钟阅读</span>
+            <span>6,495 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</h1>
+          <div class="article-deck">
+            <span>题目 06</span>
+            <p>我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你来说说 ReAct、Plan-and-Execute、Reflection 三种范式的区别？</p>
+<p>🙋‍♂️我：ReAct 是边想边执行，Plan-and-Execute 是先规划再执行，Reflection 是……执行完之后反思？</p>
+<p>👔面试官：Reflection 的定位你说对了，但它和另外两个是同一个层面的东西吗？你有没有想过它为什么单独列出来？</p>
+<p>🙋‍♂️我：可能是因为它是一种独立的流程，和 ReAct、Plan-and-Execute 并列？</p>
+<p>👔面试官：不对，Reflection 不是独立流程，它是给另外两种范式加的「检查 buff」，本身不能单独成立。你有没有考虑过这三者实际上是在解决不同层次的问题？</p>
+<p>🙋‍♂️我：那 ReAct 解决的是单步灵活性的问题，Plan-and-Execute 解决的是长任务跑偏的问题……Reflection 解决的是输出质量不够好的问题？</p>
+<p>👔面试官：对了，这才是核心。三者解决的问题层次不同，选型时要看任务复杂度、流程确定性、输出质量要求三个维度，而不是简单地说谁比谁好。</p>
+<p>搞清楚「三者各自在解决什么问题」这个视角，选型就不会再纠结了。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解这三者是 Agent 开发里最主流的三种设计范式，核心区别在于「决策和执行的关系」。</p>
+<p>ReAct 是边想边干，走一步看一步，单步迭代实时调整，灵活度最高；Plan-and-Execute 是先想全再干，先定完整计划再分步执行，适合长流程复杂任务，不容易跑偏；Reflection 不是独立的完整流程，而是给前两者加的「检查修正 buff」，用来提升输出质量。</p>
+<p>实际选型就看三个维度：任务复杂度、流程确定性、输出质量要求，新手入门首选 ReAct，复杂任务用 Plan-and-Execute，高要求场景再加 Reflection。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>很多同学容易把这三个概念搞混，要么觉得它们是完全割裂的，要么只会背概念说不出落地的区别，今天咱们就掰开揉碎了，用人话讲透每一个，保证你看完既能懂原理，又能直接用到面试和项目里。</p>
+<p>在正式对比之前，先给大家把两个贯穿始终的概念讲透，再也不会看懵：</p>
+<p><strong>设计范式</strong>说白了就是你搭 Agent 的「顶层做事流程框架」，就像你开一家店，是走一步看一步的灵活夫妻店模式，还是先定好全流程标准的连锁模式，它定的是整个系统「从头到尾按什么大逻辑跑」。<strong>推理模式</strong>则是 Agent 在每一步干活的时候「脑子里具体是怎么思考的」，就像店里的员工接了活，是一步一步稳扎稳打，还是先想几个方案选最优，它是底层的思考逻辑，决定了每一步的决策怎么来。</p>
+<p>这俩的关系特别好理解：<strong>设计范式是公司的管理制度，推理模式是员工的干活方法</strong>，两者是一一对应的。接下来咱们就一个个拆解，把每一种范式的核心逻辑、和其他两种的区别、适用场景讲得明明白白。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1df66f1f9d1bb4b060e378760b53716e__370369bb02.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="一-基础款-react-单步迭代范式">一、基础款：ReAct 单步迭代范式</h3>
+<p>ReAct 是所有 Agent 范式的「祖宗」，它的本质就是「<strong>思考→行动→观察→再思考</strong>」的循环，走一步看一步，每一步的行动，都完全基于上一步的结果实时调整，没有提前定死的完整计划。</p>
+<p>我再用大家最熟悉的生活化例子强化记忆：ReAct 就像外卖骑手小哥，接了「把餐送到用户手里」的目标，不会提前把全程每一步都定死，而是实时根据情况做决策。</p>
+<p>他先想「我要先去商家取餐」，于是骑车到商家，顺利取到了餐。接着想「下一步要去用户的小区」，于是开导航骑过去，到了小区门口。然后想「用户在 3 号楼，走西门更近」，于是骑到西门，到了用户楼下。最后确认餐已经送到，给用户发消息完成交付。</p>
+<p>每一步的决策都是基于上一步的实际情况做的，中途如果发现路封了，他会立刻改路线，不会死守原来的计划。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/d4e34a947785ab55eb644e7fa36700b9__2685394ce1.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>ReAct 和另外两种范式最核心的区别，在于它没有「提前做完整规划」的环节，规划和执行混在一起，走一步看一步；而 Plan-and-Execute 是把两者完全拆开，先做完整规划再统一执行。和 Reflection 相比，ReAct 的循环里没有「专门的自我检查环节」，只有行动后的结果观察，不会停下来复盘这一步做对没有。</p>
+<p>ReAct 最大的优势是实现简单、灵活度高、逻辑透明，出了问题好排查，新手入门零门槛。但它的短板也很明显：遇到长流程、多步骤的复杂任务，很容易走着走着就跑偏，忘了最初的目标，也容易在某一步陷入无效循环。所以它更适合流程不固定、复杂度适中的任务，比如日常信息搜索、简单问答助手、客服机器人，也是新手入门的首选。</p>
+<h3 id="二-复杂任务款-plan-and-execute-规划执行范式">二、复杂任务款：Plan-and-Execute 规划执行范式</h3>
+<p>Plan-and-Execute 是针对 ReAct「长任务容易跑偏」的痛点，做的针对性优化，我一句话给你讲透它和 ReAct 的核心区别：</p>
+<blockquote>
+<p>ReAct 是「走一步看一步，边想边干」；Plan-and-Execute 是「先把完整计划定好，再按计划一步步干」，完全是两种做事思路。</p>
+</blockquote>
+<p>对应到推理模式上，它把 ReAct 里混在一起的「规划推理」和「执行推理」给完全拆开了（行话叫解耦，说白了就是两件事分开干，各管各的）：专门用一个 LLM 负责「做规划」，把大目标拆成一步一步的执行清单；再用另一个 LLM（或者模块）负责「按清单执行」，执行完了再统一汇总。</p>
+<p>还是用生活化的例子，它就像公司里的项目经理，接了「做一个新产品」的大目标，不会上来就直接写代码，而是先做完整的项目规划。</p>
+<p>先做用户需求调研，明确要做什么，再出产品原型设计，定好功能细节，然后交给开发写代码实现功能，接着测试团队做全流程功能验收，最后上线发布，交付最终结果。先把完整的执行步骤全定好，再把每个步骤分给对应的模块去执行，全程按计划推进，不会中途随便乱改方向。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/25072b50ca2c07f96fd1c61d3a1c1bba__534143503a.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这里有一个实际项目中非常实用的技巧值得展开说说：既然规划和执行是两个独立的模块，那它们完全可以用不同的模型。规划阶段对推理能力要求高，你可以用 GPT-4 或 Claude 这样的强模型来做规划，确保拆分质量。</p>
+<p>但执行阶段每一步的任务已经非常具体了，用一个便宜的小模型（比如 GPT-4o-mini 或者开源的 7B 模型）就完全够用。这种「强模型规划、弱模型执行」的混合策略，在实际项目中可以把总成本降低 70% 到 90%，而任务完成质量几乎不受影响。原因很好理解：规划只调一次，花费有限；执行要调很多次，每次都用便宜模型，总成本就大幅下来了。这也是 Plan-and-Execute 相比 ReAct 的一个隐藏优势，ReAct 每一步都是同一个模型又推理又执行，没法做这种差异化的模型分配。</p>
+<p>Plan-and-Execute 和 ReAct 最核心的区别，就是把「规划」和「执行」完全解耦了：先有完整的执行计划，再分步执行，全程不会偏离最初的目标，而不是像 ReAct 那样边规划边执行、随时可能调整方向。和 Reflection 相比，它的核心是「先规划再执行」，没有强制的自我检查环节，但两者可以叠加使用。</p>
+<p>优势正好补了 ReAct 的短板：整体结构清晰，执行链路可控，复杂度很高的长流程任务也不容易跑偏，还方便做并行优化，大幅降低整体耗时。</p>
+<p>从工程实践的经验来看，Plan-and-Execute 在复杂多步任务上的完成准确率通常高于 ReAct，因为它有完整的全局计划兜底，不容易跑偏。而且识别出无依赖的步骤后可以并行执行，整体耗时也会明显降低。</p>
+<p>代价是灵活度不如 ReAct，遇到计划外的情况容易卡住；实现也更复杂，需要分别维护规划模块和执行模块，token 消耗也会增加。适合流程长、复杂度高的任务，比如写完整的竞品分析报告、全流程的项目开发、多维度的行业调研。</p>
+<h3 id="三-质量增强款-reflection-反思迭代范式">三、质量增强款：Reflection 反思迭代范式</h3>
+<p>这里必须给同学讲透一个最关键的点：<strong>Reflection 不是一套独立的完整流程，而是给 ReAct、Plan-and-Execute 加的「锦上添花的 buff」</strong>，它不改变原本的做事流程，只是在原本的基础上，加了一层「自我检查、自我修正」的环节。</p>
+<p>还是用最熟悉的考试例子，你一下就能看懂三者的关系。ReAct 就像你一道题一道题挨着做，做一道过一道，不回头看。Plan-and-Execute 是你先把整张卷子的做题顺序、时间分配定好，再按计划做题。Reflection 则是你做完一道题（或者整张卷子），回头再检查一遍，看看有没有算错数、有没有看错题，发现错了马上改，改完再交卷。</p>
+<p>它的核心循环，就是在原本的范式基础上，加了「<strong>生成→评估→改进</strong>」的闭环，专门设置了一个独立的检查环节，判断当前的输出有没有问题、达不达标，不达标就重试或调整策略，直到符合要求为止。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/7d9d85c6ed952843a0b6f74d801f861b__6bf88e95c0.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>Reflection 和前两者最本质的区别，是它不是一套独立的做事流程，而是可以叠加在 ReAct 或 Plan-and-Execute 之上的增强机制，互不冲突。前两者的核心是「把事做完」，Reflection 的核心是「把事做好」，专门解决输出质量不达标、有事实错误、逻辑漏洞的问题。</p>
+<p>优势很直接：输出质量明显提升，幻觉、逻辑错误、细节遗漏都会减少，对严谨性要求高的场景效果尤其明显。代价是至少多一次 LLM 调用，token 消耗和延迟都会线性增加，如果没有轮次限制，还很容易陷入「为了改而改」的死循环。所以它适合对输出质量要求极高、不能出错的场景，比如写生产环境的代码、正式的商业报告、法律文书，但凡有错误就会出大问题的，都值得加上 Reflection。</p>
+<h3 id="进阶-动态-replan-和-reflexion">进阶：动态 Replan 和 Reflexion</h3>
+<p>讲完了三个基础范式，再补充两个在实际项目中经常会遇到的进阶机制，面试时能说出来会很加分。</p>
+<p>第一个是 <strong>动态 Replan</strong>，它解决的是 Plan-and-Execute 的一个核心痛点：计划定死了，中途遇到意外怎么办？</p>
+<p>比如你规划了五步来写竞品分析报告，执行到第三步发现某个竞品已经被收购了，原来的分析框架需要调整，但计划已经定好了，后面的步骤还是按老计划跑，输出的报告就会有问题。</p>
+<p>动态 Replan 的做法是在每个步骤执行完之后，把当前结果和剩余计划一起交给规划模块，让它判断「原来的计划还合理吗，需不需要调整」。如果需要，就生成一份新的剩余步骤计划，替换掉原来的。</p>
+<p>这样既保留了 Plan-and-Execute「先规划再执行」的结构优势，又不会因为计划太僵硬而在意外情况下翻车。代价是每步都多了一次「重新评估计划」的 LLM 调用，token 消耗会增加。</p>
+<p>第二个是 <strong>Reflexion</strong>，它把 Reflection 的「自我反思」推到了更深的层次。普通的 Reflection 是「做完了检查一遍、发现问题就重做」，有点像考试做完检查一遍。</p>
+<p>Reflexion 在这个基础上多做了一件关键的事：它不仅检查输出对不对，还会把每次失败的原因总结成一段「经验教训」，存进记忆里，下次再遇到类似任务时，这段教训会作为上下文传给 LLM，让它避免重蹈覆辙。</p>
+<p>这个机制有点像你做错了一道数学题，不只是改答案，还会在错题本上写「这类题容易漏掉符号变化，下次要特别注意」，下次遇到同类题时翻一下错题本再动笔。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f5bbc0120f0d7b51e62d989ab6080755__50f92f3fe4.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>Reflexion 的效果到底有多强？在 HumanEval 代码生成基准测试上，Reflexion 机制把 GPT-4 的 pass@1 准确率从 80% 提升到了 91%，提升幅度超过了 10 个百分点。这个数据非常能说明问题：同样的基座模型，仅仅加了「反思 + 记住教训」这个机制，代码一次写对的概率就大幅提高。</p>
+<p>背后的原因也好理解，代码生成天然适合 Reflexion，因为代码可以运行、可以测试，执行结果就是最直接的反馈信号。Agent 写完代码跑一遍测试，没通过的话就分析是哪里出了问题，把「这个 API 的参数顺序搞反了」或者「边界条件没处理」这样的具体教训记下来，下次重试时带着这些教训去改，成功率自然就高了。这种「verbal reinforcement learning」（语言强化学习）的思路，让 Agent 不需要梯度更新就能从错误中学习，非常适合在推理阶段提升质量。</p>
+<h3 id="token-消耗对比">token 消耗对比</h3>
+<p>三种范式在 token 消耗上的差异是选型时必须考虑的现实因素，咱们用一个具体的例子来直观感受一下。</p>
+<p>假设有一个需要 5 步工具调用的任务，每步产生的推理和工具结果平均占 2000 token。</p>
+<p>用 ReAct 来跑，因为每次调 LLM 都要把完整历史带上，第一步输入 2000 token，第二步 4000，第三步 6000，依次递增，光输入就是 2000 + 4000 + 6000 + 8000 + 10000 = 30000 token，增长曲线是线性的，步骤越多越吃钱。</p>
+<p>换成 Plan-and-Execute，消耗集中在规划阶段和汇总阶段这两个「大头」上。</p>
+<p>规划阶段调一次 LLM，输入是任务描述加工具列表，大约 3000 token。执行阶段每步只需要带当前步骤的指令和前面步骤的结果摘要（不是完整的推理历史），每步大约 1500 token，5 步总共 7500 token。汇总阶段再调一次 LLM，把所有结果综合起来，大约 4000 token。加起来总消耗约 14500 token，比 ReAct 的 30000 token 低了一半多。如果再用上前面说的「强模型规划、弱模型执行」策略，虽然 token 数量差不多，但执行阶段用便宜模型跑，实际花费能再降 70% 以上。</p>
+<p>加了 Reflection 之后，每个需要反思的节点至少多一次 LLM 调用（评估一次，不达标还要重做），token 消耗会在基础范式上再增加 30% 到 100%，取决于反思的轮次和严格程度。如果一个步骤反思了两轮才通过，那这一步的消耗就翻了三倍。所以 Reflection 不是越多越好，得有个上限控制，一般设置最多反思 2 到 3 轮就够了。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/cc14fb3728b51d09e7b0d3d0523ea94e__2b2dd52e36.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>实际项目中的建议是：先用 ReAct 快速验证效果，确认任务能跑通之后，再根据 token 消耗和延迟的实际数据，决定要不要切换到 Plan-and-Execute 或者叠加 Reflection。不要一上来就选最复杂的方案，先跑起来再优化。</p>
+<h3 id="选型指南">选型指南</h3>
+<p>讲完了三者和进阶机制，选型的逻辑其实很清晰。</p>
+<p>任务不复杂、流程不固定、需要实时调整的，直接用 <strong>ReAct</strong>，够用就好，别搞复杂的。任务很长、容易跑偏、需要整体结构清晰的，上 <strong>Plan-and-Execute</strong>，先把计划定清楚再执行。如果执行过程中经常遇到意外需要调整计划，就加上动态 Replan。输出要求高、不能出错的，在前两者基础上叠加 <strong>Reflection</strong> 做自我检查。如果还需要跨任务积累经验、避免重复犯错，就用 <strong>Reflexion</strong> 把失败教训沉淀下来。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/6268dfb4bfdfe015fc74c224d99ff26f__fdc67f990a.webp" alt="ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>实际项目中还有一种非常常见的混合用法：规划阶段用 Plan-and-Execute 的思路定好全局计划，每一步的执行用 ReAct 的循环来处理（因为单步执行可能也需要多轮工具调用），最后对整体输出做一次 Reflection 检查质量。这种三层嵌套的架构听起来复杂，但其实在 LangGraph 这类框架里实现起来很自然，很多生产级的 Agent 系统都是这么搭的。</p>
+<p>最容易踩的坑是学了这些范式就全堆在一起，又要规划、又要反思、又要 Replan、又要积累经验，结果系统又复杂又慢，还容易出奇怪的 bug。工程开发永远是「够用就好」，先把最基础的 ReAct 玩明白，再根据实际需求往上加，别为了炫技搞过度工程化。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答这道题最关键的一步，是先把 Reflection 的定位说清楚：它不是一套独立流程，而是可以叠加在 ReAct 或 Plan-and-Execute 之上的「质量增强 buff」，这一点很多人会搞错。</p>
+<p>说完定位，再按维度对比三者的核心区别：ReAct 边想边干、灵活度最高但长任务容易跑偏；Plan-and-Execute 先规划再执行、结构清晰但灵活度不足；Reflection 专门解决输出质量问题，代价是增加 token 消耗和延迟。</p>
+<p>如果面试官追问进阶内容，可以展开讲动态 Replan 是怎么解决「计划太僵硬」的问题，Reflexion 是怎么通过「错题本」机制实现跨任务经验积累的，再补充一下三种范式的 token 消耗差异。</p>
+<p>最后给出选型口诀：任务简单用 ReAct，流程长且复杂用 Plan-and-Execute，输出要求高再加 Reflection，顺带提一句「别过度工程化、够用就好」，面试官会觉得你有实际项目经验，不是只会背概念。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#一-基础款-react-单步迭代范式">一、基础款：ReAct 单步迭代范式</a><a class="toc-level-3" href="#二-复杂任务款-plan-and-execute-规划执行范式">二、复杂任务款：Plan-and-Execute 规划执行范式</a><a class="toc-level-3" href="#三-质量增强款-reflection-反思迭代范式">三、质量增强款：Reflection 反思迭代范式</a><a class="toc-level-3" href="#进阶-动态-replan-和-reflexion">进阶：动态 Replan 和 Reflexion</a><a class="toc-level-3" href="#token-消耗对比">token 消耗对比</a><a class="toc-level-3" href="#选型指南">选型指南</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/5_react.html"><span>上一篇 · Agent</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/7_tasksplit.html"><span>下一篇 · Agent</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -&gt; B -&gt; A 的循环。">
+  <meta name="keywords" content="AI产品经理面试题,Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/20_loop_stability.html">
+  <title>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？｜AI产品经理面试题">
+  <meta property="og:description" content="Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -&gt; B -&gt; A 的循环。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/20_loop_stability.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？｜AI产品经理面试题">
+  <meta name="twitter:description" content="Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -&gt; B -&gt; A 的循环。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/20_loop_stability.html#article","headline":"Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？｜AI产品经理面试题","description":"Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -> B -> A 的循环。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/20_loop_stability.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/20_loop_stability.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="is-active" href="#article-top"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 20 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,719 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</h1>
+          <div class="article-deck">
+            <span>题目 20</span>
+            <p>Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -&gt; B -&gt; A 的循环。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：Agent 执行任务时，一直重复搜索或者在几个 Agent 之间来回交接，你怎么处理？</p>
+<p>🙋‍♂️我：给 ReAct 循环设一个最大步数，超过就终止。</p>
+<p>👔面试官：最大步数只能兜底。一个原本需要较多步骤的深度研究任务，可能会被你提前杀掉。你怎么在资源耗尽前发现它在空转？</p>
+<p>🙋‍♂️我：记录每次的工具名和参数，只要连续几次一样就当成死循环。</p>
+<p>👔面试官：也不够。接口限流后的有界重试，调用可能完全相同，但它属于合理容错。反过来，Agent 每次只改一个搜索词，参数都不同，却可能始终没找到新证据。你该看什么？</p>
+<p>🙋‍♂️我：还要看工具输出和任务状态有没有变化，判断整个任务是否有进展。</p>
+<p>👔面试官：这才是关键。检测到无进展之后，也不能只会终止。合理重试、换参数、换工具、重新规划和人工接管，分别在什么情况下触发？</p>
+<p>这道题考的是，你能不能把 Agent 的「一直在忙」和「任务在推进」分清楚。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>Agent 出现路径震荡，常见原因是目标和停止条件模糊，工具失败后只返回空结果，任务状态没有随执行结果更新，或者多 Agent 的职责边界不清，交接时形成 A -&gt; B -&gt; A 的循环。</p>
+<p>我会在调度层记录每一步的 Agent、工具、标准化参数、结果摘要和执行前后的状态。检测时结合动作指纹、输出相似度、状态变化和 Agent 调用图，并用步数、时间、Token、成本和交接次数作为全局预算。单纯动作重复只是预警，「状态长时间没有向完成标准推进」才是更可靠的循环信号。</p>
+<p>触发预警后，我会先区分临时性错误和无进展循环。临时性错误走有界重试和退避；参数或权限错误直接修正或询问用户；执行路径没有进展时，禁用当前失败路径，改用其他参数或工具，必要时从检查点重新规划。预算耗尽或风险越界后，系统停止自动执行，将已完成结果、卡点和可选方案交给用户或人工处理。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="路径震荡到底是什么">路径震荡到底是什么？</h3>
+<p>想象 Agent 正在帮用户订会议室。它发现 A 会议室已被占用，于是又查了一遍 A；查不到新结果，便把任务交给日程 Agent；日程 Agent 认为订会议室应该由会议室 Agent 处理，又把任务送了回去。日志不断增长，工具也一直在调，但「订好一间可用会议室」这个目标始终没有推进。</p>
+<p>这种现象可以分成三个程度。「重复调用」指同一个工具和近似参数多次出现；「路径震荡」指 Agent 在几条路径之间来回切换，比如搜索 -&gt; 总结 -&gt; 再搜索，或 A -&gt; B -&gt; A；「死循环」则是系统缺少有效出口，在外部预算耗尽前无法自己停下。</p>
+<p>三者有关联，但不能只凭「动作又出现了」就下结论。搜索 Agent 正在分页拉取数据，工具名每次相同，但页码和已收集证据在变，任务有进展。接口第一次返回限流，系统按错误类型等待后再试，也是合理容错。</p>
+<p>无进展循环的关键特征，是新一轮没有带来新证据、没有完成新子任务，也没有缩小与成功标准的差距。检测时要同时看「做了什么」和「状态变了什么」。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1cb45248_retry-vs-no-progress-loop__5f9ec54430.webp" alt="Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="agent-为什么会原地打转">Agent 为什么会原地打转？</h3>
+<p>第一类问题出在「什么算完成」。用户说「帮我查一下合适的会议时间」，系统却没有定义要返回几个可用时段，是否需要所有人都有空，工具查不到满足条件的结果时又要怎么退出。Checker 没有可执行的验收标准，只能不断让 Executor 「再试一下」。</p>
+<p>第二类问题出在工具反馈。超时、限流、参数错误和权限拒绝如果都被包装成一句「调用失败」，模型就不知道失败是否值得重试，更不知道该改参数、换凭据还是换工具。它最容易继续输出上一个动作。</p>
+<p>第三类问题出在状态。工具明明已经成功，系统却没有把已完成步骤、新证据和外部副作用写回状态，下一轮模型仍然以为「这件事还没做」。如果邮件发送、扣款、建群这类有副作用的工具缺少幂等键，重复调用还会再次改变外部系统，风险比多花一些 Token 大得多。</p>
+<p>第四类问题出在路由。多 Agent 都只能看到自己的局部任务，客服 Agent 认为需要风控 Agent 批准，风控 Agent 又认为资料不齐，应该交回客服 Agent 补充。两边都没有全局决策权，交接图上就出现了环。同样的问题也会出现在 Planner 和 Executor 之间，原计划已被工具结果证明不可行，Planner 却没有改计划版本，Executor 便一直执行过时步骤。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/97005f5f_agent-handoff-cycles__53f66dc01c.webp" alt="Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="怎么在运行中发现无进展循环">怎么在运行中发现无进展循环？</h3>
+<p>检测要从「动作、结果、状态、路径」四个角度同时看，单一信号容易误判。</p>
+<p>先看动作。每一步可以生成一个「动作指纹」，把当前子任务、Agent 名称、工具名和标准化后的参数组合再取哈希。标准化很重要，参数键的顺序变了，或搜索词多了一个空格，不应该被当成全新动作。指纹在近期窗口里反复出现时，系统先打上预警标记。</p>
+<p>再看结果和状态。文本工具可以比较结果摘要的完全一致性或语义相似度，结构化工具更适合直接比较关键字段。任务状态则要看已完成步骤是否增加，待办集合是否缩小，是否拿到了新证据，阻塞原因是否发生变化。如果动作相似、输出也相似，任务状态又没有推进，循环判断才有足够证据。</p>
+<p>然后看路径。系统可以把一次任务的调用链画成有向图，节点是 Agent 或工具，边是调用或 Handoff。A -&gt; B -&gt; A 只能说路径上出现了环，还要检查回到 A 时任务状态有没有更新。审核 Agent 要求修改，执行 Agent 修改后再交回审核，这条环可能是正常的；审核意见没有新内容，文档也没变，这条环才需要被打断。</p>
+<p>最后加全局预算。系统在任务开始时分配最大步数、执行时间、Token、成本、单工具重试和 Handoff 次数。这些限额不是循环根因诊断，而是防止问题无限放大的保险丝。简单查询和深度研究不能共用一组数字，阈值要通过离线轨迹回放和线上数据按任务类型校准。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/758df132_loop-guard-signals__15e27e8628.webp" alt="Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="检测到之后-怎么把-agent-拉出来">检测到之后，怎么把 Agent 拉出来？</h3>
+<p>第一步不是立刻换模型，而是读懂上一步失败。工具应该返回结构化错误，至少包含错误码、错误类型、是否可重试、建议等待时间和可行的下一步。网络抖动、限流这类临时性错误，可以在预算内按退避策略重试，并加入随机抖动避免同一时间集中重试。参数错误、权限不足和资源不存在需要换参数、请求用户授权或补充信息，继续原样重试没有意义。</p>
+<p>第二步是换路。当前动作可以改参数时，系统要说清楚上次为什么失败，并要求新动作和旧动作有实质差异。当前工具的能力边界不匹配时，换备选工具或降级到能完成部分目标的路径。一个工具在连续多个任务中都失败，调度层可以暂时打开熔断器，快速拒绝后续调用，避免每个 Agent 都在同一个故障上浪费预算。</p>
+<p>第三步是 Replan。如果单个动作换了参数和工具仍无法推进，问题往往在原计划本身。系统从最近的检查点恢复，把原始目标、已完成结果、当前阻塞和已尝试路径交给 Planner，让它生成一份新的剩余计划。新计划应该有新版本，并把已证明无效的路径写入约束，否则 Replan 只是用更多 Token 再生成一遍旧计划。</p>
+<p>多 Agent 的 Handoff 环需要 Orchestrator 介入。它读取各 Agent 的职责、已访问路径和全局任务状态，决定是改派给有处置权的 Agent，还是暂停并请用户补充信息。Agent 的交接目标和接收条件也要写进路由规则，不能让两个角色随意把任务踢给对方。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/de3889f1_loop-recovery-decision-tree__dcff4dd845.webp" alt="Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="系统要在循环发生前做什么">系统要在循环发生前做什么？</h3>
+<p>最省成本的治理发生在第一次执行之前。每个子任务都要同时定义输入、预期输出、完成标准和失败出口。「查找有用信息」没有办法验收，改成「找到支持结论的可核验证据，若指定来源无结果则返回缺失项」，Checker 才知道什么时候可以停。</p>
+<p>状态更新也要成为执行协议的一部分。工具成功后，调度层要在一个事务中记录结果标识、已完成步骤和对外部系统的影响。有副作用的工具要用任务 ID 和动作 ID 生成幂等键，业务系统根据幂等键识别重复请求。即使 Agent 因为超时没拿到响应而重试，同一个动作也不会反复产生副作用。</p>
+<p>路由层要限定职责边界。每个 Agent 写清接收条件、可交接对象和交接前必须附带的事实。能用确定性状态机表达的主流程，就由代码控制路由；只把没有固定规则的边缘决策交给模型，可以减少无意义的来回交接。</p>
+<p>还要把每步的输入、输出、错误、状态增量、路由决策和预算消耗写进 Trace。线上警报告诉你「某类任务开始空转」，完整 Trace 才能说明是工具反馈、状态写回还是路由规则出了问题。修改策略后，把这条失败轨迹加入回归集，检查新策略能否打断循环，也要检查它会不会误伤正常的长任务。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答这道题时，先说判断标准：动作重复不等于死循环，任务状态长时间没有向完成标准推进，才是需要治理的无进展循环。</p>
+<p>成因可以沿执行链条往下排查：目标和停止条件是否可验收，工具有没有返回可操作的错误，执行后状态是否及时更新，计划是否过时，多 Agent 交接图里是否出现了无进展环。</p>
+<p>检测时用动作指纹找重复，用输出相似度和状态差分确认有没有进展，用调用图发现 Handoff 成环，再用步数、时间、Token 和成本预算做最后止损。阈值要按任务类型设置，不能把一组经验数字用在所有任务上。</p>
+<p>治理时先区分错误类型，临时性错误才走有界退避重试，无进展时换参数、换工具或 Replan。系统到达风险和预算边界后要停止自动执行，保留检查点、已完成结果和失败原因，让用户或人工可以接着处理，而不是只返回一句「超过最大步数」。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#路径震荡到底是什么">路径震荡到底是什么？</a><a class="toc-level-3" href="#agent-为什么会原地打转">Agent 为什么会原地打转？</a><a class="toc-level-3" href="#怎么在运行中发现无进展循环">怎么在运行中发现无进展循环？</a><a class="toc-level-3" href="#检测到之后-怎么把-agent-拉出来">检测到之后，怎么把 Agent 拉出来？</a><a class="toc-level-3" href="#系统要在循环发生前做什么">系统要在循环发生前做什么？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/19_evaluation.html"><span>上一篇 · Agent</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/21_agent_latency_trace.html"><span>下一篇 · Agent</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

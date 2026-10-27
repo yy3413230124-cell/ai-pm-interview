@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="LangChain 的版本演进可以抓住四条主线。">
+  <meta name="keywords" content="AI产品经理面试题,LangChain 大版本升级有哪些核心变化？,LangChain,AI产品经理,LangChain 框架面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/version_evolution.html">
+  <title>LangChain 大版本升级有哪些核心变化？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="LangChain 大版本升级有哪些核心变化？｜AI产品经理面试题">
+  <meta property="og:description" content="LangChain 的版本演进可以抓住四条主线。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/version_evolution.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LangChain 大版本升级有哪些核心变化？｜AI产品经理面试题">
+  <meta name="twitter:description" content="LangChain 的版本演进可以抓住四条主线。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/version_evolution.html#article","headline":"LangChain 大版本升级有哪些核心变化？｜AI产品经理面试题","description":"LangChain 的版本演进可以抓住四条主线。","articleSection":"LangChain 框架面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/version_evolution.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"LangChain 框架面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html"},{"@type":"ListItem","position":3,"name":"LangChain 大版本升级有哪些核心变化？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/version_evolution.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/langchain.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> LangChain 框架面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#1598c8"></i>
+            <span>LangChain</span>
+            <strong>12 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="LangChain 框架面试专题题目列表">
+            <a class="" href="./agent_frameworks.html"><span>01</span><strong>你了解过哪些 AI Agent 开发框架？</strong></a><a class="" href="./chain.html"><span>02</span><strong>请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。</strong></a><a class="" href="./langchain_architecture.html"><span>03</span><strong>LangChain 的底层架构与实现原理是什么？</strong></a><a class="" href="./build_agent.html"><span>04</span><strong>使用 LangChain 构建 Agent 的核心步骤是什么？</strong></a><a class="" href="./tool_registration.html"><span>05</span><strong>在 LangChain 中，如何为 Agent 注册工具？</strong></a><a class="" href="./memory.html"><span>06</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong></a><a class="" href="./langchain_vs_llamaindex.html"><span>07</span><strong>LangChain 和 LlamaIndex 有什么区别？</strong></a><a class="" href="./langchain4j.html"><span>08</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong></a><a class="" href="./langchain_vs_langgraph.html"><span>09</span><strong>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</strong></a><a class="" href="./langgraph_advantages.html"><span>10</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong></a><a class="is-active" href="#article-top"><span>11</span><strong>LangChain 大版本升级有哪些核心变化？</strong></a><a class="" href="./deep_research.html"><span>12</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/langchain.html">LangChain</a><span>/</span>
+            <span>第 11 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟阅读</span>
+            <span>4,024 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>LangChain 大版本升级有哪些核心变化？</h1>
+          <div class="article-deck">
+            <span>题目 11</span>
+            <p>LangChain 的版本演进可以抓住四条主线。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你说说 LangChain 大版本升级都改了什么？</p>
+<p>🙋‍♂️我：主要是支持的模型和向量数据库越来越多，功能变得更丰富。</p>
+<p>👔面试官：这些只是表面。为什么要拆分 <code>langchain-core</code> 和模型集成包？为什么又引入 Runnable、LangGraph 和 middleware？</p>
+<p>🙋‍♂️我：因为旧 API 不好用，所以新版本把旧 Chain 全部删掉了。</p>
+<p>👔面试官：旧能力主要被移到 <code>langchain-classic</code>，并不是全部删除。真正值得关注的是框架职责发生了什么变化。</p>
+<p>🙋‍♂️我：那升级时只更新 <code>langchain</code> 主包，再把旧导入改掉就可以了。</p>
+<p>👔面试官：还要检查 LangGraph、社区包和模型集成包的兼容关系，并回归测试工具调用、流式输出和持久化，不能把跨版本迁移理解成换几个 import。</p>
+<p>LangChain 的版本演进，可以沿着「稳定核心协议、独立模型集成、高层 Agent API、LangGraph 运行时」这条主线来理解。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先判断团队需要的是快速验证还是长期可控编排，再讨论框架抽象与运行时可观测性，避免只回答“用过某个 Chain”。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>LangChain 的版本演进可以抓住四条主线。</p>
+<p>第一是拆分核心与集成。稳定的消息、模型、Tool 和 Runnable 协议放进 <code>langchain-core</code>，第三方模型与向量库则迁到 <code>langchain-community</code> 或独立集成包，避免厂商 SDK 的变化频繁影响核心框架。</p>
+<p>第二是使用 Runnable 和 LCEL 统一组件调用。Prompt、Model、Parser 等组件拥有一致的 <code>invoke</code>、<code>batch</code>、<code>stream</code> 和异步接口，确定性流程可以通过组合而不是不断继承新的 Chain 类实现。</p>
+<p>第三是将 Agent 运行时转向 LangGraph。传统 Agent 执行器适合简单循环，却难以处理复杂状态、分支、暂停恢复和人工审批。LangGraph 将执行过程显式表示为状态图，成为 LangChain Agent 的底层运行基础。</p>
+<p>第四是 LangChain v1 进一步聚焦 Agent。<code>create_agent</code> 成为高层入口，middleware 负责动态提示词、工具控制、摘要、重试和人工介入等横切能力，旧 Chain 等接口进入 <code>langchain-classic</code>。</p>
+<p>这些变化都指向同一个方向：稳定核心抽象、解耦第三方集成、统一组合协议，并把复杂 Agent 交给可持久化、可恢复的图运行时。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么要不断调整架构">为什么要不断调整架构？</h3>
+<p>LangChain 早期把模型、向量库、工具、Retriever 和大量预制 Chain 都放在相近的包结构中，快速验证想法很方便。可项目一大，第三方 SDK 的一次更新就可能牵动整个依赖树。</p>
+<p>依赖问题只是第一层。继续往上看，不同 Chain 的调用和组合方式并不统一，开发者需要记住越来越多专用 API；再遇到复杂 Agent，执行循环又藏在执行器内部，很难插入分支、审批和恢复逻辑。功能越加越多，核心职责反而越来越模糊。</p>
+<p>大版本演进一直在重新划分边界：哪些协议需要保持稳定，哪些集成应该独立更新，哪些流程应该由更底层的运行时管理。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/221d4ac2_langchain-evolution-timeline__cd614dc44d.webp" alt="LangChain 大版本升级有哪些核心变化？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="核心与集成为何拆开">核心与集成为何拆开？</h3>
+<p>模型厂商、向量数据库和外部工具的 SDK 变化很快，而消息、Runnable、Tool 等核心协议应该尽量稳定。把它们全部放在同一个包中，会让两种不同的迭代节奏互相影响。</p>
+<p>拆分后，主要职责可以这样理解：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>包</th>
+<th>核心职责</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>langchain-core</code></td>
+<td>消息、模型、Tool、Runnable 等基础协议</td>
+</tr>
+<tr>
+<td><code>langchain</code></td>
+<td>面向应用开发的高层 Agent 能力</td>
+</tr>
+<tr>
+<td><code>langchain-community</code></td>
+<td>大量社区维护的第三方集成</td>
+</tr>
+<tr>
+<td><code>langchain-openai</code> 等独立包</td>
+<td>跟随特定厂商 SDK 独立迭代</td>
+</tr>
+</tbody>
+</table></div><p>这种设计让项目只安装真正需要的集成，也降低了某个模型 SDK 升级对整个框架的影响。面试时不需要背出所有包名，重点应放在「稳定内核，释放边缘」这一架构思想。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/cf1a6af2_core-integration-layering__2d1990f4d2.webp" alt="LangChain 大版本升级有哪些核心变化？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="runnable-改变了什么">Runnable 改变了什么？</h3>
+<p>早期 LangChain 为不同流程提供了大量 Chain 类，调用方式和扩展方式并不完全一致。Runnable 协议与 LCEL 将 Prompt、Model、Parser、Retriever 等组件统一为可组合单元。</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># Prompt、Model 和 Parser 统一遵循 Runnable 协议
+chain = prompt | model | output_parser
+
+# 组合后的整体仍然使用统一的 invoke 接口
+result = chain.invoke({&quot;question&quot;: &quot;什么是 Agent？&quot;})
+</code></pre></div><p>这段代码组合出的整体仍然遵循 Runnable 协议，因此可以使用统一的同步、异步、批处理、流式和追踪接口。</p>
+<p>它代表 LangChain 从「大量预制类」转向「少量标准协议 + 组合」。对于步骤固定的确定性流程，Runnable 和 LCEL 往往比 Agent 更容易测试和控制。</p>
+<h3 id="为什么转向-langgraph">为什么转向 LangGraph？</h3>
+<p>传统 Agent 执行器通常在内部运行「模型判断、调用工具、再次判断」的循环。简单 Agent 使用方便，但一旦加入规划、反思、并行分支、人工审批或故障恢复，隐藏的循环就会变得难以修改。</p>
+<p>LangGraph 的解决思路，是把隐藏循环摊开成 <code>State + Node + Edge</code>。State 保存消息和业务进度，Node 执行模型、工具或普通业务逻辑，Edge 决定结果接下来流向哪里。</p>
+<p>这样，循环和分支不再隐藏在执行器内部，检查点还能保存运行状态，为暂停恢复、人工介入和长时间执行提供基础。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/934e25ef_agentexecutor-vs-langgraph__ceb5b3d420.webp" alt="LangChain 大版本升级有哪些核心变化？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>LangGraph 并不是把 LangChain 完全替换掉。LangChain 提供模型、Tool、middleware 和 <code>create_agent</code> 等高层开发体验，LangGraph 提供底层状态与执行能力。简单 Agent 使用 LangChain 即可，复杂流程再下沉到 LangGraph。</p>
+<h3 id="langchain-v1-聚焦了什么">LangChain v1 聚焦了什么？</h3>
+<p>LangChain v1 将主线进一步收敛到 Agent 开发。要理解这次收敛，可以先从开发者最常接触的入口看起。</p>
+<p>新项目通常从 <code>create_agent</code> 开始。开发者提供模型、工具和系统提示词，底层由 LangGraph 运行 Agent loop，因此这套高层入口能够继续使用持久化、流式输出和人工介入等运行能力。LangChain 保留易用性，LangGraph 承接复杂执行能力。</p>
+<p>Agent 跑起来后，总会出现动态提示词、模型选择、工具筛选、对话摘要、重试和人工审批等需求。如果每增加一项能力都重写循环，高层入口很快又会失去意义。因此 v1 把 middleware 作为主要扩展方式，让这些横切逻辑插入关键执行阶段，而不是复制整套 Agent loop。</p>
+<p>高层入口和扩展机制明确以后，主命名空间也能顺势精简。旧 Chain、Retriever、Indexing 和 Hub 等能力主要迁到 <code>langchain-classic</code>，存量项目仍可渐进迁移，新的 <code>langchain</code> 包则把注意力留给 Agent 主线。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/3dc42521_v1-agent-middleware-architecture__dd265defa0.webp" alt="LangChain 大版本升级有哪些核心变化？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>因此，不能把 v1 简单理解成「旧 API 全部删除」。更准确的说法是：新项目使用聚焦后的 Agent API，旧项目通过 <code>langchain-classic</code> 保持运行，再根据需要逐步迁移。</p>
+<h3 id="pydantic-2-值得重点背吗">Pydantic 2 值得重点背吗？</h3>
+<p>Python v0.3 将内部数据模型迁移到 Pydantic 2，并停止使用 Pydantic 1 兼容层。这属于重要的迁移背景，因为工具 Schema、结构化输出和配置对象都依赖 Pydantic。</p>
+<p>面试时不需要展开 Pydantic 的全部版本差异。说明它统一了数据模型与校验基线，旧项目升级时需要检查导入路径和模型定义即可。拆包、Runnable、LangGraph 和 v1 Agent 架构更能体现 LangChain 的长期演进方向。</p>
+<h3 id="升级时要注意什么">升级时要注意什么？</h3>
+<p>跨大版本升级不能只执行一次依赖更新。动手前先锁定当前依赖和可复现环境，再阅读目标版本的迁移指南，否则一旦多个包同时变化，很难判断问题从哪里开始。</p>
+<p>升级时要顺着新的分层检查兼容关系。<code>langchain</code>、LangGraph 和模型集成包各自有更新节奏，确认版本组合以后，才能逐步替换废弃导入路径和内部 API。这里适合小步修改、小步运行，不要等所有代码改完才第一次启动。</p>
+<p>代码能够启动，只说明导入问题解决了。工具调用、结构化输出、流式响应和持久化仍要分别回归，因为这些边界最容易受到协议和运行时变化影响。付款、发消息等有副作用的路径还要先在隔离环境验证幂等，再做小流量发布，避免一次升级把重复执行带进真实业务。</p>
+<p>不同包的更新节奏并不完全一致。主包的稳定承诺不能自动覆盖社区集成、合作伙伴包和实验性 API，因此生产项目应该固定依赖版本，并尽量建立在公开稳定接口之上。</p>
+<h3 id="演进方向是什么">演进方向是什么？</h3>
+<p>几次架构变化连起来是一条清楚的主线：用 <code>langchain-core</code> 稳定基础协议，再把模型和数据库集成拆出去独立更新，解决核心与外部 SDK 节奏不一致的问题。</p>
+<p>核心边界稳定以后，Runnable 与 LCEL 统一了确定性流程的组合方式。最后，复杂状态和执行流程下沉到 LangGraph，高层再通过 <code>create_agent</code> 和 middleware 提供更容易使用的 Agent 入口。</p>
+<p>这套方向让 LangChain 从「封装大量 LLM 功能」，转向「提供清晰分层的 Agent 工程体系」。代价是旧项目升级需要处理依赖和导入路径，收益则是核心接口更稳定、复杂流程更可控，也更适合生产环境。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>面试时，不需要背诵每个小版本增加了哪些 API，也不建议报当前最新补丁版本。围绕四个架构节点回答即可：</p>
+<ul>
+<li>拆分核心与第三方集成。</li>
+<li>使用 Runnable 和 LCEL 统一组件协议。</li>
+<li>使用 LangGraph 承担复杂 Agent 运行时。</li>
+<li>v1 通过 <code>create_agent</code>、middleware 和 <code>langchain-classic</code> 重新聚焦 Agent。</li>
+</ul>
+<p>LangChain 的演进方向是稳定核心、解耦集成、组合确定性流程、图化 Agent 运行时。这样既能回答「升级了什么」，也能解释「为什么要升级」。</p>
+<h2 id="参考资料">📚 参考资料</h2>
+<ul>
+<li><a href="https://www.langchain.com/blog/langchain-v0-1-0" target="_blank" rel="noreferrer noopener">LangChain 官方：v0.1 发布说明</a></li>
+<li><a href="https://www.langchain.com/blog/langchain-v02-leap-to-stability" target="_blank" rel="noreferrer noopener">LangChain 官方：v0.2 稳定性升级说明</a></li>
+<li><a href="https://www.langchain.com/blog/announcing-langchain-v0-3" target="_blank" rel="noreferrer noopener">LangChain 官方：v0.3 发布说明</a></li>
+<li><a href="https://www.langchain.com/blog/langchain-langgraph-1dot0" target="_blank" rel="noreferrer noopener">LangChain 官方：LangChain 与 LangGraph 1.0 发布说明</a></li>
+<li><a href="https://docs.langchain.com/oss/python/releases/langchain-v1" target="_blank" rel="noreferrer noopener">LangChain Python 官方文档：v1 新能力</a></li>
+<li><a href="https://docs.langchain.com/oss/python/migrate/langchain-v1" target="_blank" rel="noreferrer noopener">LangChain Python 官方文档：v1 迁移指南</a></li>
+<li><a href="https://docs.langchain.com/oss/python/release-policy" target="_blank" rel="noreferrer noopener">LangChain Python 官方文档：版本策略</a></li>
+</ul>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么要不断调整架构">为什么要不断调整架构？</a><a class="toc-level-3" href="#核心与集成为何拆开">核心与集成为何拆开？</a><a class="toc-level-3" href="#runnable-改变了什么">Runnable 改变了什么？</a><a class="toc-level-3" href="#为什么转向-langgraph">为什么转向 LangGraph？</a><a class="toc-level-3" href="#langchain-v1-聚焦了什么">LangChain v1 聚焦了什么？</a><a class="toc-level-3" href="#pydantic-2-值得重点背吗">Pydantic 2 值得重点背吗？</a><a class="toc-level-3" href="#升级时要注意什么">升级时要注意什么？</a><a class="toc-level-3" href="#演进方向是什么">演进方向是什么？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a><a class="toc-level-2" href="#参考资料">📚 参考资料</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/langchain/langgraph_advantages.html"><span>上一篇 · LangChain</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong></a>
+      <a class="pagination-card next" href="../../articles/langchain/deep_research.html"><span>下一篇 · LangChain</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,669 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="从 Chunking、Embedding、向量检索到 Query Rewrite、知识冲突和效果评估，覆盖完整 RAG 链路。">
+  <meta name="keywords" content="AI产品经理面试题,RAG面试题,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html">
+  <title>RAG 面试专题｜AI产品经理面试题</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../assets/site.webmanifest">
+  <link rel="stylesheet" href="../styles/fonts.css">
+  <link rel="stylesheet" href="../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="RAG 面试专题｜AI产品经理面试题">
+  <meta property="og:description" content="从 Chunking、Embedding、向量检索到 Query Rewrite、知识冲突和效果评估，覆盖完整 RAG 链路。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RAG 面试专题｜AI产品经理面试题">
+  <meta name="twitter:description" content="从 Chunking、Embedding、向量检索到 Query Rewrite、知识冲突和效果评估，覆盖完整 RAG 链路。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html#page","url":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html","name":"RAG 面试专题｜AI产品经理面试题","description":"从 Chunking、Embedding、向量检索到 Query Rewrite、知识冲突和效果评估，覆盖完整 RAG 链路。","inLanguage":"zh-CN","isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"},"mainEntity":{"@type":"ItemList","numberOfItems":23,"itemListElement":[{"@type":"ListItem","position":1,"name":"什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/1_whatisrag.html"},{"@type":"ListItem","position":2,"name":"大模型的 RAG 主要用来解决什么问题？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/2_rag_problems.html"},{"@type":"ListItem","position":3,"name":"相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/3_rag_vs_finetune.html"},{"@type":"ListItem","position":4,"name":"RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/4_chunking.html"},{"@type":"ListItem","position":5,"name":"怎么规避语义被切割掉的问题？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/5_semantic_cuts.html"},{"@type":"ListItem","position":6,"name":"在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/6_embedding.html"},{"@type":"ListItem","position":7,"name":"Embedding 有哪几种算法你了解过吗？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/7_embedding_algos.html"},{"@type":"ListItem","position":8,"name":"什么是向量数据库？有没有做过向量数据库的对比选型？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/8_vectordb.html"},{"@type":"ListItem","position":9,"name":"讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/9_vectordb_practice.html"},{"@type":"ListItem","position":10,"name":"你使用 RAG 给大模型一个输入，系统是怎样的工作流程？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/10_online_workflow.html"},{"@type":"ListItem","position":11,"name":"请你介绍一下向量检索和关键词检索的区别？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/11_retrieval_types.html"},{"@type":"ListItem","position":12,"name":"如何润色用户的 Query（Query Rewrite）？目的是什么？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/12_query_rewrite.html"},{"@type":"ListItem","position":13,"name":"什么是多路召回？具体怎么做？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/13_multi_retrieval.html"},{"@type":"ListItem","position":14,"name":"RAG 检索优化策略有哪些？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/14_retrieval_opt.html"},{"@type":"ListItem","position":15,"name":"了解哪些更复杂的 RAG 范式？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/15_advanced_paradigms.html"},{"@type":"ListItem","position":16,"name":"在什么场景下，你会选择使用图数据库来增强传统的向量检索？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/16_graph_db.html"},{"@type":"ListItem","position":17,"name":"如何规避 RAG 系统中大模型的幻觉？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/17_hallucination.html"},{"@type":"ListItem","position":18,"name":"怎么量化你的 RAG 效果？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/18_evaluation.html"},{"@type":"ListItem","position":19,"name":"RAG 知识库如何实现动态与持续更新？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/19_dynamic_update.html"},{"@type":"ListItem","position":20,"name":"在实际落地中，你觉得 RAG 最难的地方是哪里？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/20_hardest_parts.html"},{"@type":"ListItem","position":21,"name":"不同来源的文档发生知识冲突时，RAG 应该信谁？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/21_knowledge_conflict.html"},{"@type":"ListItem","position":22,"name":"上下文窗口很大时为什么还需要 RAG？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/22_rag_long_context.html"},{"@type":"ListItem","position":23,"name":"RAG 与 Agent 自主文件检索应该如何选型？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/23_rag_vs_file_search.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"}]}]}</script>
+</head>
+<body class="category-page" data-root="../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../index.html">首页</a>
+          <a href="../index.html#library">面试题库</a>
+          <a class="is-active" href="../index.html#topics">知识专题</a>
+          <a href="../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../index.html">首页 <span>01</span></a>
+          <a href="../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <section class="category-hero" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b">
+      <div class="category-hero-copy reveal">
+        <a class="breadcrumb" href="../index.html">首页</a>
+        <span class="category-index">02</span>
+        <span class="eyebrow">INTERVIEW TOPIC · RAG</span>
+        <h1>RAG 面试专题</h1>
+        <p>RAG 现在基本上是 AI 应用里的标配了，不管你做的是智能客服、知识问答还是企业内部搜索，底下大概率都有一套 RAG 系统在跑。所以只要你面的是 AI 工程方向的岗位，RAG 几乎是必问的，而且面试官问起来特别喜欢一路往深了追，从「RAG 是什么」一直追到「你线上遇到过什么坑」，很多同学前面几个问题答得还行，越往后越接不住。</p>
+        <div class="category-actions">
+          <a class="button button-primary" href="#question-list">查看 23 道题 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+          <button class="button" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg> 随机抽题</button>
+        </div>
+      </div>
+      <div class="category-art" aria-hidden="true">
+        <span class="category-art-label">RAG</span>
+        <strong>23</strong>
+        <span>QUESTIONS</span>
+        <i class="category-art-orbit"></i>
+        <i class="category-art-grid"></i>
+      </div>
+    </section>
+    <section class="section category-library" id="question-list">
+      <div class="section-heading">
+        <div><span class="section-kicker">ALL QUESTIONS</span><h2>RAG 题目列表</h2></div>
+        <p>从索引构建、召回优化到生产落地</p>
+      </div>
+      <div class="question-grid">
+        
+    <article class="question-card" data-question-card data-category="rag" data-search="什么是rag详细描述一个完整rag系统的详细工作流程rag全称是retrievalaugmentedgeneration就是检索增强生成我理解它解决的核心问题是llm的知识在训练完之后就固定了遇到私有数据或者最新的信息它就答不上来rag的做法是在生成答案之前先去外部知识库里检索相关内容然后把检索结果和简要回答详细解析llm的知识冻结困境离线阶段提前把知识准备好在线阶段用户提问时实时检索串起来看完整流程面试总结" data-href="articles/rag/1_whatisrag.html">
+      <a class="card-cover" href="../articles/rag/1_whatisrag.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">01</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/1_whatisrag.html">什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</a></h3>
+        <p>RAG 全称是 Retrieval-Augmented Generation，就是检索增强生成。我理解它解决的核心问题是，LLM 的知识在训练完之后就固定了，遇到私有数据或者最新的信息它就答不上来。RAG 的做法是在生成答案之前，先去外部知识库里检索相关内容，然后把检索结果和…</p>
+        <div class="card-footer">
+          <span>QUESTION 01</span>
+          <a href="../articles/rag/1_whatisrag.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="大模型的rag主要用来解决什么问题rag主要解决三个问题简要回答详细解析llm的知识冻结问题知识过期训练数据有截止日期知识空白私有数据根本没进过训练集知识缺失的副产品幻觉rag是怎么解决这三个问题的面试总结" data-href="articles/rag/2_rag_problems.html">
+      <a class="card-cover" href="../articles/rag/2_rag_problems.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：大模型的 RAG 主要用来解决什么问题？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">02</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/2_rag_problems.html">大模型的 RAG 主要用来解决什么问题？</a></h3>
+        <p>RAG 主要解决三个问题。</p>
+        <div class="card-footer">
+          <span>QUESTION 02</span>
+          <a href="../articles/rag/2_rag_problems.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="相比直接微调llmrag解决了什么问题微调和rag各自的优劣势是什么我的理解是这两个东西解决的不是同一层面的问题不是谁替代谁的关系简要回答详细解析微调finetuning把知识直接烧进模型rag不改参数推理时现查知识组合使用微调解决怎么说rag解决说什么面试总结" data-href="articles/rag/3_rag_vs_finetune.html">
+      <a class="card-cover" href="../articles/rag/3_rag_vs_finetune.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">03</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 6 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/3_rag_vs_finetune.html">相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</a></h3>
+        <p>我的理解是这两个东西解决的不是同一层面的问题，不是谁替代谁的关系。</p>
+        <div class="card-footer">
+          <span>QUESTION 03</span>
+          <a href="../articles/rag/3_rag_vs_finetune.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="rag中的文档是怎么存的粒度是多大详细说说文档切割chunking策略文档不能直接存进向量库必须先切成小块也就是chunk每个chunk分别向量化之后存成一条记录简要回答详细解析文档是怎么存的粒度怎么定文档切割策略有哪些策略一固定大小切割fixedsizechunking策略二语义边界切割semanticstructurebasedchunking策略三特殊内容专项处理策略四父子切割parentchildchunking面试总结" data-href="articles/rag/4_chunking.html">
+      <a class="card-cover" href="../articles/rag/4_chunking.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">04</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/4_chunking.html">RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</a></h3>
+        <p>文档不能直接存进向量库，必须先切成小块也就是 chunk，每个 chunk 分别向量化之后存成一条记录。</p>
+        <div class="card-footer">
+          <span>QUESTION 04</span>
+          <a href="../articles/rag/4_chunking.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="怎么规避语义被切割掉的问题我的思路是从两个方向来规避这个问题第一个方向是切的时候就不要在语义中间截断用重叠切割和语义边界切割来保证每个chunk内容是完整的也就是按句子段落这些自然的边界来切简要回答详细解析语义被切割是什么问题方案一重叠切割overlap方案二按语义边界切割方案三句子窗口检索sentencewindowretrieval方案四父子切割parentchildchunking方案五命题化切割propositionsbasedchunking方案六contextualretrievalanthropic成本控制用promptcaching大幅降低llm调用费用面试总结" data-href="articles/rag/5_semantic_cuts.html">
+      <a class="card-cover" href="../articles/rag/5_semantic_cuts.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：怎么规避语义被切割掉的问题？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">05</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/5_semantic_cuts.html">怎么规避语义被切割掉的问题？</a></h3>
+        <p>我的思路是从两个方向来规避这个问题。第一个方向是切的时候就不要在语义中间截断，用重叠切割和语义边界切割来保证每个 chunk 内容是完整的，也就是按句子、段落这些自然的边界来切。</p>
+        <div class="card-footer">
+          <span>QUESTION 05</span>
+          <a href="../articles/rag/5_semantic_cuts.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="在rag中embedding究竟是什么如何选择和评估一个embedding模型embedding我理解就是把一段文本转成一串数字向量的过程它有一个很关键的特性就是语义相近的文本转出来的向量在数学空间里的距离也近rag里的语义检索就是靠这个实现的不是关键词匹配而是看两段内容的意思相不相近简要回答详细解析embedding是什么常见embedding模型对比如何选择embedding模型如何评估embedding模型面试总结" data-href="articles/rag/6_embedding.html">
+      <a class="card-cover" href="../articles/rag/6_embedding.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">06</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/6_embedding.html">在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</a></h3>
+        <p>Embedding 我理解就是把一段文本转成一串数字向量的过程。它有一个很关键的特性，就是语义相近的文本，转出来的向量在数学空间里的距离也近。RAG 里的语义检索就是靠这个实现的，不是关键词匹配，而是看两段内容的意思相不相近。</p>
+        <div class="card-footer">
+          <span>QUESTION 06</span>
+          <a href="../articles/rag/6_embedding.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="embedding有哪几种算法你了解过吗embedding算法大致经历了三代演进简要回答详细解析为什么embedding算法要一代代演进第一代静态词向量word2vecglovefasttext第二代上下文相关向量elmobert第三代句子级对比学习embeddingsbertsimcsebge面试总结" data-href="articles/rag/7_embedding_algos.html">
+      <a class="card-cover" href="../articles/rag/7_embedding_algos.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：Embedding 有哪几种算法你了解过吗？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">07</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/7_embedding_algos.html">Embedding 有哪几种算法你了解过吗？</a></h3>
+        <p>Embedding 算法大致经历了三代演进。</p>
+        <div class="card-footer">
+          <span>QUESTION 07</span>
+          <a href="../articles/rag/7_embedding_algos.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="什么是向量数据库有没有做过向量数据库的对比选型向量数据库是专门用来存储和检索高维向量的数据库核心能力是近似最近邻搜索也叫ann能在百万甚至亿级的向量里快速找出最相似的几条简要回答详细解析什么是向量数据库为什么需要专门的向量数据库核心索引算法hnsw和ivf向量数据库的核心能力选型建议面试总结" data-href="articles/rag/8_vectordb.html">
+      <a class="card-cover" href="../articles/rag/8_vectordb.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：什么是向量数据库？有没有做过向量数据库的对比选型？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">08</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/8_vectordb.html">什么是向量数据库？有没有做过向量数据库的对比选型？</a></h3>
+        <p>向量数据库是专门用来存储和检索高维向量的数据库，核心能力是近似最近邻搜索，也叫 ANN，能在百万甚至亿级的向量里快速找出最相似的几条。</p>
+        <div class="card-footer">
+          <span>QUESTION 08</span>
+          <a href="../articles/rag/8_vectordb.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="讲讲你用的向量数据库数据量级是多大性能如何遇到过性能瓶颈吗我们生产环境用的是milvus数据量级在百万条向量左右每条是1024维用hnsw索引单次查询的延迟在20到50毫秒选milvus主要是因为它支持分布式部署和读写分离适合数据量大并发高的场景简要回答详细解析先搞清楚向量数据库是干什么的为什么选milvusmilvus的核心概念数据规模和实测性能遇到的性能瓶颈面试总结" data-href="articles/rag/9_vectordb_practice.html">
+      <a class="card-cover" href="../articles/rag/9_vectordb_practice.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">09</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/9_vectordb_practice.html">讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</a></h3>
+        <p>我们生产环境用的是 Milvus，数据量级在百万条向量左右，每条是 1024 维，用 HNSW 索引，单次查询的延迟在 20 到 50 毫秒。选 Milvus 主要是因为它支持分布式部署和读写分离，适合数据量大、并发高的场景。</p>
+        <div class="card-footer">
+          <span>QUESTION 09</span>
+          <a href="../articles/rag/9_vectordb_practice.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="你使用rag给大模型一个输入系统是怎样的工作流程当你把一个问题输入给rag系统它不会直接丢给大模型而是先经历一套检索整理生成的流水线简要回答详细解析为什么不能直接把问题扔给大模型第一步query预处理queryrewrite第二步queryembedding问题向量化第三步向量检索ann搜索多路召回第四步rerank精排第五步prompt拼装第六步大模型生成溯源面试总结" data-href="articles/rag/10_online_workflow.html">
+      <a class="card-cover" href="../articles/rag/10_online_workflow.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：你使用 RAG 给大模型一个输入，系统是怎样的工作流程？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">10</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/10_online_workflow.html">你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</a></h3>
+        <p>当你把一个问题输入给 RAG 系统，它不会直接丢给大模型，而是先经历一套「检索 -&gt; 整理 -&gt; 生成」的流水线。</p>
+        <div class="card-footer">
+          <span>QUESTION 10</span>
+          <a href="../articles/rag/10_online_workflow.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="请你介绍一下向量检索和关键词检索的区别关键词检索bm25这类靠的是词频统计看查询词在文档里出现了多少次擅长精确命中向量检索靠的是语义空间里的距离能理解换了种表达方式的同一个意思擅长模糊语义匹配两者各有盲区bm25遇到同义词就没辙向量检索遇到专有名词产品型号这类精确词就容易漏所以r简要回答详细解析检索要解决的核心问题关键词检索字面匹配靠统计向量检索语义匹配靠embedding两者的核心区别对比混合检索两路都跑合并取长补短面试总结" data-href="articles/rag/11_retrieval_types.html">
+      <a class="card-cover" href="../articles/rag/11_retrieval_types.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：请你介绍一下向量检索和关键词检索的区别？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">11</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 7 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/11_retrieval_types.html">请你介绍一下向量检索和关键词检索的区别？</a></h3>
+        <p>关键词检索（BM25 这类）靠的是词频统计，看查询词在文档里出现了多少次，擅长精确命中；向量检索靠的是语义空间里的距离，能理解「换了种表达方式的同一个意思」，擅长模糊语义匹配。两者各有盲区：BM25 遇到同义词就没辙，向量检索遇到专有名词、产品型号这类精确词就容易漏。所以 R…</p>
+        <div class="card-footer">
+          <span>QUESTION 11</span>
+          <a href="../articles/rag/11_retrieval_types.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="如何润色用户的queryqueryrewrite目的是什么我用queryrewrite主要是为了弥补用户提问方式和知识库文档表述之间的语义鸿沟用户的问题往往口语化模糊带缩写而文档写的是正式书面语向量相似度天然偏低导致该召回的内容没被召回简要回答详细解析为什么需要queryrewrite方法一直接改写queryrewriting方法二hydehypotheticaldocumentembeddings方法三stepbackprompting后退提问方法四多query扩展面试总结" data-href="articles/rag/12_query_rewrite.html">
+      <a class="card-cover" href="../articles/rag/12_query_rewrite.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：如何润色用户的 Query（Query Rewrite）？目的是什么？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">12</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 7 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/12_query_rewrite.html">如何润色用户的 Query（Query Rewrite）？目的是什么？</a></h3>
+        <p>我用 Query Rewrite 主要是为了弥补用户提问方式和知识库文档表述之间的语义鸿沟。用户的问题往往口语化、模糊、带缩写，而文档写的是正式书面语，向量相似度天然偏低，导致该召回的内容没被召回。</p>
+        <div class="card-footer">
+          <span>QUESTION 12</span>
+          <a href="../articles/rag/12_query_rewrite.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="什么是多路召回具体怎么做多路召回就是同时用多种不同的检索方式去捞候选内容然后合并排序而不是只靠单一的向量检索我理解核心出发点是向量检索和关键词检索各有盲区向量检索擅长语义相似但对精确词语比如产品型号缩写数字效果比较差bm25关键词检索正好相反精确匹配强但不理解语义我在项目里常简要回答详细解析什么是多路召回为什么单路召回不够用第一路向量检索denseretrieval第二路bm25关键词检索sparseretrieval第三路多query扩展召回结果融合rrf算法实战建议面试总结" data-href="articles/rag/13_multi_retrieval.html">
+      <a class="card-cover" href="../articles/rag/13_multi_retrieval.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：什么是多路召回？具体怎么做？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">13</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/13_multi_retrieval.html">什么是多路召回？具体怎么做？</a></h3>
+        <p>多路召回就是同时用多种不同的检索方式去捞候选内容，然后合并排序，而不是只靠单一的向量检索。我理解核心出发点是向量检索和关键词检索各有盲区，向量检索擅长语义相似，但对精确词语比如产品型号、缩写、数字效果比较差；BM25 关键词检索正好相反，精确匹配强，但不理解语义。我在项目里常…</p>
+        <div class="card-footer">
+          <span>QUESTION 13</span>
+          <a href="../articles/rag/13_multi_retrieval.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="rag检索优化策略有哪些我理解rag的检索优化可以从四个层次来看索引层决定知识怎么存查询层决定问题怎么转换召回层决定从哪些路径去找重排序层决定最终哪些内容进入prompt简要回答详细解析检索是rag的命脉四层优化全貌第一层索引优化第二层查询优化第三层召回优化第四层重排序四层优化怎么组合面试总结" data-href="articles/rag/14_retrieval_opt.html">
+      <a class="card-cover" href="../articles/rag/14_retrieval_opt.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：RAG 检索优化策略有哪些？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">14</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/14_retrieval_opt.html">RAG 检索优化策略有哪些？</a></h3>
+        <p>我理解 RAG 的检索优化可以从四个层次来看：索引层决定知识怎么存，查询层决定问题怎么转换，召回层决定从哪些路径去找，重排序层决定最终哪些内容进入 prompt。</p>
+        <div class="card-footer">
+          <span>QUESTION 14</span>
+          <a href="../articles/rag/14_retrieval_opt.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="了解哪些更复杂的rag范式在我的了解里rag的发展经历了三代演进naiverag是基础的检索加生成advancedrag在检索前后都加了优化比如query改写rerank混合检索这些modularrag是把各个环节做成模块可以任意组合简要回答详细解析什么是rag范式为什么需要不同的rag范式三代rag的演进高级范式面试总结" data-href="articles/rag/15_advanced_paradigms.html">
+      <a class="card-cover" href="../articles/rag/15_advanced_paradigms.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：了解哪些更复杂的 RAG 范式？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">15</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/15_advanced_paradigms.html">了解哪些更复杂的 RAG 范式？</a></h3>
+        <p>在我的了解里，RAG 的发展经历了三代演进：Naive RAG 是基础的检索加生成；Advanced RAG 在检索前后都加了优化，比如 Query 改写、Rerank、混合检索这些；Modular RAG 是把各个环节做成模块可以任意组合。</p>
+        <div class="card-footer">
+          <span>QUESTION 15</span>
+          <a href="../articles/rag/15_advanced_paradigms.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="在什么场景下你会选择使用图数据库来增强传统的向量检索我的判断是当业务问题涉及多个实体之间的关联推理的时候就需要考虑引入图数据库来增强简要回答详细解析向量检索能做什么做不到什么图数据库是干什么的为什么能解决这个问题向量检索图数据库的组合用法哪些场景真的需要图数据库什么时候不值得上图数据库面试总结" data-href="articles/rag/16_graph_db.html">
+      <a class="card-cover" href="../articles/rag/16_graph_db.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：在什么场景下，你会选择使用图数据库来增强传统的向量检索？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">16</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/16_graph_db.html">在什么场景下，你会选择使用图数据库来增强传统的向量检索？</a></h3>
+        <p>我的判断是，当业务问题涉及多个实体之间的关联推理的时候，就需要考虑引入图数据库来增强。</p>
+        <div class="card-footer">
+          <span>QUESTION 16</span>
+          <a href="../articles/rag/16_graph_db.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="如何规避rag系统中大模型的幻觉我遇到过的rag幻觉主要有两类第一类是检索没有召回到相关内容llm没有可用的上下文靠自身知识在编造答案第二类是检索内容召回了但llm没有严格遵循在文档内容的基础上加了自己的推断我用来规避幻觉的策略主要有四个方向第一是prompt强约束明确告知l简要回答详细解析幻觉是什么为什么rag里会有幻觉方案一用prompt告诉llm只准照着资料说方案二检索质量差时直接拒绝回答方案三答案生成后逐条核查有没有凭空捏造方案四强制llm输出时带上来源编号四个方案怎么组合面试总结" data-href="articles/rag/17_hallucination.html">
+      <a class="card-cover" href="../articles/rag/17_hallucination.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：如何规避 RAG 系统中大模型的幻觉？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">17</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/17_hallucination.html">如何规避 RAG 系统中大模型的幻觉？</a></h3>
+        <p>我遇到过的 RAG 幻觉主要有两类。第一类是检索没有召回到相关内容，LLM 没有可用的上下文，靠自身知识在编造答案。第二类是检索内容召回了但 LLM 没有严格遵循，在文档内容的基础上加了自己的推断。我用来规避幻觉的策略主要有四个方向：第一是 Prompt 强约束，明确告知 L…</p>
+        <div class="card-footer">
+          <span>QUESTION 17</span>
+          <a href="../articles/rag/17_hallucination.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="怎么量化你的rag效果我评估rag效果是分两层来看的简要回答详细解析什么是rag评估为什么需要rag评估为什么rag评估很难第一层检索层评估第二层生成层评估ragas框架通过指标定位问题线上指标最终衡量标准面试总结" data-href="articles/rag/18_evaluation.html">
+      <a class="card-cover" href="../articles/rag/18_evaluation.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：怎么量化你的 RAG 效果？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">18</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/18_evaluation.html">怎么量化你的 RAG 效果？</a></h3>
+        <p>我评估 RAG 效果是分两层来看的。</p>
+        <div class="card-footer">
+          <span>QUESTION 18</span>
+          <a href="../articles/rag/18_evaluation.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="rag知识库如何实现动态与持续更新我理解知识库更新的核心挑战是文档变了对应的chunk和向量都要跟着变而且要做到增量处理不能每次全量重建我们的通用方案是给每个文档算一个内容hash通过轮询或者监听数据源变更检测到文档新增修改删除的时候先清掉旧的向量再重新切割入库对于实时性要求比较简要回答详细解析为什么更新rag知识库比更新普通数据库麻烦如何知道文档是否发生了变化文档id和chunkid的设计两种主流的变更感知方式全量重建是最后的手段灰度更新稳妥地切换新版本面试总结" data-href="articles/rag/19_dynamic_update.html">
+      <a class="card-cover" href="../articles/rag/19_dynamic_update.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：RAG 知识库如何实现动态与持续更新？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">19</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/19_dynamic_update.html">RAG 知识库如何实现动态与持续更新？</a></h3>
+        <p>我理解知识库更新的核心挑战是，文档变了，对应的 chunk 和向量都要跟着变，而且要做到增量处理，不能每次全量重建。我们的通用方案是给每个文档算一个内容 hash，通过轮询或者监听数据源变更，检测到文档新增、修改、删除的时候，先清掉旧的向量，再重新切割入库。对于实时性要求比较…</p>
+        <div class="card-footer">
+          <span>QUESTION 19</span>
+          <a href="../articles/rag/19_dynamic_update.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="在实际落地中你觉得rag最难的地方是哪里我觉得rag最难的不是把它跑起来一个基础的demo一两天就能搭起来难的是把它调好工程上最让我头疼的有三块简要回答详细解析第一难文档预处理第二难检索质量调优第三难效果评估困难面试总结" data-href="articles/rag/20_hardest_parts.html">
+      <a class="card-cover" href="../articles/rag/20_hardest_parts.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：在实际落地中，你觉得 RAG 最难的地方是哪里？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">20</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 8 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/20_hardest_parts.html">在实际落地中，你觉得 RAG 最难的地方是哪里？</a></h3>
+        <p>我觉得 RAG 最难的不是把它跑起来，一个基础的 Demo 一两天就能搭起来，难的是把它调好。工程上最让我头疼的有三块。</p>
+        <div class="card-footer">
+          <span>QUESTION 20</span>
+          <a href="../articles/rag/20_hardest_parts.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="不同来源的文档发生知识冲突时rag应该信谁遇到知识冲突时我不会直接选择向量相似度最高的文档因为相似度只能说明内容和问题相关不能证明它更权威更及时也不能证明它适用于当前用户简要回答详细解析为什么不能选择相似度最高的文档入库时不只存正文还要存身份证先判断适用范围再比较谁更权威冲突应该怎样被发现检索阶段和生成阶段分别做什么如何让错误知识可以灰度可以回滚评测时要专门考会不会选错依据面试总结" data-href="articles/rag/21_knowledge_conflict.html">
+      <a class="card-cover" href="../articles/rag/21_knowledge_conflict.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：不同来源的文档发生知识冲突时，RAG 应该信谁？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">21</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/21_knowledge_conflict.html">不同来源的文档发生知识冲突时，RAG 应该信谁？</a></h3>
+        <p>遇到知识冲突时，我不会直接选择向量相似度最高的文档，因为相似度只能说明内容和问题相关，不能证明它更权威、更及时，也不能证明它适用于当前用户。</p>
+        <div class="card-footer">
+          <span>QUESTION 21</span>
+          <a href="../articles/rag/21_knowledge_conflict.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="上下文窗口很大时为什么还需要rag上下文窗口决定模型一次能读多少资料rag则负责从外部资料中找出当前问题需要的证据即使整个知识库都装得下也不代表每份资料都相关都有效或者模型一定能把分散的条件全部用对简要回答详细解析窗口变大扩大的是读取容量材料越多为什么不一定意味着证据更充分rag把资料选择提前到生成之前不必每次读取整个资料库成本才可能随问题缩小大窗口与检索配合怎样保留必要的完整性面试总结" data-href="articles/rag/22_rag_long_context.html">
+      <a class="card-cover" href="../articles/rag/22_rag_long_context.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：上下文窗口很大时为什么还需要 RAG？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">22</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/22_rag_long_context.html">上下文窗口很大时为什么还需要 RAG？</a></h3>
+        <p>上下文窗口决定模型一次能读多少资料，RAG 则负责从外部资料中找出当前问题需要的证据。即使整个知识库都装得下，也不代表每份资料都相关、都有效，或者模型一定能把分散的条件全部用对。</p>
+        <div class="card-footer">
+          <span>QUESTION 22</span>
+          <a href="../articles/rag/22_rag_long_context.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="rag" data-search="rag与agent自主文件检索应该如何选型这里比较的是常见的预建索引rag和agent在运行时自主查找文件主要看任务是否需要根据中间结果继续探索广义上agent搜索外部资料再回答也属于检索增强二者并不是完全对立的技术简要回答详细解析先区分搜索方式与取资料的流程预建索引把资料组织成本提前并复用自主检索把资料获取放进观察与决策循环选型重点任务的探索需求与重复处理成本索引定位与原文探索可以共同完成资料获取面试总结" data-href="articles/rag/23_rag_vs_file_search.html">
+      <a class="card-cover" href="../articles/rag/23_rag_vs_file_search.html" style="--cat:#f08a24;--soft:#fff0dd;--acid:#ffe56b" aria-label="阅读：RAG 与 Agent 自主文件检索应该如何选型？">
+        <span class="cover-kicker">02 / RAG</span>
+        <span class="cover-index">23</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟</span>
+        </div>
+        <h3><a href="../articles/rag/23_rag_vs_file_search.html">RAG 与 Agent 自主文件检索应该如何选型？</a></h3>
+        <p>这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。</p>
+        <div class="card-footer">
+          <span>QUESTION 23</span>
+          <a href="../articles/rag/23_rag_vs_file_search.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+      </div>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../index.html#library">全部面试题</a>
+            <a href="../index.html#topics">六类专题</a>
+            <a href="../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../category/agent.html">Agent</a>
+            <a href="../category/rag.html">RAG</a>
+            <a href="../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../assets/search-index.js"></script><script src="../app.js" defer></script>
+</body>
+</html>

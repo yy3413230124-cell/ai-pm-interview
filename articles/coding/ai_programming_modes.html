@@ -1,0 +1,377 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。">
+  <meta name="keywords" content="AI产品经理面试题,AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？,AI 编程,AI产品经理,AI 编程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_programming_modes.html">
+  <title>AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？｜AI产品经理面试题">
+  <meta property="og:description" content="我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_programming_modes.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_programming_modes.html#article","headline":"AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？｜AI产品经理面试题","description":"我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。","articleSection":"AI 编程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_programming_modes.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"AI 编程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html"},{"@type":"ListItem","position":3,"name":"AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_programming_modes.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/coding.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> AI 编程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#e94f72"></i>
+            <span>AI 编程</span>
+            <strong>14 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="AI 编程面试专题题目列表">
+            <a class="is-active" href="#article-top"><span>01</span><strong>AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？</strong></a><a class="" href="./task_specification.html"><span>02</span><strong>如何向 AI 描述开发需求、约束条件和验收标准？</strong></a><a class="" href="./code_context.html"><span>03</span><strong>使用 AI 编程时，应该提供哪些代码上下文？</strong></a><a class="" href="./code_localization.html"><span>04</span><strong>Coding Agent 如何在大型代码仓库中定位相关代码？</strong></a><a class="" href="./vibe_coding_vs_spec_driven.html"><span>05</span><strong>Vibe Coding 和 Spec 驱动开发有什么区别？分别适合什么场景？</strong></a><a class="" href="./task_decomposition.html"><span>06</span><strong>复杂开发需求如何拆分，才能让 AI 更可靠地完成？</strong></a><a class="" href="./generated_code_quality.html"><span>07</span><strong>如何保证 AI 生成代码的质量？</strong></a><a class="" href="./ai_code_review.html"><span>08</span><strong>如何审查 AI 生成的代码，发现看起来合理但实际错误的实现？</strong></a><a class="" href="./ai_debugging.html"><span>09</span><strong>如何利用报错、日志和测试结果，让 AI 排查并修复问题？</strong></a><a class="" href="./generated_test_coverage.html"><span>10</span><strong>如何保证 AI 生成的测试用例覆盖关键业务场景？</strong></a><a class="" href="./context_management.html"><span>11</span><strong>AI 编程的上下文越来越长时，如何保留关键信息？</strong></a><a class="" href="./stale_code_description.html"><span>12</span><strong>Coding Agent 如何避免被过期的代码描述误导？</strong></a><a class="" href="./session_handoff.html"><span>13</span><strong>跨会话继续开发时，如何让 AI 接续需求、代码状态和任务进度？</strong></a><a class="" href="./permission_boundaries.html"><span>14</span><strong>AI 修改文件、执行命令和读取外部内容时，应该如何控制权限与风险？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/coding.html">AI 编程</a><span>/</span>
+            <span>第 1 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,515 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？</h1>
+          <div class="article-deck">
+            <span>题目 01</span>
+            <p>我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你平时怎么用 AI 编程？代码补全、对话生成和 Agent 编程有什么区别？</p>
+<p>🙋‍♂️我：都是让 AI 写代码，只是补全写得少，Agent 写得多。</p>
+<p>👔面试官：代码补全也能生成整个函数，用代码长度能分清吗？</p>
+<p>🙋‍♂️我：那聊天窗口里用的就是对话生成，终端里跑的就是 Agent。</p>
+<p>👔面试官：Agent 也可以放在聊天窗口里，你怎么判断它有没有在执行任务？</p>
+<p>🙋‍♂️我：能调用工具就是 Agent，用了 Agent 就可以直接交付。</p>
+<p>👔面试官：查一次文件和根据测试结果继续修复有什么区别？自动执行又能证明代码满足需求吗？</p>
+<p>咱们沿着代码从生成到验证的过程，看看这三种方式分别把哪些工作交给了 AI。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>把 AI 编程当成交付流程设计：需求与验收标准是否清楚、上下文是否充分、结果如何验证、出错后怎样回滚和接续。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。</p>
+<p>代码补全主要根据光标附近的代码和工具提供的其他上下文，给出后续代码或修改建议。我决定写什么，再选择接受、修改还是拒绝建议，开发过程主要由我推进。</p>
+<p>对话生成允许我把需求、约束和相关代码讲清楚，让 AI 解释代码、讨论方案或者生成实现。如果使用的是以问答为主的模式，运行代码、判断问题和反馈结果这些步骤，主要还是由我来组织。</p>
+<p>Agent 编程会在授权范围内，把读文件、改代码、运行检查等工具接入任务执行过程。模型可以根据工具返回的结果决定下一步，比如测试失败后继续查原因、修改并重新验证。它承担了更多执行和反馈处理的工作。</p>
+<p>所以我会看两点：AI 能采取哪些行动，以及谁根据执行结果推进下一步。同一个产品可以提供这三种方式，聊天界面里也可以运行 Agent。使用时，我会把局部编码交给补全，把解释和方案讨论放在对话里，再把目标清楚、能够验证的多步修改交给 Agent。最终仍然要按需求检查实际改动和验证结果。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="三种方式的区别-先看开发工作怎样分担">三种方式的区别，先看开发工作怎样分担</h3>
+<p>同样一句「帮我写代码」，实际可以把很不一样的工作交给 AI。你可能已经打开目标函数，只想让它接着写；也可能还没弄清需求，想先讨论规则；还可能希望它查找实现、修改文件并完成检查。</p>
+<p>这几种情况的差别，藏在开发过程的分工里。明确目标、理解已有代码、提出实现、写入项目、运行检查，以及根据失败继续修复，都需要有人推进。AI 参与了哪些环节，会影响你怎样提供信息、怎样接收结果。</p>
+<p>因此，比较代码补全、对话生成和 Agent 编程，可以先看两个问题：AI 获得了什么行动能力，以及执行结果出来以后，由谁组织下一步。模型能够生成代码，是三种方式的共同基础；执行过程中的分工才有助于区分它们。</p>
+<p>下面用同一个任务来理解：给创建订单接口增加数量校验。假设已经确认，<code>quantity</code> 只接受 1 到 100 的数值整数，包含两个端点；字符串、缺失值和小数都应拒绝，不做隐式转换。非法输入沿用项目的参数错误方式，并且不能写入订单。</p>
+<p>这个任务既有局部判断，也有接入与验证。写出正确的校验函数，只完成了一部分；还要确认调用位置在写入之前，错误按约定传递，已有合法请求仍然能够成功。</p>
+<p>用同一组规则比较三种方式，是为了把注意力放在分工上。它们都可能生成同一段正确代码，区别在于谁把这段代码接进项目，谁观察执行结果，再据此继续。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/a829982f_coding-task-stages__c6ba2a5230.webp" alt="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="代码补全-从编辑位置获得候选实现">代码补全：从编辑位置获得候选实现</h3>
+<p>使用代码补全时，你通常已经在编辑某个位置。工具把光标附近的代码和其他可用上下文交给模型，模型据此提出后续代码或修改建议，再由你决定是否采用。</p>
+<p>在数量校验任务里，假设你已经决定增加一个返回布尔值的辅助函数，可以先写出规则和函数边界：</p>
+<div class="code-shell"><div class="code-toolbar"><span>JAVASCRIPT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-javascript">// 只接受 1 到 100 的数值整数，包含端点，不做类型转换。
+function isValidQuantity(quantity) {
+  // 光标位于这里，等待补全函数体。
+}
+</code></pre></div><p>这里的注释补充了函数名没有表达的规则：上限是否包含、字符串是否接受，以及是否转换类型。若只写 <code>isValidQuantity</code>，模型只能猜项目对「有效数量」的定义。</p>
+<p>模型可能给出下面这份候选实现：</p>
+<div class="code-shell"><div class="code-toolbar"><span>JAVASCRIPT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-javascript">function isValidQuantity(quantity) {
+  // 先检查数值整数，再检查包含端点的范围。
+  return Number.isInteger(quantity)
+    &amp;&amp; quantity &gt;= 1
+    &amp;&amp; quantity &lt;= 100;
+}
+</code></pre></div><p><code>Number.isInteger</code> 不会先把字符串转换为数值，因此数值 <code>2</code> 可以通过，字符串 <code>'2'</code> 不会通过。范围判断也保留了两个端点，<code>1</code> 和 <code>100</code> 都应接受，<code>0</code> 和 <code>101</code> 则拒绝。这些结果来自前面确认的规则，能帮助你审查候选代码。</p>
+<p>接受补全以后，还要把函数接入创建订单流程。你决定调用位置，保留原有错误处理，再安排检查。即使候选函数完全正确，它也不会仅凭这段内容证明非法请求没有写入订单。</p>
+<p>这就是补全适合参与的工作：在开发者已经推进到某个编辑位置时，减少局部编码负担。建议可以是一行，也可以是整个函数；部分工具还能建议下一个编辑位置。只要仍然由开发者组织修改和验证，生成长度增加并不会改变这种分工。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/7174558a_completion-integration__9f004b96b0.webp" alt="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="对话生成-表达规则-讨论实现-再带着反馈继续">对话生成：表达规则、讨论实现，再带着反馈继续</h3>
+<p>还没有确定怎样修改时，对话能提供更充分的表达空间。你可以让 AI 解释已有代码、推导边界、比较方案，也可以要求它先指出需求歧义，再生成实现。</p>
+<p>这里讨论的是以问答为主的使用方式。相关代码可以由开发者粘贴，也可以由工具附加或检索；后续的修改、运行和反馈主要由开发者组织。</p>
+<p>对同一个数量校验任务，可以这样提问：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">请帮我设计创建订单的数量校验。
+quantity 只接受 1 到 100 的数值整数，包含两个端点。
+字符串、小数、null 和缺失值都应拒绝，不做隐式转换。
+非法数量沿用已有参数错误方式，并且不得写入订单。
+
+我会附上当前 createOrder、仓库写入接口和参数错误定义。
+请先说明关键输入的预期结果，再给出校验函数与接入建议。
+解释应该在哪里调用校验，以及原因。本轮先讨论实现。
+</code></pre></div><p>这段提示词比光标附近的一句注释多了执行位置和错误语义。AI 可以讨论整个创建过程，指出「拒绝输入」同时要求正确返回错误和避免写入，帮助开发者理解接入位置。</p>
+<p>实际使用时，要提供提示词所说的当前源码。只说「沿用已有错误」，却没有给出错误定义或让工具读取，模型仍然可能采用不符合项目约定的写法。</p>
+<p>生成建议之后，你审查并接入项目，再运行检查。假设校验函数的边界用例都通过了，但接口回归发现：数量为 <code>0</code> 时虽然返回参数错误，订单写入方法却已经调用了一次。这个反馈说明局部校验正确，接入流程仍然有问题。</p>
+<p>下一轮可以这样反馈，使用时附上实际函数和对应输出：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">数量校验函数的边界检查通过了，但创建订单的回归检查失败。
+quantity=0 时，预期返回已有参数错误，且订单写入次数为 0。
+实际返回了错误，订单写入次数却是 1。
+
+请结合我附上的 createOrder 和这次测试输出检查执行顺序，
+说明哪里违反了规则，以及怎样修改。保留原来的验收预期。
+</code></pre></div><p>这里同时保留错误结果和写入次数，是因为二者共同决定是否符合要求。只反馈「测试没过」，或者只说「已经返回错误」，都不足以表达发生了什么。AI 根据这些事实继续分析，开发者再决定并执行修复。</p>
+<p>对话并不只能用于完整需求。有时你已经知道需要的实现，只想追问为什么某种类型判断更合适，也可以通过对话解决。关键是问答帮助理解与生成，实际执行反馈由开发者带回，形成下一轮讨论的依据。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/95cde3dd_dialogue-feedback__08f99efba7.webp" alt="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="agent-编程-把读写-检查和反馈接入任务执行">Agent 编程：把读写、检查和反馈接入任务执行</h3>
+<p>当希望 AI 承担更多项目操作时，可以给出开发目标，让它在授权范围内使用读取、编辑和命令执行等工具。模型根据取得的信息选择行动，工具执行后返回结果，模型再决定下一步。</p>
+<p>继续看数量校验。对于能够读取仓库、修改文件并运行检查的工具，可以把任务交代成下面这样。路径仅作示意，实际使用时替换为真实项目位置。</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">请为创建订单接口增加数量校验，并完成相关修改和验证。
+quantity 只接受 1 到 100 的数值整数，包含两个端点。
+字符串、小数、null 和缺失值都应拒绝，不做隐式转换。
+非法数量沿用已有参数错误方式，不得写入订单。
+
+先从 src/order/order_service.js 的 createOrder 入手，
+读取请求入口、参数处理、仓库写入接口、错误定义和相关测试。
+根据实际实现确定接入位置，再修改代码并补充必要用例。
+运行项目已有的相关检查，失败时依据规则继续排查和修复。
+
+本轮允许本地修改与相关检查，保留无关改动，不发布到外部环境。
+完成后说明实际修改、执行结果，以及尚未验证的范围。
+</code></pre></div><p>这段提示词没有规定每个工具调用，却明确了行动范围和完成依据。Agent 需要先用源码确认实现，再安排修改与验证。项目入口可能与最初线索不同，它也可以根据调用关系继续查找。</p>
+<p>工具能力让模型能够取得实际反馈，但执行程序才负责读文件、写入修改和运行命令。模型生成一句「测试通过」不会让测试真的执行；需要查看工具返回的实际结果，才能据此判断。</p>
+<p>假设接入时同样出现了「非法请求返回错误，却已写入订单」的问题。Agent 可以从回归失败中读到写入次数，继续核对执行顺序，将校验移到写入前，再运行相关检查。开发者不必在每个步骤之间手工搬运代码和报错。</p>
+<p>一次执行过程可以整理成下面这份示意记录，帮助读者看到反馈怎样影响下一步。这不是当前项目的真实运行报告，使用时必须记录实际源码与执行结果。</p>
+<div class="code-shell"><div class="code-toolbar"><span>MARKDOWN</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-markdown"># 数量校验任务：示意执行记录
+
+## 读取依据
+已核对创建入口、参数处理、仓库写入与参数错误约定。
+规则要求非法数量在写入前拒绝。
+
+## 修改与反馈
+新增数量校验，并接入 createOrder。
+运行相关检查后，数量 0 的用例返回错误，但观察到一次订单写入。
+根据失败继续读取执行顺序，发现校验位于写入之后。
+将校验移到写入前，保留原有错误与合法输入处理。
+
+## 复验与剩余范围
+重新检查数量边界、类型以及非法输入的写入次数。
+记录对应测试命令、当前代码状态和实际结果。
+尚未执行的真实接口检查单独列出，不将局部通过写成整体通过。
+</code></pre></div><p>这里的重要变化是：执行结果直接进入任务推进过程。发现失败以后，模型选择补读哪个位置、怎样修复，以及需要重跑哪些检查。循环可以持续到完成条件满足，也可能因权限限制、环境问题或规则不清而暂时无法继续。</p>
+<p>遇到无法执行的检查，Agent 应说明缺口，而不是编造成功结果。获得工具和自动推进能力，会改变开发分工，但不会自动保证规则正确、测试充分或最终结果可以交付。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1ae40194_agent-tool-loop__89639347a0.webp" alt="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="为什么代码长度-界面和单次工具调用都分不清">为什么代码长度、界面和单次工具调用都分不清？</h3>
+<p>同一段 <code>isValidQuantity</code>，可以通过补全生成，也可以通过对话生成，还可以由 Agent 写进文件。代码内容相同，参与开发的方式却不同，所以不能根据函数长度判断类别。</p>
+<p>聊天窗口也只是交互入口。你可以在里面讨论一个方案，也可以让 Agent 执行多步修改；终端工具同样可能只接受一个问题、返回建议。要看背后实际发生了哪些操作。</p>
+<p>单次工具调用则只说明取得了某种能力。例如对话工具检索一次相关文件，再给出解释，后续仍可能由开发者推进。Agent 编程关注的是模型能否围绕目标，根据工具反馈持续选择行动。</p>
+<p>固定流程也可以自动调用工具。一个预先规定「生成代码 -&gt; 执行测试 -&gt; 展示结果」的程序，测试失败后如果只是把结果交给人处理，就与模型根据失败继续搜索和修复有不同分工。自动执行了几步，不等于模型接管了后续决策。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/62dba1aa_workflow-agent-decision__4ffa8cf251.webp" alt="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>把前面的数量校验放在一起，可以得到下面的比较：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>比较内容</th>
+<th>代码补全</th>
+<th>以问答为主的对话生成</th>
+<th>Agent 编程</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开发者给出的起点</td>
+<td>当前编辑位置、注释与可用上下文</td>
+<td>规则、相关代码和问题</td>
+<td>目标、范围、规则与完成条件</td>
+</tr>
+<tr>
+<td>AI 主要提供什么</td>
+<td>校验函数的候选代码</td>
+<td>解释、实现与接入建议</td>
+<td>文件修改、工具操作与执行反馈</td>
+</tr>
+<tr>
+<td>谁组织代码接入和检查</td>
+<td>开发者</td>
+<td>开发者为主</td>
+<td>模型在授权范围内安排工具执行</td>
+</tr>
+<tr>
+<td>出现写入次数错误后</td>
+<td>开发者排查并继续编辑</td>
+<td>开发者带回事实，再讨论修复</td>
+<td>模型可依据失败补读、修改并复验</td>
+</tr>
+</tbody>
+</table></div><p>这张表描述常见分工，具体工具可能组合不同能力。对话可以进入 Agent 执行，Agent 修改以后也可以继续用补全处理细节，三种方式不是互斥的产品分类。</p>
+<h3 id="实际开发中怎样组合使用-并判断交付">实际开发中怎样组合使用，并判断交付？</h3>
+<p>选择方式时，先看当前缺什么。还没理解创建流程，可以通过对话解释写入和错误处理；已经知道需要哪个判断，可以在编辑器里使用补全；希望完成查找、接入和检查等多步工作，则可以交给具备相应能力的 Agent。</p>
+<p>这也不意味着一定按三个阶段依次使用。熟悉项目时，可以直接借助补全完成小修改；一个目标清楚的任务，也可以直接交给 Agent。遇到需要确认的业务选择，再回到讨论和核验。</p>
+<p>决定交付时，数量校验任务仍然需要同一份依据：允许的数值被接受，不允许的类型与范围被拒绝，错误方式符合约定，非法输入没有写入，原有合法流程继续正常工作。</p>
+<p>补全被接受，只说明开发者采用了候选；对话解释通顺，只说明提出了一份分析；Agent 宣布完成，还要与实际修改和执行结果对应。检查是否真正覆盖这些要求，会影响最终判断。</p>
+<p>例如只运行校验函数的测试，能够检查布尔值，却没有观察创建流程的写入次数。需要用相关接口或流程检查补齐这一范围。验证要求来自任务行为，不因选择了哪种 AI 编程方式而降低。</p>
+<p>开发者因此要明确目标与约定，审查实际差异，并核对重要验证。三种方式帮助承担不同工作，最终交付仍然需要对应当前代码的事实依据。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/eac327fc_mode-selection-acceptance__d02eb56f61.webp" alt="AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头把三种方式理解为代码写得多少，会忽略开发过程中的分工。再用聊天窗口或终端来分类，又容易把交互界面当成执行能力。</p>
+<p>回答时可以按参与程度展开：补全在编辑过程中提供候选，对话让开发者充分表达问题并讨论实现，Agent 则通过工具和执行反馈承担更多任务推进工作。说明谁执行操作、谁处理结果，就能讲清它们怎样影响开发过程。</p>
+<p>最后补上选择与验收：三种方式可以配合使用，按当前任务需要分配工作。自动执行的程度增加以后，仍然要用明确需求、实际改动和验证结果判断交付质量。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#三种方式的区别-先看开发工作怎样分担">三种方式的区别，先看开发工作怎样分担</a><a class="toc-level-3" href="#代码补全-从编辑位置获得候选实现">代码补全：从编辑位置获得候选实现</a><a class="toc-level-3" href="#对话生成-表达规则-讨论实现-再带着反馈继续">对话生成：表达规则、讨论实现，再带着反馈继续</a><a class="toc-level-3" href="#agent-编程-把读写-检查和反馈接入任务执行">Agent 编程：把读写、检查和反馈接入任务执行</a><a class="toc-level-3" href="#为什么代码长度-界面和单次工具调用都分不清">为什么代码长度、界面和单次工具调用都分不清？</a><a class="toc-level-3" href="#实际开发中怎样组合使用-并判断交付">实际开发中怎样组合使用，并判断交付？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/langchain/deep_research.html"><span>上一篇 · LangChain</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong></a>
+      <a class="pagination-card next" href="../../articles/coding/task_specification.html"><span>下一篇 · AI 编程</span><strong>如何向 AI 描述开发需求、约束条件和验收标准？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

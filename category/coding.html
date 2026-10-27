@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="从需求表达、代码定位、生成质量、调试、审查到跨会话接续，覆盖 AI 编程的真实工程边界。">
+  <meta name="keywords" content="AI产品经理面试题,AI 编程面试题,AI产品经理,AI 编程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html">
+  <title>AI 编程面试专题｜AI产品经理面试题</title>
+  <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../assets/site.webmanifest">
+  <link rel="stylesheet" href="../styles/fonts.css">
+  <link rel="stylesheet" href="../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="AI 编程面试专题｜AI产品经理面试题">
+  <meta property="og:description" content="从需求表达、代码定位、生成质量、调试、审查到跨会话接续，覆盖 AI 编程的真实工程边界。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI 编程面试专题｜AI产品经理面试题">
+  <meta name="twitter:description" content="从需求表达、代码定位、生成质量、调试、审查到跨会话接续，覆盖 AI 编程的真实工程边界。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"CollectionPage","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html#page","url":"https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html","name":"AI 编程面试专题｜AI产品经理面试题","description":"从需求表达、代码定位、生成质量、调试、审查到跨会话接续，覆盖 AI 编程的真实工程边界。","inLanguage":"zh-CN","isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"},"mainEntity":{"@type":"ItemList","numberOfItems":14,"itemListElement":[{"@type":"ListItem","position":1,"name":"AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_programming_modes.html"},{"@type":"ListItem","position":2,"name":"如何向 AI 描述开发需求、约束条件和验收标准？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/task_specification.html"},{"@type":"ListItem","position":3,"name":"使用 AI 编程时，应该提供哪些代码上下文？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/code_context.html"},{"@type":"ListItem","position":4,"name":"Coding Agent 如何在大型代码仓库中定位相关代码？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/code_localization.html"},{"@type":"ListItem","position":5,"name":"Vibe Coding 和 Spec 驱动开发有什么区别？分别适合什么场景？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/vibe_coding_vs_spec_driven.html"},{"@type":"ListItem","position":6,"name":"复杂开发需求如何拆分，才能让 AI 更可靠地完成？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/task_decomposition.html"},{"@type":"ListItem","position":7,"name":"如何保证 AI 生成代码的质量？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_code_quality.html"},{"@type":"ListItem","position":8,"name":"如何审查 AI 生成的代码，发现看起来合理但实际错误的实现？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_code_review.html"},{"@type":"ListItem","position":9,"name":"如何利用报错、日志和测试结果，让 AI 排查并修复问题？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/ai_debugging.html"},{"@type":"ListItem","position":10,"name":"如何保证 AI 生成的测试用例覆盖关键业务场景？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/generated_test_coverage.html"},{"@type":"ListItem","position":11,"name":"AI 编程的上下文越来越长时，如何保留关键信息？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/context_management.html"},{"@type":"ListItem","position":12,"name":"Coding Agent 如何避免被过期的代码描述误导？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/stale_code_description.html"},{"@type":"ListItem","position":13,"name":"跨会话继续开发时，如何让 AI 接续需求、代码状态和任务进度？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/session_handoff.html"},{"@type":"ListItem","position":14,"name":"AI 修改文件、执行命令和读取外部内容时，应该如何控制权限与风险？","url":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/coding/permission_boundaries.html"}]}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"AI 编程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/coding.html"}]}]}</script>
+</head>
+<body class="category-page" data-root="../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../index.html">首页</a>
+          <a href="../index.html#library">面试题库</a>
+          <a class="is-active" href="../index.html#topics">知识专题</a>
+          <a href="../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../index.html">首页 <span>01</span></a>
+          <a href="../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <section class="category-hero" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8">
+      <div class="category-hero-copy reveal">
+        <a class="breadcrumb" href="../index.html">首页</a>
+        <span class="category-index">06</span>
+        <span class="eyebrow">INTERVIEW TOPIC · AI 编程</span>
+        <h1>AI 编程面试专题</h1>
+        <p>如果你在简历里写过「熟练使用 AI 编程工具」，可以先试着回答一个问题：AI 写完代码以后，你怎么判断这次修改可以交付？</p>
+        <div class="category-actions">
+          <a class="button button-primary" href="#question-list">查看 14 道题 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+          <button class="button" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg> 随机抽题</button>
+        </div>
+      </div>
+      <div class="category-art" aria-hidden="true">
+        <span class="category-art-label">AI 编程</span>
+        <strong>14</strong>
+        <span>QUESTIONS</span>
+        <i class="category-art-orbit"></i>
+        <i class="category-art-grid"></i>
+      </div>
+    </section>
+    <section class="section category-library" id="question-list">
+      <div class="section-heading">
+        <div><span class="section-kicker">ALL QUESTIONS</span><h2>AI 编程 题目列表</h2></div>
+        <p>需求、上下文、代码审查与任务接续</p>
+      </div>
+      <div class="question-grid">
+        
+    <article class="question-card" data-question-card data-category="coding" data-search="ai编程有哪些常见方式代码补全对话生成和agent编程有什么区别我会按ai参与开发的方式分成代码补全对话生成和agent编程简要回答详细解析三种方式的区别先看开发工作怎样分担代码补全从编辑位置获得候选实现对话生成表达规则讨论实现再带着反馈继续agent编程把读写检查和反馈接入任务执行读取依据修改与反馈复验与剩余范围为什么代码长度界面和单次工具调用都分不清实际开发中怎样组合使用并判断交付面试总结" data-href="articles/coding/ai_programming_modes.html">
+      <a class="card-cover" href="../articles/coding/ai_programming_modes.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">01</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/ai_programming_modes.html">AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？</a></h3>
+        <p>我会按 AI 参与开发的方式，分成代码补全、对话生成和 Agent 编程。</p>
+        <div class="card-footer">
+          <span>QUESTION 01</span>
+          <a href="../articles/coding/ai_programming_modes.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="如何向ai描述开发需求约束条件和验收标准我会先讲清这次开发要改变什么行为再提供理解这个任务需要的项目背景比如当前接口是什么已有行为有什么问题相关代码在哪里功能需求里我会明确输入输出以及会影响结果的边界和失败处理避免让ai自己补业务规则简要回答详细解析需求写得模糊ai会在哪些地方开始猜先说明目标再提供理解目标需要的现状把输入输出说清楚才能确定行为边界约束条件决定哪些实现可以被接受验收标准怎样从需求中推导出来信息不完整时哪些可以查哪些需要确认怎样把这些信息组织成一份可执行的任务面试总结" data-href="articles/coding/task_specification.html">
+      <a class="card-cover" href="../articles/coding/task_specification.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：如何向 AI 描述开发需求、约束条件和验收标准？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">02</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/task_specification.html">如何向 AI 描述开发需求、约束条件和验收标准？</a></h3>
+        <p>我会先讲清这次开发要改变什么行为，再提供理解这个任务需要的项目背景。比如当前接口是什么、已有行为有什么问题、相关代码在哪里。功能需求里，我会明确输入输出，以及会影响结果的边界和失败处理，避免让 AI 自己补业务规则。</p>
+        <div class="card-footer">
+          <span>QUESTION 02</span>
+          <a href="../articles/coding/task_specification.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="使用ai编程时应该提供哪些代码上下文我会围绕当前任务选择上下文先提供目标修改约束和验收标准让ai知道这次要解决什么问题再补充实现这个任务需要的项目事实简要回答详细解析打开了仓库ai就知道项目里的所有代码吗先确定当前问题再决定哪些材料值得提供目标函数之外为什么还要补齐类型和代码关系测试配置和报错各自补充什么信息上下文应该怎样控制范围并逐步补充材料齐了以后还要检查来源和当前版本实际使用时怎样把上下文交给ai面试总结" data-href="articles/coding/code_context.html">
+      <a class="card-cover" href="../articles/coding/code_context.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：使用 AI 编程时，应该提供哪些代码上下文？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">03</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/code_context.html">使用 AI 编程时，应该提供哪些代码上下文？</a></h3>
+        <p>我会围绕当前任务选择上下文，先提供目标、修改约束和验收标准，让 AI 知道这次要解决什么问题，再补充实现这个任务需要的项目事实。</p>
+        <div class="card-footer">
+          <span>QUESTION 03</span>
+          <a href="../articles/coding/code_context.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="codingagent如何在大型代码仓库中定位相关代码大型仓库里的代码定位核心是先缩小搜索范围再沿代码关系补齐上下文需求里的业务描述和源码命名不一定一致所以要先结合目录结构把接口路径报错文本日志字段名或者堆栈转成可以搜索的线索简要回答详细解析为什么命中了文件还不一定找到了相关实现如何把需求转成可以搜索的线索怎样从搜索结果中确认真正相关的函数如何沿代码关系找到跨文件实现怎样判断代码已经定位到位面试总结" data-href="articles/coding/code_localization.html">
+      <a class="card-cover" href="../articles/coding/code_localization.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：Coding Agent 如何在大型代码仓库中定位相关代码？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">04</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/code_localization.html">Coding Agent 如何在大型代码仓库中定位相关代码？</a></h3>
+        <p>大型仓库里的代码定位，核心是先缩小搜索范围，再沿代码关系补齐上下文。需求里的业务描述和源码命名不一定一致，所以要先结合目录结构，把接口路径、报错文本、日志、字段名或者堆栈转成可以搜索的线索。</p>
+        <div class="card-footer">
+          <span>QUESTION 04</span>
+          <a href="../articles/coding/code_localization.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="vibecoding和spec驱动开发有什么区别分别适合什么场景我理解的vibecoding采用的是较严格的含义用自然语言让ai生成和修改代码开发者主要看运行效果继续反馈对生成代码本身的理解和审查较少如果我会阅读改动理解实现并做验证即使没有专门的规格文档也可以属于普通的ai辅助开发简要回答详细解析先分清词义用ai写代码都算vibecoding吗vibecoding怎样依靠效果反馈推进spec怎样持续指导实现而不是写完就放着spec通常会落成哪些markdown文档哪些常见skill能把文档和执行串起来两种方式怎样处理需求与验证的不确定性哪些任务适合探索什么时候需要转向明确约定提示词怎样体现不同的推进方式面试总结" data-href="articles/coding/vibe_coding_vs_spec_driven.html">
+      <a class="card-cover" href="../articles/coding/vibe_coding_vs_spec_driven.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：Vibe Coding 和 Spec 驱动开发有什么区别？分别适合什么场景？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">05</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/vibe_coding_vs_spec_driven.html">Vibe Coding 和 Spec 驱动开发有什么区别？分别适合什么场景？</a></h3>
+        <p>我理解的 Vibe Coding，采用的是较严格的含义：用自然语言让 AI 生成和修改代码，开发者主要看运行效果、继续反馈，对生成代码本身的理解和审查较少。如果我会阅读改动、理解实现并做验证，即使没有专门的规格文档，也可以属于普通的 AI 辅助开发。</p>
+        <div class="card-footer">
+          <span>QUESTION 05</span>
+          <a href="../articles/coding/vibe_coding_vs_spec_driven.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="复杂开发需求如何拆分才能让ai更可靠地完成我会先结合需求和现有代码找出要改变的行为需要保留的约定以及哪些地方还没弄清楚再按可验证的目标拆任务简要回答详细解析为什么列出了步骤复杂需求仍然可能做不好先从行为要求拆起再确定代码修改范围一个任务拆到什么程度才适合交给ai怎样安排依赖哪些步骤能够并行tasksmd怎样写才能支持执行和检查总体约定t1确认现有链路与接口约定t2实现接口筛选与对应验证t3实现页面筛选与对应验证t4连接真实接口并验证完整链路t5核对总需求与相关回归执行中怎样验证并更新剩余计划怎样用提示词让ai先拆清楚再逐步完成面试总结" data-href="articles/coding/task_decomposition.html">
+      <a class="card-cover" href="../articles/coding/task_decomposition.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：复杂开发需求如何拆分，才能让 AI 更可靠地完成？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">06</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/task_decomposition.html">复杂开发需求如何拆分，才能让 AI 更可靠地完成？</a></h3>
+        <p>我会先结合需求和现有代码，找出要改变的行为、需要保留的约定，以及哪些地方还没弄清楚，再按可验证的目标拆任务。</p>
+        <div class="card-footer">
+          <span>QUESTION 06</span>
+          <a href="../articles/coding/task_decomposition.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="如何保证ai生成代码的质量判断ai生成的代码能不能交付主要看它是否符合需求是否破坏已有行为以及能否安全地接入项目代码能运行只是基础模型的解释和自我审查不能代替实际验证简要回答详细解析代码能运行为什么还不够生成前哪些约束需要先确定为什么测试预期不能跟着实现走不同检查各自能发现什么问题检查通过以后为什么还要审查实际改动验证失败以后怎样修复才算完成面试总结" data-href="articles/coding/generated_code_quality.html">
+      <a class="card-cover" href="../articles/coding/generated_code_quality.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：如何保证 AI 生成代码的质量？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">07</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/generated_code_quality.html">如何保证 AI 生成代码的质量？</a></h3>
+        <p>判断 AI 生成的代码能不能交付，主要看它是否符合需求、是否破坏已有行为，以及能否安全地接入项目。代码能运行只是基础，模型的解释和自我审查不能代替实际验证。</p>
+        <div class="card-footer">
+          <span>QUESTION 07</span>
+          <a href="../articles/coding/generated_code_quality.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="如何审查ai生成的代码发现看起来合理但实际错误的实现我会先对照需求和必须保留的约定看实际代码差异确认改了哪些文件增加或删除了什么审查范围也包括测试依赖和检查配置避免只看ai的完成说明简要回答详细解析代码看起来合理为什么行为仍然可能错误从实际差异入手确定这次究竟改了什么怎样把代码变化转成需要核对的行为问题从一个疑点怎样走到能够确认的缺陷测试全绿时审查者还要检查哪些依据ai审查意见怎样组织才能让人核验和修复示例条件下已确认的问题选择状态后丢失用户范围待确认项修复以后怎样确认审查问题确实关闭面试总结" data-href="articles/coding/ai_code_review.html">
+      <a class="card-cover" href="../articles/coding/ai_code_review.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：如何审查 AI 生成的代码，发现看起来合理但实际错误的实现？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">08</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/ai_code_review.html">如何审查 AI 生成的代码，发现看起来合理但实际错误的实现？</a></h3>
+        <p>我会先对照需求和必须保留的约定，看实际代码差异，确认改了哪些文件、增加或删除了什么。审查范围也包括测试、依赖和检查配置，避免只看 AI 的完成说明。</p>
+        <div class="card-footer">
+          <span>QUESTION 08</span>
+          <a href="../articles/coding/ai_code_review.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="如何利用报错日志和测试结果让ai排查并修复问题我会先把问题复现清楚给ai明确的预期结果实际结果触发步骤以及对应的代码版本运行环境和执行命令报错保留异常信息和相关调用栈日志筛出同一次请求或测试的关键过程避免把无关输出混进去简要回答详细解析报错日志和测试结果分别能告诉我们什么给ai哪些信息才能复现同一个问题从报错位置出发怎样追到产生问题的数据怎样用检查和实验区分ai提出的原因确认原因后怎样修复并证明恢复了正确行为每轮排查怎样保留结论避免越改越乱已确认事实已排除的候选原因修复与验证尚未验证面试总结" data-href="articles/coding/ai_debugging.html">
+      <a class="card-cover" href="../articles/coding/ai_debugging.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：如何利用报错、日志和测试结果，让 AI 排查并修复问题？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">09</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/ai_debugging.html">如何利用报错、日志和测试结果，让 AI 排查并修复问题？</a></h3>
+        <p>我会先把问题复现清楚，给 AI 明确的预期结果、实际结果、触发步骤，以及对应的代码版本、运行环境和执行命令。报错保留异常信息和相关调用栈，日志筛出同一次请求或测试的关键过程，避免把无关输出混进去。</p>
+        <div class="card-footer">
+          <span>QUESTION 09</span>
+          <a href="../articles/coding/ai_debugging.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="如何保证ai生成的测试用例覆盖关键业务场景关键是先把业务规则对应到场景再让ai生成测试而不是只按函数数量分配用例场景要从输入范围业务状态权限条件和流程中的失败点推导涉及重复请求或并发时还要考虑操作顺序简要回答详细解析为什么测试数量和代码覆盖率都不能代表业务覆盖一条业务规则怎样推导出需要测试的场景写出了目标场景怎样让测试真正触发它预期结果和断言怎样才能检验业务规则怎样找出已有测试的覆盖缺口面试总结" data-href="articles/coding/generated_test_coverage.html">
+      <a class="card-cover" href="../articles/coding/generated_test_coverage.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：如何保证 AI 生成的测试用例覆盖关键业务场景？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">10</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/generated_test_coverage.html">如何保证 AI 生成的测试用例覆盖关键业务场景？</a></h3>
+        <p>关键是先把业务规则对应到场景，再让 AI 生成测试，而不是只按函数数量分配用例。场景要从输入范围、业务状态、权限条件和流程中的失败点推导；涉及重复请求或并发时，还要考虑操作顺序。</p>
+        <div class="card-footer">
+          <span>QUESTION 10</span>
+          <a href="../articles/coding/generated_test_coverage.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="ai编程的上下文越来越长时如何保留关键信息我会先围绕下一步开发整理当前状态保留目标不能违反的约束当前采用的方案代码改到哪里验证结果和剩余问题聊天过程里重复的讨论大段源码和日志可以压缩成结论并保留读取位置关键条件和结论的适用范围要写清楚简要回答详细解析聊天还在为什么ai仍然可能漏掉前面的要求哪些信息应该留下怎样判断它是否关键怎样把聊天经过整理成能够继续开发的摘要目标与必须保留的约定当前方案当前代码状态验证依据与缺口当前下一步大段源码和日志省略以后怎样保留回查能力什么时候整理上下文怎样避免摘要越写越长整理以后怎样检查没有丢掉会影响开发的信息面试总结" data-href="articles/coding/context_management.html">
+      <a class="card-cover" href="../articles/coding/context_management.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：AI 编程的上下文越来越长时，如何保留关键信息？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">11</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/context_management.html">AI 编程的上下文越来越长时，如何保留关键信息？</a></h3>
+        <p>我会先围绕下一步开发整理当前状态，保留目标、不能违反的约束、当前采用的方案、代码改到哪里、验证结果和剩余问题。聊天过程里重复的讨论、大段源码和日志，可以压缩成结论并保留读取位置；关键条件和结论的适用范围要写清楚。</p>
+        <div class="card-footer">
+          <span>QUESTION 11</span>
+          <a href="../articles/coding/context_management.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="codingagent如何避免被过期的代码描述误导代码描述是根据源码提炼出来的摘要可以帮助agent找到相关实现但关键判断还要回到源码核验判断描述是否过期主要看它依据的代码和依赖有没有变化不能只看生成日期简要回答详细解析代码描述为什么会过期怎样判断一条描述对应哪份代码为什么没有修改的文件描述也可能失效更新时为什么要先让旧描述失效agent使用描述时还需要核验什么面试总结" data-href="articles/coding/stale_code_description.html">
+      <a class="card-cover" href="../articles/coding/stale_code_description.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：Coding Agent 如何避免被过期的代码描述误导？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">12</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/stale_code_description.html">Coding Agent 如何避免被过期的代码描述误导？</a></h3>
+        <p>代码描述是根据源码提炼出来的摘要，可以帮助 Agent 找到相关实现，但关键判断还要回到源码核验。判断描述是否过期，主要看它依据的代码和依赖有没有变化，不能只看生成日期。</p>
+        <div class="card-footer">
+          <span>QUESTION 12</span>
+          <a href="../articles/coding/stale_code_description.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="跨会话继续开发时如何让ai接续需求代码状态和任务进度我会在结束前保存实际代码和交接记录写清当前需求必须保留的约定已确认方案以及哪些代码已实现哪些只写了一部分哪些还没验证记录也要说明工作区位置版本与未提交文件保证新会话能拿到真正的开发成果简要回答详细解析换了会话以后究竟有哪些东西需要接上结束之前怎样留下可以恢复的工作状态交接文档怎样写才能让下一轮知道从哪里开始目标与当前约定交接的代码现场进度与未完成项验证记录运行状态下一步新会话开始后为什么要先核对工作区运行环境和已经执行的动作怎样接续怎样确认接续成功并给下一轮留下清楚的进度面试总结" data-href="articles/coding/session_handoff.html">
+      <a class="card-cover" href="../articles/coding/session_handoff.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：跨会话继续开发时，如何让 AI 接续需求、代码状态和任务进度？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">13</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/session_handoff.html">跨会话继续开发时，如何让 AI 接续需求、代码状态和任务进度？</a></h3>
+        <p>我会在结束前保存实际代码和交接记录，写清当前需求、必须保留的约定、已确认方案，以及哪些代码已实现、哪些只写了一部分、哪些还没验证。记录也要说明工作区位置、版本与未提交文件，保证新会话能拿到真正的开发成果。</p>
+        <div class="card-footer">
+          <span>QUESTION 13</span>
+          <a href="../articles/coding/session_handoff.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+    <article class="question-card" data-question-card data-category="coding" data-search="ai修改文件执行命令和读取外部内容时应该如何控制权限与风险我会先明确用户授权的任务和范围再给ai完成任务所需的工具权限允许修改本地代码并运行相关检查通常不等于允许发布修改生产数据或把项目资料发到外部已有授权覆盖的正常操作可以继续不能因为工具能执行就扩大任务简要回答详细解析用户说可以做工具能执行分别意味着什么为什么不能只按命令名称或读写类型判断风险怎样把权限限制到完成当前任务所需的范围外部内容为什么不能自行变成操作授权哪些操作可以自动推进哪些需要明确确认本轮已有授权已准备的内容拟执行的具体动作执行条件怎样让权限边界落实到一次实际开发面试总结" data-href="articles/coding/permission_boundaries.html">
+      <a class="card-cover" href="../articles/coding/permission_boundaries.html" style="--cat:#e94f72;--soft:#ffe8ee;--acid:#ffb7c8" aria-label="阅读：AI 修改文件、执行命令和读取外部内容时，应该如何控制权限与风险？">
+        <span class="cover-kicker">06 / AI 编程</span>
+        <span class="cover-index">14</span>
+        <span class="cover-mark">AI<br>Q&amp;A</span>
+        <span class="cover-orbit orbit-one"></span>
+        <span class="cover-orbit orbit-two"></span>
+        <span class="cover-dot"></span>
+      </a>
+      <div class="card-body">
+        <div class="card-meta">
+          <span class="topic-label" style="--cat:#e94f72;--soft:#ffe8ee">AI 编程</span>
+          <span class="reading-time"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 12 分钟</span>
+        </div>
+        <h3><a href="../articles/coding/permission_boundaries.html">AI 修改文件、执行命令和读取外部内容时，应该如何控制权限与风险？</a></h3>
+        <p>我会先明确用户授权的任务和范围，再给 AI 完成任务所需的工具权限。允许修改本地代码并运行相关检查，通常不等于允许发布、修改生产数据或把项目资料发到外部。已有授权覆盖的正常操作可以继续，不能因为工具能执行就扩大任务。</p>
+        <div class="card-footer">
+          <span>QUESTION 14</span>
+          <a href="../articles/coding/permission_boundaries.html">阅读全文 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+        </div>
+      </div>
+    </article>
+      </div>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../index.html#library">全部面试题</a>
+            <a href="../index.html#topics">六类专题</a>
+            <a href="../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../category/agent.html">Agent</a>
+            <a href="../category/rag.html">RAG</a>
+            <a href="../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../assets/search-index.js"></script><script src="../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。">
+  <meta name="keywords" content="AI产品经理面试题,SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/post_training.html">
+  <title>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/post_training.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/post_training.html#article","headline":"SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？｜AI产品经理面试题","description":"我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/post_training.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/post_training.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="" href="./position_encoding.html"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="" href="./llm_training.html"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="" href="./scaling_law_emergence.html"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="is-active" href="#article-top"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="" href="./dpo_vs_ppo.html"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="" href="./decoding_strategies.html"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="" href="./hallucination.html"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 10 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 18 分钟阅读</span>
+            <span>7,216 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</h1>
+          <div class="article-deck">
+            <span>题目 10</span>
+            <p>我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲 SFT 之后还有哪些 Post-Training 方法？RLHF、DPO、GRPO、拒绝采样这几个什么关系？</p>
+<p>🙋‍♂️我：SFT 之后就是 RLHF 嘛，先训个奖励模型再用 PPO 强化学习，让模型按人类偏好生成回答。</p>
+<p>👔面试官：你只说了 RLHF，那 DPO 你跳过去了？DPO 和 RLHF 是替代关系还是补充关系？再说，「奖励模型」是怎么训的？「PPO 强化学习」具体在调什么？为什么需要「参考模型」？</p>
+<p>🙋‍♂️我：哦哦，DPO 是 RLHF 的简化版，绕过奖励模型，直接拿好坏回答对学。</p>
+<p>👔面试官：好，那 GRPO 又是什么？为什么 DeepSeek R1 出了之后整个圈子都在讨论 GRPO？它和 PPO、DPO 是什么关系？还有「拒绝采样」是怎么回事？「RLAIF」呢？这一堆方法你能画一张家族图谱吗？</p>
+<p>🙋‍♂️我：呃……GRPO 我有点模糊，是不是 PPO 的另一种形式？</p>
+<p>👔面试官：你这是在猜词。GRPO 是 DeepSeek 在 2024 年提出的，相比 PPO 砍掉了 Value Model。「相比 PPO 砍掉 Value Model」具体是怎么砍的？省掉它之后用什么估计优势函数？这些不搞清楚，面试官一追问就露馅。回去补一下。</p>
+<p>被这几个问题点完，Post-Training 这道题才显出深度，它不是「RLHF 一招走天下」，是 SFT 之后分叉出来的一整个家族：DPO、GRPO、RLAIF、拒绝采样各有各的位置。特别是 GRPO 这两年的爆火，不知道这段历史会显得跟不上节奏。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解 Post-Training 是个上位概念，指的是 SFT 之后所有继续提升模型质量的训练阶段。它不是一个单一方法，而是一族方法的总称。</p>
+<p>SFT 让模型学会「按指令格式回答」，但 SFT 后的模型还有两个问题没解决。第一，回答可能有害、不符合人类价值观；第二，同一个问题的多种合格回答里，模型不知道哪个更受人类欢迎。这就是 Post-Training 要补的课。</p>
+<p>主流的 Post-Training 方法有五大类。</p>
+<p><strong>RLHF（Reinforcement Learning from Human Feedback）</strong> 是最经典的方案。流程是先用人类对回答的排名训练一个奖励模型，再用 PPO 算法让大模型生成的回答尽量得高分。同时维护一个参考模型用 KL 散度约束，防止主模型「钻空子」。优点是效果上限高，缺点是流程复杂、要同时维护 4 个模型、训练不稳定。</p>
+<p><strong>DPO（Direct Preference Optimization）</strong> 是 RLHF 的简化版。核心洞见是 RLHF 的优化目标可以推导成一个等价的监督学习损失，绕过显式奖励模型，直接拿（提示，好回答，差回答）三元组训练。优点是只需 2 个模型、训练稳定、实现简单。缺点是效果上限依赖偏好数据质量，探索能力不如精心调过的 RL。很多开源 Instruct 模型会用 DPO 或 DPO 的变体做偏好对齐，但不能把 Llama 2-Chat 也说成 DPO 路线，它公开论文里的关键对齐方法是拒绝采样和 PPO/RLHF。</p>
+<p><strong>GRPO（Group Relative Policy Optimization）</strong> 是 DeepSeek 在 2024 年提出的 PPO 改进版。核心思路是砍掉 PPO 的 Value Model，改用「同一问题采样 G 个回答、用组内相对排名作为基线」估计优势函数。这样省掉 Value Model 的训练成本，显存减半。DeepSeek R1、DeepSeek-Math、Qwen 系列推理模型都用 GRPO，是 2026 年最热的对齐方案。</p>
+<p><strong>拒绝采样（Rejection Sampling Fine-tuning）</strong> 是个简单粗暴的方法。让模型对每个 Prompt 生成多个回答，用奖励模型筛出高分的，然后再做一轮 SFT。流程上没有 RL，就是「生成 -&gt; 筛选 -&gt; 再 SFT」循环。Llama 2 的对齐流程里就用了这个。</p>
+<p><strong>RLAIF（Reinforcement Learning from AI Feedback）</strong> 是用强 AI 模型代替人类标注偏好。Anthropic 的 Constitutional AI、Google 的相关工作里都有 RLAIF 的影子。优点是可以批量生成偏好数据、标注成本低，缺点是依赖一个更强的「教师 AI」。</p>
+<p>最关键的认知是这五类方法不是互相替代，<strong>真实的对齐流程通常是组合使用的</strong>。比如 Llama 2-Chat 公开流程里用了 SFT、拒绝采样和 PPO/RLHF；DeepSeek R1 用了「SFT 冷启动 + GRPO 多轮迭代 + 拒绝采样筛数据」这一类组合路线。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="post-training-是什么概念-为什么-sft-之后还需要它">Post-Training 是什么概念？为什么 SFT 之后还需要它</h3>
+<p>要理解 Post-Training 这一族方法，得先回答一个问题：SFT 之后，模型还差什么？</p>
+<p>SFT（Supervised Fine-Tuning，监督微调）的目标是让模型从「文本续写机器」变成「按指令回答的对话机器」。训练数据是（指令，期望回答）对，模型学会的是「碰到指令格式就给出格式化的回答」。</p>
+<p>问题是，SFT 学到的只是「<strong>合格</strong>」，不是「<strong>优质</strong>」。同一个问题，可以有很多种「合格」的回答：有的简洁、有的啰嗦；有的带代码、有的纯文字；有的承认「我不确定」、有的硬装专业胡说八道。SFT 数据里可能各种风格都有，模型学完之后会随机挑一种风格输出，但用户对质量是有偏好的。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_01_comparison_489c5fa1__6c944ce249.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>更严重的问题是<strong>安全对齐</strong>。SFT 训练数据里可能没覆盖「用户问怎么造毒」「用户问怎么诈骗」这种场景，SFT 模型遇到这些问题可能就一本正经地回答了。Post-Training 的任务之一就是教会模型「什么不能说」「不知道就说不知道」。</p>
+<p>Post-Training 这个词本身是个上位概念，覆盖了 SFT 之后所有继续训练的方法。下面五大类是工业界最主流的方案，每一类的设计哲学都不一样。</p>
+<h3 id="rlhf-经典方案-4-模型架构">RLHF：经典方案，4 模型架构</h3>
+<p>RLHF（Reinforcement Learning from Human Feedback，基于人类反馈的强化学习）是 OpenAI 在 InstructGPT 中开创的方案，也是 ChatGPT 早期版本的核心训练方法。</p>
+<p>整个流程分三步：</p>
+<p><strong>第一步：收集偏好数据</strong>。人类标注员对同一个 Prompt 的多个回答做排序，比如「回答 A 比回答 B 好，B 比 C 好」。这种排序数据比绝对评分更稳定，因为人类比较两个回答的相对好坏比给绝对分数容易。</p>
+<p><strong>第二步：训练奖励模型（Reward Model）</strong>。用偏好数据训一个独立的小模型，输入是（Prompt + 回答），输出是一个分数。训练目标是让「人类觉得好的回答」分数高、「差回答」分数低。这个奖励模型代替了人类，可以批量给后续生成的回答自动打分。</p>
+<p><strong>第三步：用 PPO 算法优化主模型</strong>。让主模型生成回答 -&gt; 用奖励模型打分 -&gt; PPO 调整主模型参数往高分方向走。同时维护一个「参考模型」（SFT 模型的冻结副本），用 KL 散度约束主模型不要离参考模型太远，防止「奖励 hacking」（模型学会欺骗奖励模型而不是真的变好）。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_02_architecture_6b8a6558__e7cdba9365.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>RLHF 的优点和缺点都很突出：</p>
+<ul>
+<li><strong>优点</strong>：效果上限高，因为 RL 可以探索出 SFT 数据里没有的好回答方式</li>
+<li><strong>缺点</strong>：4 个模型同时训练，显存占用是 SFT 的好几倍；PPO 算法本身不稳定、超参敏感；reward hacking 风险一直存在</li>
+</ul>
+<p>OpenAI 早期的 ChatGPT 强大效果就来自精心调优的 RLHF，但工业界能驾驭 RLHF 的团队凤毛麟角，所以后来出现了一系列简化方案。</p>
+<h3 id="dpo-绕过奖励模型的等价转换">DPO：绕过奖励模型的等价转换</h3>
+<p>DPO（Direct Preference Optimization，直接偏好优化）是 2023 年斯坦福提出的方案，核心是一个数学上的等价转换。</p>
+<p>研究者们发现：RLHF 的优化目标，可以通过推导改写成一个纯监督学习的目标函数，<strong>不需要显式训练奖励模型</strong>。直觉上，「奖励模型」的功能可以被「主模型相对于参考模型的概率比值」完全替代。</p>
+<p>数据格式简单到不能再简单：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># DPO 训练数据：每条是一个三元组
+{
+    &quot;prompt&quot;: &quot;如何学好 Python？&quot;,
+    &quot;chosen&quot;: &quot;建议先从官方文档入手，配合做小项目实践……&quot;,  # 人类更偏好的回答
+    &quot;rejected&quot;: &quot;Python 很简单，随便找个教程看看就行了……&quot;  # 人类不太喜欢的回答
+}
+</code></pre></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_03_analogy_257ee1d0__709b9a4ce0.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>DPO 的损失函数直觉上做的事情是：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python"># DPO 损失（简化直觉版，不是完整公式）
+loss = -log(sigma(
+    beta * (
+        log(policy(chosen) / ref(chosen))   # 主模型 vs 参考模型在「好回答」上的概率比
+      - log(policy(rejected) / ref(rejected)) # 主模型 vs 参考模型在「差回答」上的概率比
+    )
+))
+# 目标：让 chosen 的比值 &gt; rejected 的比值
+# 即：训练后的主模型对「好回答」概率提升，对「差回答」概率降低
+</code></pre></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_04_analogy_2f254218__f8f3b6b085.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>DPO 的优势：</p>
+<ul>
+<li><strong>只需 2 个模型</strong>：policy + reference，显存占用是 RLHF 的一半</li>
+<li><strong>训练稳定</strong>：变成监督学习问题，没有 RL 的不稳定性</li>
+<li><strong>实现简单</strong>：用现成的深度学习框架就能写</li>
+</ul>
+<p>代价：</p>
+<ul>
+<li><strong>效果上限略低于精心调过的 PPO</strong>：因为 DPO 的优化目标是「往偏好数据分布靠拢」，没法像 RL 那样探索数据之外的好回答</li>
+<li><strong>依赖偏好数据质量</strong>：偏好对收集得不好，DPO 学到的偏好就会失真</li>
+</ul>
+<p>谁在用：Zephyr、部分 Mistral / Qwen 社区微调版本，以及大量开源 Instruct 派生模型都用过 DPO 或 DPO 变体。Llama 2-Chat 这里要单独记，它不是 DPO 代表，而是 SFT + 拒绝采样 + PPO/RLHF 的经典案例。</p>
+<h3 id="grpo-砍掉-value-model-的-ppo-进化版">GRPO：砍掉 Value Model 的 PPO 进化版</h3>
+<p>GRPO（Group Relative Policy Optimization）是 DeepSeek 在 2024 年的 DeepSeek-Math 论文里提出的，后来 DeepSeek R1 把它推向了风口浪尖。2026 年大厂面试问对齐方法，GRPO 几乎是必问题。</p>
+<p>要理解 GRPO，得先搞清楚 PPO 为什么需要 Value Model。</p>
+<p><strong>PPO 的优势函数（Advantage）</strong>：在强化学习里，「优势」表示「这个动作比平均水平好多少」。PPO 用这个优势来决定参数往哪个方向调。Value Model 的作用就是估计「当前状态的预期奖励」作为基线，优势 = 实际奖励 - 预期奖励。</p>
+<p>Value Model 是个独立的神经网络，规模通常和主模型一样大，要单独训练、占显存、调参。这就是 PPO 显存吃紧的根源之一。</p>
+<p><strong>GRPO 的核心创新</strong>：直接砍掉 Value Model，用「同一个问题采样 G 个回答，组内归一化」来估计优势。</p>
+<p>具体流程：</p>
+<ol>
+<li>对一个问题 q，从主模型采样 G 个回答（典型 G=8）：</li>
+<li>用奖励模型（或者直接用对错判定，比如数学题对了给 1 错了给 0）给每个回答打分得到</li>
+<li>计算每个回答的「<strong>组内相对优势</strong>」：</li>
+</ol>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">A_i = (r_i - mean(r₁..r_G)) / std(r₁..r_G)
+</code></pre></div><ol>
+<li>用 PPO 风格的 clipping loss 优化，但优势用 A_i 替代</li>
+</ol>
+<p>GRPO 的优势：</p>
+<ul>
+<li><strong>省掉 Value Model</strong>：4 个模型变 3 个，显存接近 DPO 但还能保留 RL 的探索能力</li>
+<li><strong>训练更稳</strong>：组内归一化天然降低了梯度方差，比 PPO 更容易训</li>
+<li><strong>特别适合可验证任务</strong>：数学、代码这种「对就是对、错就是错」的任务，r_i 不需要训练奖励模型，直接用对错判定就行（DeepSeek R1-Zero 就是这么做的，连 Reward Model 都省了）</li>
+</ul>
+<p>为什么 2026 年这么火？因为推理模型（Reasoning Models）成了主流：</p>
+<ul>
+<li>DeepSeek R1 / R1-Zero</li>
+<li>Qwen-Math、Qwen 推理版</li>
+<li>各家追随者的推理增强模型</li>
+</ul>
+<p>这些模型和相关研究把 GRPO 或类似的可验证奖励强化学习路线推到了台前。推理任务天然有「对错可验证」的特性，特别适合这种设计。不过面试里不要把所有推理模型都一口咬定为 GRPO，公开报告怎么写就怎么说，没有公开细节的就说「可能采用类似路线」更稳。</p>
+<h3 id="拒绝采样-简单粗暴的迭代式-sft">拒绝采样：简单粗暴的迭代式 SFT</h3>
+<p>拒绝采样（Rejection Sampling Fine-tuning）是几种 Post-Training 方法里最简单的一个，<strong>根本不用 RL</strong>。</p>
+<p>流程是这样的：</p>
+<ol>
+<li>给模型一批 Prompt</li>
+<li>让模型对每个 Prompt 生成多个候选回答（典型 K=8 或 16）</li>
+<li>用奖励模型（或人类标注、或规则判定）给所有候选回答打分</li>
+<li><strong>筛出每个 Prompt 里得分最高的回答</strong></li>
+<li>把（Prompt，最高分回答）当作新的 SFT 数据，再做一轮 SFT</li>
+</ol>
+<p>整个流程没有 RL 算法、没有 PPO/DPO 损失函数，就是「采样 -&gt; 筛选 -&gt; 再 SFT」的循环。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_07_flow_78fdfdb6__bbae70ffba.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>拒绝采样的优点：</p>
+<ul>
+<li><strong>实现极简</strong>：就是反复 SFT，不需要任何 RL 算法</li>
+<li><strong>训练稳</strong>：监督学习没有不稳定性</li>
+<li><strong>可解释</strong>：训练数据全在那里，调试容易</li>
+</ul>
+<p>代价：</p>
+<ul>
+<li><strong>上限不如 RL 方法</strong>：因为模型学到的只是「自己生成的高分回答的分布」，没有 RL 那种「探索数据之外的好回答」的能力</li>
+<li><strong>多轮迭代成本高</strong>：每轮要采样 + 筛选 + SFT，比一次性 DPO 慢</li>
+</ul>
+<p>谁在用：Llama 2 的对齐流程、Llama 3 的早期阶段都用了拒绝采样。它通常作为对齐的「热身」步骤，先把模型推到一个不错的起点，然后再用 DPO 或 GRPO 做精修。</p>
+<h3 id="rlaif-让强-ai-当老师">RLAIF：让强 AI 当老师</h3>
+<p>RLAIF（Reinforcement Learning from AI Feedback，基于 AI 反馈的强化学习）是 RLHF 的变种。</p>
+<p>核心思路：<strong>用一个更强的 AI 模型替代人类标注员</strong>，去给候选回答打偏好排序。</p>
+<p>为什么要这么做？因为人类标注偏好极其昂贵：</p>
+<ul>
+<li>一个偏好对要标注员读两份回答、做出选择，平均 1-2 分钟</li>
+<li>训练一个高质量奖励模型需要几十万对偏好数据</li>
+<li>数据成本几百万美金起步</li>
+</ul>
+<p>如果有一个比当前模型更强的「教师模型」（比如用 GPT-4 级别模型给 Llama 训练数据打分），可以批量生成偏好数据，把人工标注成本大幅降下来。当然这不是零成本，因为教师模型调用本身也要钱，还可能把教师模型的偏见带进数据里。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_08_analogy_38cd9f94__570a8dce42.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>代表工作：</p>
+<ul>
+<li><strong>Anthropic 的 Constitutional AI</strong>：用 Claude 自己批评自己的回答，生成「自我修正后的好版本」作为偏好对</li>
+<li><strong>Google 的 RLAIF 论文</strong>：直接对比了 RLHF 和 RLAIF，发现 RLAIF 在多个任务上和 RLHF 效果相当甚至更好</li>
+</ul>
+<p>代价：</p>
+<ul>
+<li><strong>依赖一个强教师 AI</strong>：如果你的目标模型本身就是当前最强的，没法找到比它更强的老师</li>
+<li><strong>可能放大教师 AI 的偏见</strong>：教师不完美，学生也跟着不完美</li>
+</ul>
+<p>RLAIF 在工业界还在普及中，2026 年很多大厂都在用「人类标注 + AI 标注混合」的策略，纯人类标注已经越来越少了。</p>
+<h3 id="五类方案对比表">五类方案对比表</h3>
+<p>讲到这里，五种方法各自的逻辑都讲完了。现在把它们放到一张表里横向对比，方便看出每种方法在不同维度上的取舍。</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>方法</th>
+<th>是否用 RL</th>
+<th>维护模型数</th>
+<th>训练稳定性</th>
+<th>效果上限</th>
+<th>典型应用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RLHF（PPO）</strong></td>
+<td>是</td>
+<td>4（policy/ref/RM/value）</td>
+<td>较差</td>
+<td>高</td>
+<td>ChatGPT 早期</td>
+</tr>
+<tr>
+<td><strong>DPO</strong></td>
+<td>否（监督学习）</td>
+<td>2（policy/ref）</td>
+<td>好</td>
+<td>中高</td>
+<td>Zephyr、Mistral 派生模型、社区 Instruct</td>
+</tr>
+<tr>
+<td><strong>GRPO</strong></td>
+<td>是</td>
+<td>3（policy/ref/RM）</td>
+<td>好</td>
+<td>高</td>
+<td>DeepSeek R1、Qwen-Math</td>
+</tr>
+<tr>
+<td><strong>拒绝采样</strong></td>
+<td>否（迭代 SFT）</td>
+<td>2（policy/RM）</td>
+<td>极好</td>
+<td>中</td>
+<td>Llama 2 早期、Llama 3 热身</td>
+</tr>
+<tr>
+<td><strong>RLAIF</strong></td>
+<td>是</td>
+<td>3-4（同 RLHF，但 RM 由 AI 标注）</td>
+<td>较差</td>
+<td>高</td>
+<td>Constitutional AI、Anthropic</td>
+</tr>
+</tbody>
+</table></div><p>看完表之后，怎么选就清楚了。</p>
+<p>如果你的团队<strong>资源有限 + 实现优先简单</strong>，选 DPO 就对了。它把 RL 简化成监督学习，2 个模型搞定，绝大多数开源 Instruct 模型都用这一招。如果是<strong>推理类任务</strong>（数学、代码这种「答案对不对可以验证」的场景）+ 想用 RL 探索能力上限，选 GRPO。DeepSeek R1 就走的这条路，把推理能力拉到了一个新高度。</p>
+<p>想要先有一个<strong>稳定的对齐基线再做精修</strong>的话，可以先做拒绝采样（用 SFT 模型采样一批高分回答再 SFT 一遍），然后再按资源选择 DPO 或 PPO/RLHF 做偏好对齐。Llama 2-Chat 公开流程里是拒绝采样加 PPO/RLHF；很多社区模型为了降低工程复杂度，会把后面的 RLHF 换成 DPO。如果<strong>数据规模大 + 人工标注成本敏感</strong>，可以用 RLAIF 替代部分人类标注，让一个强 AI（比如 GPT-4 级别模型）代替人类给候选回答打偏好分，能省下一大笔标注费用。</p>
+<p>最后如果你是大厂、<strong>资源充足 + 追求最高上限</strong>，可以完整跑 RLHF 或者 GRPO 全流程。OpenAI 早期的 ChatGPT、Anthropic 的 Claude 都是走的这条最贵也最强的路。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_09_architecture_cc8247fc__5da1cae339.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="实际工程怎么组合使用">实际工程怎么组合使用</h3>
+<p>最关键的认知是，<strong>这五类方法不是替代关系，工业界的对齐流程通常是组合用的</strong>。看两个真实例子：</p>
+<p><strong>Llama 2-Chat 的对齐流程</strong>：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">SFT（人工编写的高质量指令-回答对）
+  ↓
+拒绝采样（用 Llama 自己生成 + 人类奖励模型筛高分）
+  ↓
+PPO/RLHF（用奖励模型继续做偏好优化）
+  ↓
+最终的 Llama 2-Chat
+</code></pre></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_10_flow_16b9776b__a759128104.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>Meta 在 Llama 2 论文里详细描述了这个流程，他们把拒绝采样和 PPO 都作为对齐优化手段来迭代。这里最容易记错：Llama 2-Chat 不是 DPO 代表，别在面试里把它说成「SFT + 拒绝采样 + DPO」。</p>
+<p><strong>DeepSeek R1 的训练流程</strong>：</p>
+<div class="code-shell"><div class="code-toolbar"><span>CODE</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-code">SFT 冷启动（少量人工示范的「思维链」数据）
+  ↓
+GRPO 第一轮（数学/代码任务的 RL，奖励来自对错判定）
+  ↓
+拒绝采样（用 GRPO 后的模型生成高质量推理链，筛选）
+  ↓
+SFT 第二轮（用筛出来的推理链做指令微调，让模型学会更好的推理表达）
+  ↓
+GRPO 第二轮（再次 RL 优化）
+  ↓
+最终的 DeepSeek R1
+</code></pre></div><p>DeepSeek R1 的 paper 里把这个流程拆得很细，整个对齐其实是「SFT + GRPO + 拒绝采样」的多轮交替。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/post_training_11_flow_df99bc01__deb3f1e6dc.webp" alt="SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这种组合用法是面试里能加分的关键。如果你在面试里只能讲单一方法，面试官会觉得你没做过工程；能讲清楚「Llama 2-Chat 是 SFT + 拒绝采样 + PPO/RLHF，DeepSeek R1 是 SFT 冷启动 + 多轮 GRPO + 拒绝采样」，面试官会觉得你真的研究过这些前沿模型的训练 pipeline。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，被怼三次后再来回答这个问题，思路应该清晰了。</p>
+<p>第一，先讲清楚 Post-Training 是个上位概念。SFT 之后模型只是「合格」，不是「优质」，也不一定「安全」。Post-Training 这个伞下覆盖了 RLHF、DPO、GRPO、拒绝采样、RLAIF 等一族方法，目标都是让 SFT 后的模型继续提升。</p>
+<p>第二，把五类方法各自的位置讲明白。RLHF（PPO）经典但工程复杂，4 模型架构；DPO 是 RLHF 的等价简化版，绕过奖励模型，只需 2 模型，是开源社区常见的低成本方案；GRPO 是 DeepSeek 2024 年提出的 PPO 进化版，砍掉 Value Model 用组内相对优势替代，2026 年因 DeepSeek R1 火得不行；拒绝采样是「采样-筛选-再 SFT」的循环，不用 RL；RLAIF 是用强 AI 当老师代替人类标注。</p>
+<p>第三，最关键的一句话，<strong>这五类方法是组合用的，不是替代</strong>。Llama 2-Chat 用的是「SFT + 拒绝采样 + PPO/RLHF」，DeepSeek R1 用的是「SFT 冷启动 + 多轮 GRPO + 拒绝采样」。能说出这种组合用法，面试官就知道你不是在背单点，而是真的看过这些模型的训练论文。</p>
+<p>如果还想加分，可以指出 GRPO 在「可验证任务」（数学、代码）上有特别优势（对错就是 reward，连 Reward Model 都省了），这正是 DeepSeek R1-Zero 能纯 RL 训出推理能力的关键。能讲到这一层，已经是面试里很难追问的水平了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#post-training-是什么概念-为什么-sft-之后还需要它">Post-Training 是什么概念？为什么 SFT 之后还需要它</a><a class="toc-level-3" href="#rlhf-经典方案-4-模型架构">RLHF：经典方案，4 模型架构</a><a class="toc-level-3" href="#dpo-绕过奖励模型的等价转换">DPO：绕过奖励模型的等价转换</a><a class="toc-level-3" href="#grpo-砍掉-value-model-的-ppo-进化版">GRPO：砍掉 Value Model 的 PPO 进化版</a><a class="toc-level-3" href="#拒绝采样-简单粗暴的迭代式-sft">拒绝采样：简单粗暴的迭代式 SFT</a><a class="toc-level-3" href="#rlaif-让强-ai-当老师">RLAIF：让强 AI 当老师</a><a class="toc-level-3" href="#五类方案对比表">五类方案对比表</a><a class="toc-level-3" href="#实际工程怎么组合使用">实际工程怎么组合使用</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/lora.html"><span>上一篇 · 大模型工程</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/dpo_vs_ppo.html"><span>下一篇 · 大模型工程</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

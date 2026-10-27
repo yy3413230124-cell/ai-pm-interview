@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我评估 Agent 时不会只看最终答案，而是分四层。">
+  <meta name="keywords" content="AI产品经理面试题,如何评估一个 Agent 的效果？评测集和指标怎么设计？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/19_evaluation.html">
+  <title>如何评估一个 Agent 的效果？评测集和指标怎么设计？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="如何评估一个 Agent 的效果？评测集和指标怎么设计？｜AI产品经理面试题">
+  <meta property="og:description" content="我评估 Agent 时不会只看最终答案，而是分四层。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/19_evaluation.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="如何评估一个 Agent 的效果？评测集和指标怎么设计？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我评估 Agent 时不会只看最终答案，而是分四层。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/19_evaluation.html#article","headline":"如何评估一个 Agent 的效果？评测集和指标怎么设计？｜AI产品经理面试题","description":"我评估 Agent 时不会只看最终答案，而是分四层。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/19_evaluation.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"如何评估一个 Agent 的效果？评测集和指标怎么设计？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/19_evaluation.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="is-active" href="#article-top"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 19 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 15 分钟阅读</span>
+            <span>5,898 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>如何评估一个 Agent 的效果？评测集和指标怎么设计？</h1>
+          <div class="article-deck">
+            <span>题目 19</span>
+            <p>我评估 Agent 时不会只看最终答案，而是分四层。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你们怎么评估 Agent 的效果？</p>
+<p>🙋‍♂️我：主要看最终回答准不准确，再让一个大模型给答案打分。</p>
+<p>👔面试官：退款 Agent 回复「退款成功」，实际却没调用退款接口，这个答案看起来很完整，你也给它高分吗？Agent 不只是在生成文字，它还在做决策和改变外部状态。</p>
+<p>🙋‍♂️我：那我再加上任务完成率和工具调用准确率，最后算一个综合分。</p>
+<p>👔面试官：如果它完成了退款，但绕过身份校验，还重复调用接口两次，综合分高就能上线吗？安全约束不能被其他指标的高分抵消。</p>
+<p>🙋‍♂️我：那就给安全指标更高的权重，只要总分过线就发布。</p>
+<p>👔面试官：还是不对。高风险约束应该是硬门禁，不是普通加分项。再说，评测题从哪里来，轨迹有多条正确路径怎么办，大模型裁判有偏差怎么办，线上 Badcase 又怎么回流？这些问题才构成一套完整的 Agent 评测体系。</p>
+<p>Agent 评测不能只盯着最后一句话，得把它从「会不会说」拆到「有没有把事做对」。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我评估 Agent 时不会只看最终答案，而是分四层。</p>
+<p>工具层看该不该调用、工具选得对不对、参数和返回处理是否正确；单步与轨迹层看每一步决策是否合理，有没有漏步骤、重复调用、越权或绕过必要流程；端到端层看任务最终是否完成，外部环境状态是否达到目标；线上层再看真实业务里的成功率、用户接管率、延迟、Token、成本和安全事件。</p>
+<p>评测集主要来自真实用户请求、历史 Badcase、边界场景和对抗样本。每条样本不只保存问题和参考答案，还要保存目标状态、允许或禁止的动作、关键检查点和评分规则。对于有多条正确路径的任务，不强行要求轨迹逐步完全一致。</p>
+<p>评分时我会把确定性检查放在最前面，能用 Schema、数据库状态、单元测试和权限规则判断的，就不用大模型猜。开放式质量再交给人工和 LLM-as-a-Judge，但要用人工样本校准裁判，并防范位置、篇幅和自我偏好等偏差。</p>
+<p>最后，把安全和关键业务约束设成发布硬门禁，其余指标按核心任务和场景切片与基线比较。上线后通过 Trace、用户反馈和业务结果发现 Badcase，再回流到离线集，形成持续回归闭环。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么只看最终答案会被骗">为什么只看最终答案会被骗？</h3>
+<p>普通问答应用的核心产物是一段文字，Agent 却多了一条执行链。它会理解目标、选择工具、填写参数、读取结果，再决定继续还是停止。每一步都可能把后面的结果带偏。</p>
+<p>还是拿退款 Agent 举例。它最后回复「退款已经完成」，至少存在三种可能：真的按规则完成退款；没有调用接口，只是编了一句成功；虽然完成了退款，却没有先核验用户身份。三种输出的文字可以很像，但产品结果和风险完全不同。</p>
+<p>所以，最终回复只能回答「它说得怎么样」，不能独自证明「事情有没有做成」和「过程是否合规」。最可信的任务成功信号，通常是可验证的外部结果，例如订单状态真的变成已退款、日历里真的出现目标日程、代码真的通过测试，而不是 Agent 自己声称完成。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/a4264977_answer-vs-real-world-result__f1cedb9b7d.webp" alt="如何评估一个 Agent 的效果？评测集和指标怎么设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="四层评测-把问题定位到具体环节">四层评测，把问题定位到具体环节</h3>
+<p>一套实用的 Agent 评测，可以沿着执行链拆成「工具 -&gt; 单步与轨迹 -&gt; 端到端任务 -&gt; 线上业务」四层。这样做不只是为了多记几个指标，更重要的是失败后能知道该改哪里。</p>
+<h4>第一层：工具是否可靠</h4>
+<p>先别急着测模型，工具本身是相对确定的业务代码，应该先做到可验证。</p>
+<p>这一层要检查输入 Schema、必填字段、类型和取值范围，也要覆盖正常结果、空结果、超时、权限失败和第三方服务异常。有副作用的工具还要测试幂等性，例如同一个支付请求重试两次，不能真的扣款两次。</p>
+<p>工具本身稳定以后，再测模型的工具决策。这里至少有两件事不能混在一起：一是工具选择是否正确，包括本来不该调用时能否克制；二是参数是否正确。模型选中了 <code>refund_order</code>，但订单号填错、金额越界或漏掉确认字段，仍然是一次失败调用。</p>
+<p>因此可以分别统计工具选择准确率、参数 Schema 通过率、参数语义正确率、工具执行成功率和重试后成功率。Schema 合法只代表格式能解析，不代表业务含义正确，这个误区很常见。</p>
+<h4>第二层：单步决策和完整轨迹是否合理</h4>
+<p>单步评测是在某个固定状态下问：Agent 下一步该做什么？它适合快速验证工具选择、参数生成、是否应该向用户追问信息，以及是否应该结束任务。</p>
+<p>轨迹评测则把整条工具调用序列拿出来看。比如退款必须先查订单、再核验身份、最后退款，这类流程可以做严格顺序检查；搜索多个相互独立的信息时，调用顺序不重要，只要需要的工具都用到了即可。</p>
+<p>这就是为什么不能给所有任务都准备一条「标准轨迹」，然后逐步做完全匹配。Agent 往往有多条合理路径，严格匹配会把另一条正确路径误判为错。更稳妥的做法，是根据任务定义三类约束：哪些步骤必须出现，哪些步骤禁止出现，哪些步骤有先后依赖。剩下的路径允许 Agent 自己选择。</p>
+<p>轨迹层还要看效率和冗余。常用信号包括总步骤数、无效工具调用数、重复调用率、失败重试次数、完成一次成功任务消耗的 Token 和时间。这里也不必迷信「理论最短路径」，因为多一步验证可能换来更高安全性。效率应该在成功且合规的前提下比较。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/c3d0fc67_valid-trajectories-constraints__f87838cc37.webp" alt="如何评估一个 Agent 的效果？评测集和指标怎么设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h4>第三层：端到端任务是否真的完成</h4>
+<p>端到端评测把 Agent 当成一个整体，核心指标是任务完成率，也就是满足成功条件的任务数占全部评测任务的比例。</p>
+<p>这里最关键的不是公式，而是「成功条件由谁定义」。不能让 Agent 自己说成功，也不能只看语言是否像参考答案。能检查环境状态就检查环境状态，能跑测试就跑测试，能核对结构化业务字段就核对字段。开放式研究报告没有唯一答案时，再用事实正确性、完整性、相关性和可用性等评分规则判断。</p>
+<p>复杂任务还可以拆出阶段性目标。如果 Agent 没有全部完成，但已经正确完成了前几个子目标，只记一个 0 会丢掉很多诊断信息。AgentBoard 的思路就是在成功率之外记录细粒度进度，让我们看出它究竟卡在第一步，还是只差最后一步。</p>
+<p>对同一任务还应该重复运行。Agent 的一次成功可能只是运气好，生产系统更关心稳定成功。τ-bench 提出的 <code>pass^k</code> 就是在看连续多次运行能否都成功，它与「给模型多次机会，只要一次通过」的 <code>pass@k</code> 不是一回事。实际项目不一定照搬这个名字，但要保留「同题多跑，看稳定性」的意识。</p>
+<h4>第四层：线上业务是否得到改善</h4>
+<p>离线评测通过了，仍不代表用户会满意。线上要继续观察任务解决率、人工接管率、用户主动纠正率、撤销率和重复尝试率，并结合具体业务结果，例如工单是否关闭、预约是否成功、代码修改是否被接受。</p>
+<p>同时还要记录工程指标。延迟不要只看平均值，至少要关注不同分位和各环节耗时；成本要看每个成功任务的模型调用次数、Token、工具成本和总成本；稳定性要看超时率、工具失败率、异常退出率以及不同模型、任务类型和上下文长度下的波动。</p>
+<p>安全指标必须单独看。比如未授权工具调用率、敏感信息泄露率、提示词注入攻击成功率、必需审批绕过率。这些不是普通体验指标，不能因为任务完成率很高，就允许它们被加权平均掉。</p>
+<p>把四层放到一起，可以得到一张比较实用的指标表：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>层级</th>
+<th>核心问题</th>
+<th>常用指标</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工具层</td>
+<td>单个工具和调用参数可靠吗</td>
+<td>工具选择准确率、参数正确率、执行成功率、幂等检查通过率</td>
+</tr>
+<tr>
+<td>单步与轨迹层</td>
+<td>决策过程合理吗</td>
+<td>必需步骤覆盖率、禁止动作触发率、重复调用率、轨迹冗余、约束遵循率</td>
+</tr>
+<tr>
+<td>端到端任务层</td>
+<td>事情真的做成了吗</td>
+<td>任务完成率、阶段目标完成度、结果正确性、多次运行稳定性</td>
+</tr>
+<tr>
+<td>线上业务层</td>
+<td>用户和业务真的受益吗</td>
+<td>解决率、人工接管率、延迟、每次成功任务成本、安全事件率</td>
+</tr>
+</tbody>
+</table></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/00064f49_four-layer-agent-evaluation__4d36759888.webp" alt="如何评估一个 Agent 的效果？评测集和指标怎么设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="评测集怎么建-题目和真值怎么设计">评测集怎么建，题目和真值怎么设计？</h3>
+<p>指标定好了，下一步不是去网上随便找一套通用 Benchmark，而是先写清楚自己的业务目标。通用 Benchmark 能帮助了解基础模型的能力区间，却不知道你的退款规则、工具 Schema、用户说话方式和风险边界。</p>
+<p>一条 Agent 评测样本，也不该只有「用户问题 + 标准答案」。更完整的样本通常包含初始环境状态、用户目标、预期最终状态、可用工具、必须或禁止的动作、关键约束、评分规则，以及需要时提供的参考轨迹。对于开放式结果，可以保存评分 Rubric 和少量优质示例；对于确定性任务，保存可执行的验证器更可靠。</p>
+<p>样本来源可以分成四块。</p>
+<p>第一块是真实请求。对生产日志去除隐私信息后，按任务类型、难度、工具、对话轮数和风险等级分层采样，不能只抽最常见、最容易的请求。</p>
+<p>第二块是边界场景。比如参数缺失、时间表达含糊、工具超时、返回空结果、上下文很长、多个工具都像能用。这些题不一定高频，却最容易暴露工程问题。</p>
+<p>第三块是对抗与安全样本。比如工具返回中藏着提示词注入，用户要求越权读取数据，或者诱导 Agent 绕过确认流程。它们用来检验安全边界，而不是追求平均体验分。</p>
+<p>第四块是历史 Badcase。线上每出现一种新的失败模式，人工确认原因后，就把有代表性的样本加入回归集。这样评测集不是一次性作业，而是在记录系统真实踩过的坑。</p>
+<p>为了防止「修好一类、弄坏另一类」，评测集还要按场景切片。每次修改 Prompt、模型、工具描述或路由策略，不只看总分，还要比较核心任务、高风险任务、长对话和历史 Badcase 等切片。总分上涨可能只是简单题占比太高，掩盖了某个关键场景退化。</p>
+<p>外部工具会变化，评测环境也要尽量可复现。涉及数据库、支付或消息发送时，通常在可重置的测试环境或 Mock 服务里运行，固定初始状态并记录模型、Prompt、工具和数据版本。否则今天和明天的结果差异，可能来自库存和时间变化，而不是 Agent 真的变了。</p>
+<h3 id="三种评分手段-谁擅长什么">三种评分手段，谁擅长什么？</h3>
+<p>一套可靠的评分体系，通常是确定性检查、人工评审和 LLM-as-a-Judge 三者组合，而不是选一个包打天下。</p>
+<p><strong>确定性检查应该优先使用。</strong> 参数能否通过 Schema、是否调用禁用工具、数据库最终状态是否正确、代码是否通过测试，这些都可以由程序直接判断。它速度快、成本低、结果稳定，也最适合放进持续集成。</p>
+<p><strong>人工评审负责定义标准和处理高风险歧义。</strong> 领域专家适合判断政策是否遵循、开放式结果是否有用，也适合审查自动裁判分歧大的样本。人工不一定要评全部数据，更重要的是建立清楚的 Rubric，并持续抽查自动评测是否跑偏。</p>
+<p><strong>LLM-as-a-Judge 负责扩展开放式评测。</strong> 例如报告是否完整、回复有没有解决问题、整条轨迹是否合理，很难用字符串匹配判断，这时可以让大模型按 Rubric 输出结构化分数和理由。</p>
+<p>不过，大模型裁判不是标准答案生成器。相关研究已经发现位置偏差、篇幅偏差和自我偏好等问题。候选答案换个顺序，判决可能变化；更长的答案可能只是显得更完整；同系列模型也可能偏爱自己的表达方式。</p>
+<p>工程上可以从几个方向降低风险：把不同维度拆开评分，不让「整体感觉」代替明确标准；向裁判提供任务、约束和必要证据；候选模型名称匿名化；做成对比较时交换两边顺序复核；用人工标注集衡量裁判的一致性；对裁判不确定或人机分歧的样本进入人工复审。更换裁判模型或 Prompt 时，也要像更换被测系统一样跑回归。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/149acaf3_three-evaluator-calibration__c3b6e245e4.webp" alt="如何评估一个 Agent 的效果？评测集和指标怎么设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="指标怎么组合-才能成为发布门禁">指标怎么组合，才能成为发布门禁？</h3>
+<p>很多团队最后会做一个综合分，但综合分不能解决所有决策。</p>
+<p>更合理的做法是先设硬门禁，再看质量与效率。安全违规、越权动作、绕过必要审批、重复产生严重副作用，这些样本只要失败就应该阻止发布。对于普通质量指标，再根据业务目标比较任务完成率、轨迹质量、延迟和成本。</p>
+<p>门槛也不存在一个行业通用数字。客服、代码修改和资金操作的容错空间完全不同。应该先用当前线上版本建立基线，再根据业务风险确定门槛，并同时查看整体结果和关键切片。新版本如果总任务完成率上升，但高风险退款场景退化，仍然不能发布。</p>
+<p>由于 Agent 有随机性，比较版本时要固定环境和运行配置，并让同一批关键样本重复执行。不要只拿一轮结果就宣布提升，也不要只报平均分而不看失败样本。一份能指导改进的评测报告，应该直接点出「哪类任务退化、哪一步出错、代价增加在哪里」。</p>
+<h3 id="从离线回归到线上-badcase-的闭环">从离线回归到线上 Badcase 的闭环</h3>
+<p>评测不是上线前跑一次就结束。完整闭环应该是：定义成功标准 -&gt; 构建评测集 -&gt; 运行分层评测 -&gt; 通过门禁后灰度上线 -&gt; 观察 Trace 和业务结果 -&gt; 发现并归因 Badcase -&gt; 加入回归集 -&gt; 修复后同时跑定向集与全量集。</p>
+<p>线上 Trace 不能只存用户输入和最终输出，还要保留必要的模型调用、工具选择、参数、工具结果、重试、耗时、Token、版本和最终环境状态。这样遇到失败时，才能判断是路由选错、参数生成错误、工具异常、状态丢失，还是最终回答没有正确使用工具结果。</p>
+<p>用户点踩、追问、撤销和人工接管都是有价值的信号，但它们只是代理指标。用户没有点踩，不等于任务完成；接管率上升，也可能是上线了更谨慎的安全门控。因此重要改动最好结合灰度或 A/B 实验，看真实业务结果是否改善。</p>
+<p>最后，把确认过的线上问题去重、聚类，再挑代表样本加入评测集。既跑针对这类问题的小型定向集，也跑覆盖旧能力的完整回归集，才能避免 Prompt 调优出现「修好这一类，又破坏另一类」。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/2a7d7857_evaluation-feedback-loop__19f67d8992.webp" alt="如何评估一个 Agent 的效果？评测集和指标怎么设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="它和通用-llm-rag-评测有什么区别">它和通用 LLM、RAG 评测有什么区别？</h3>
+<p>通用 LLM Benchmark 主要回答「底座模型在知识、推理、代码等任务上处于什么能力区间」。RAG 评测重点看检索是否找对、生成是否忠于检索内容。它们都很有价值，但不能代替 Agent 评测。</p>
+<p>Agent 评测多了行动和环境状态。它不仅关心回答是否正确，还要关心何时调用哪个工具、参数是否正确、路径是否合规、任务能否稳定完成，以及为成功付出了多少时间和成本。因此，不能把 RAGAs 指标搬过来，再加一个答案相关性，就称为完整的 Agent 评测。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答这道题时，第一句就要指出：Agent 评测不能只看最终答案，因为一段正确的话，背后可能是错误、无效甚至越权的执行过程。</p>
+<p>接下来可以按四层展开。工具层看工具和参数是否可靠；单步与轨迹层看决策、必要步骤、禁止动作和执行冗余；端到端层用最终环境状态判断任务是否完成，并通过重复运行观察稳定性；线上层再看业务效果、延迟、Token、成本和安全。</p>
+<p>评测集要从真实请求、边界场景、对抗样本和历史 Badcase 中持续构建。每条题除了输入，还要定义目标状态、约束、验证器或 Rubric。多条路径都正确时，不要强行做逐步完全匹配。</p>
+<p>评分方法上，能用程序验证的先做确定性检查，开放式质量再结合人工和 LLM-as-a-Judge。大模型裁判必须用人工样本校准，并防范位置、篇幅和自我偏好等偏差。</p>
+<p>最后，安全和关键约束设为硬门禁，其他指标与线上基线分场景比较。线上 Trace 发现的 Badcase 经人工确认后回流评测集，修复时同时跑定向测试和完整回归，这才形成一套能持续改进 Agent 的评测体系。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么只看最终答案会被骗">为什么只看最终答案会被骗？</a><a class="toc-level-3" href="#四层评测-把问题定位到具体环节">四层评测，把问题定位到具体环节</a><a class="toc-level-3" href="#评测集怎么建-题目和真值怎么设计">评测集怎么建，题目和真值怎么设计？</a><a class="toc-level-3" href="#三种评分手段-谁擅长什么">三种评分手段，谁擅长什么？</a><a class="toc-level-3" href="#指标怎么组合-才能成为发布门禁">指标怎么组合，才能成为发布门禁？</a><a class="toc-level-3" href="#从离线回归到线上-badcase-的闭环">从离线回归到线上 Badcase 的闭环</a><a class="toc-level-3" href="#它和通用-llm-rag-评测有什么区别">它和通用 LLM、RAG 评测有什么区别？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/18_session_state.html"><span>上一篇 · Agent</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/20_loop_stability.html"><span>下一篇 · Agent</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

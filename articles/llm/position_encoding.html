@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。">
+  <meta name="keywords" content="AI产品经理面试题,大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？,大模型工程,AI产品经理,大模型工程面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/position_encoding.html">
+  <title>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？｜AI产品经理面试题">
+  <meta property="og:description" content="我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/position_encoding.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/position_encoding.html#article","headline":"大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？｜AI产品经理面试题","description":"我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。","articleSection":"大模型工程面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/position_encoding.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"大模型工程面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/llm.html"},{"@type":"ListItem","position":3,"name":"大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/llm/position_encoding.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/llm.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 大模型工程面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#7a5af8"></i>
+            <span>大模型工程</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="大模型工程面试专题题目列表">
+            <a class="" href="./what_is_llm.html"><span>01</span><strong>什么是大语言模型？和传统 NLP 模型有什么区别？</strong></a><a class="" href="./transformer_architecture.html"><span>02</span><strong>讲讲 Transformer 架构基本原理？Encoder 和 Decoder 是什么？</strong></a><a class="" href="./mha_mqa_gqa_flash_attention.html"><span>03</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a><a class="is-active" href="#article-top"><span>04</span><strong>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</strong></a><a class="" href="./tokenizer.html"><span>05</span><strong>什么是大模型项目的分词器？原理是什么？</strong></a><a class="" href="./llm_training.html"><span>06</span><strong>大模型是怎么训练出来的？</strong></a><a class="" href="./scaling_law_emergence.html"><span>07</span><strong>什么是 Scaling Law？大模型的「涌现能力」是怎么回事？</strong></a><a class="" href="./finetuning.html"><span>08</span><strong>大模型微调的方案有哪些？</strong></a><a class="" href="./lora.html"><span>09</span><strong>请讲一下 LoRA 技术，除了减少参数量，它还有哪些优点？</strong></a><a class="" href="./post_training.html"><span>10</span><strong>SFT 之后还有哪些 Post-Training？RLHF、DPO、GRPO、拒绝采样什么关系？</strong></a><a class="" href="./dpo_vs_ppo.html"><span>11</span><strong>大模型的 DPO 和 PPO 的区别是什么？</strong></a><a class="" href="./decoding_strategies.html"><span>12</span><strong>大模型生成文本时的解码策略有哪些？贪心、Beam Search、采样分别什么时候用？</strong></a><a class="" href="./temperature_top_p_top_k.html"><span>13</span><strong>大模型的参数：温度值、Top-P、Top-K 分别是什么？各个场景下的最佳设置是什么？</strong></a><a class="" href="./kv_cache_prompt_caching.html"><span>14</span><strong>KV Cache 是什么？Prompt Caching 的原理是什么？</strong></a><a class="" href="./quantization.html"><span>15</span><strong>大模型量化是什么？INT8/INT4/AWQ/GPTQ 怎么选？</strong></a><a class="" href="./prompt_engineering.html"><span>16</span><strong>如何写好 Prompt？分享下 Prompt 工程实践经验？</strong></a><a class="" href="./cot.html"><span>17</span><strong>什么是 CoT？为啥效果好？它有什么缺点或局限性？</strong></a><a class="" href="./hallucination.html"><span>18</span><strong>大模型为什么会出现幻觉？怎么缓解？</strong></a><a class="" href="./moe.html"><span>19</span><strong>MoE 混合专家模型是什么？DeepSeek V3、Qwen 为什么用 MoE？</strong></a><a class="" href="./deployment_frameworks.html"><span>20</span><strong>大模型部署有哪些主流方案？vLLM、TGI、llama.cpp、SGLang 实际项目里怎么选？</strong></a><a class="" href="./evaluation_metrics.html"><span>21</span><strong>大模型能力评测指标有哪些？</strong></a><a class="" href="./model_selection.html"><span>22</span><strong>对比使用过哪些主流大模型？你们项目中最终选用了哪个模型？为什么？</strong></a><a class="" href="./23_long_context_lost_middle.html"><span>23</span><strong>为什么长上下文会出现 Lost in the Middle？上下文窗口越大越好吗？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/llm.html">大模型工程</a><span>/</span>
+            <span>第 4 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#7a5af8;--soft:#efeaff">大模型工程</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 17 分钟阅读</span>
+            <span>6,744 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？</h1>
+          <div class="article-deck">
+            <span>题目 04</span>
+            <p>我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：来讲讲大模型为什么需要位置编码？sin/cos、RoPE、ALiBi 这几种各有什么区别？</p>
+<p>🙋‍♂️我：位置编码就是让模型知道每个词在第几个位置，用 sin 和 cos 函数算一下加到 token embedding 上就行。</p>
+<p>👔面试官：……「加到 embedding 上」是怎么加？是直接做加法还是别的什么操作？为什么要用 sin 和 cos 而不是 1, 2, 3, 4 这种简单序号？再说，RoPE 你也是「加到 embedding 上」吗？那它不就和 sin/cos 一样了？</p>
+<p>🙋‍♂️我：哦哦，RoPE 是相对位置编码，跟 sin/cos 不一样，是给 Q 和 K 做旋转。</p>
+<p>👔面试官：「做旋转」？怎么旋转？为什么旋转能表达位置？为什么相对位置编码比绝对位置编码强？还有 ALiBi 是什么思路？为什么 Llama 选 RoPE 不选 ALiBi？</p>
+<p>🙋‍♂️我：呃……ALiBi 我有点忘了……反正都是位置编码嘛，效果应该差不多吧？</p>
+<p>👔面试官：「效果差不多」？那为什么主流模型都换成 RoPE 了？为什么长上下文外推 RoPE 比 sin/cos 强？为什么 ALiBi 有它的支持者但没成主流？这些问题没搞清楚，面试就是被怼。回去补一下。</p>
+<p>从这几个反问里能听出，位置编码这道题真正想问的是「为什么 LLM 不用 sin/cos 而都跑去用 RoPE 了」。三种方案的设计思路、各自的外推上限、对长上下文的影响，把这条主线讲透，分高低自然就出来了。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>不要只背架构名词。先说明业务约束，再讲模型能力、延迟、成本与可控性的权衡，最后给出离线评测和线上灰度指标。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我理解位置编码要解决的问题，本质上是 Self-Attention 的「位置盲」缺陷。Attention 的计算是对称的，不管词序怎么变，注意力分数都一样。「我打你」和「你打我」对模型来说是一回事，所以必须显式注入位置信息。</p>
+<p>三种主流位置编码各有不同的设计哲学。</p>
+<p>第一种是 <strong>sin/cos 绝对位置编码</strong>（原始 Transformer 用的）。给每个位置算一组固定的 sin/cos 值，加到 token embedding 上。优点是简单、不需要训练参数；缺点是「绝对位置」太死板，模型实际关心的是「相对距离」，而且训练时见过的最长位置之外的位置（比如训练 2K，推理时上 4K），效果会断崖下跌。</p>
+<p>第二种是 <strong>RoPE（旋转位置编码）</strong>。它不是把位置信息「加」到 embedding 上，而是「旋转」Q 和 K 向量。每个位置对应一个旋转角度，位置越靠后旋转的角度越大。两个 token 做注意力时，它们 Q/K 的点积自然带上了「相对距离」的信息。优点是相对位置直接编进了点积里、长上下文外推能力强，配合 NTK、YaRN 等扩展技巧，以及必要的继续训练或长上下文校准，可以把上下文推到更长。所以 Llama、Qwen、DeepSeek 等主流开源模型大量使用 RoPE。</p>
+<p>第三种是 <strong>ALiBi（Attention with Linear Biases）</strong>。最简单粗暴，直接在注意力分数里加一个「距离惩罚」，离得越远扣分越多，斜率随 head 不同。优点是不引入任何可学习参数、长上下文外推天然就好；缺点是表达力弱一些，对位置的精细建模不如 RoPE。MosaicML 的 MPT、BLOOM 用过 ALiBi，但没成主流。</p>
+<p>最关键的一句话是，<strong>主流大模型几乎全部选择了 RoPE</strong>，因为它在「相对位置编码 + 长上下文外推 + 兼容现代推理优化」三个维度上都最均衡。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么-attention-必须有位置编码">为什么 Attention 必须有位置编码</h3>
+<p>要理解位置编码，得先搞清楚 Attention 本身有什么毛病。</p>
+<p>Self-Attention 的核心计算是 <code>softmax(QK^T/√d) · V</code>，每个 token 通过 Q 去和所有 token 的 K 做点积、算注意力权重，然后按权重加权聚合所有 token 的 V。这个过程有一个致命特点：<strong>它是对位置不敏感的</strong>，也就是俗称的「位置盲」。</p>
+<p>什么意思呢？看个例子。</p>
+<p>假如输入是「我打你」，每个字都被转成 embedding 向量。Attention 计算时，「我」会去看「打」和「你」，「打」会去看「我」和「你」，「你」会去看「我」和「打」。这个过程里，模型只知道「这三个字之间互相算了注意力」，但<strong>完全不知道谁在前谁在后</strong>。</p>
+<p>如果把输入换成「你打我」，这三个 embedding 一模一样（只是位置变了），Attention 算出来的结果和「我打你」<strong>几乎完全相同</strong>。但这两句话语义是反的。模型如果分不清位置，就分不清主语和宾语，根本没法理解语言。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_01_comparison_00f05f2f__60d6537db6.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>那为什么不能直接用「1, 2, 3, 4」这种位置序号？</p>
+<p>因为序号是离散的整数，加到连续的 embedding 向量上会很别扭：第 1000 位的「1000」会把原本的 embedding 数值整个拉爆（embedding 通常是 -1 到 1 之间的小数）；而且整数序号对长序列没法泛化，训练时见过 1-2048，推理时来了 4096，这个数字模型从来没见过，效果一定崩。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_02_architecture_688586f5__addef438dc.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>所以位置编码必须满足三个要求：</p>
+<ul>
+<li><strong>数值范围合理</strong>，不能把 token embedding 给覆盖掉</li>
+<li><strong>能区分不同位置</strong>，每个位置都有独特的「指纹」</li>
+<li><strong>能泛化到长序列</strong>，最好支持外推到训练时没见过的长度</li>
+</ul>
+<p>带着这三个要求，再来看三种主流方案就好理解了。</p>
+<h3 id="sin-cos-绝对位置编码-原始-transformer-的方案">sin/cos 绝对位置编码：原始 Transformer 的方案</h3>
+<p>2017 年的 Transformer 论文用的就是 sin/cos 位置编码，简称 <strong>Sinusoidal PE</strong>。它的核心思路是用一组不同频率的 sin/cos 函数，给每个位置生成一个独特的「指纹向量」。</p>
+<p>公式不展开背，直觉上这样理解。模型 embedding 维度有 d 维（比如 d=512），把这 d 维分成 d/2 对，每对用一组 sin/cos：</p>
+<ul>
+<li>第 1 对的频率最快（高频），相邻位置之间区别明显，适合区分近距离的位置</li>
+<li>第 d/2 对的频率最慢（低频），相邻位置几乎一样，但跨越很远的位置才能区分开</li>
+</ul>
+<p>类比一下：就像几个不同频率的振子叠加，高频振子记录「精细位置」，低频振子记录「粗略位置」。每个位置在 d 维空间里都有一个独特的 sin/cos 组合，就是它的「身份证」。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_03_effect_b0165486__e699fb12ac.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这个方案怎么用？把每个位置的 sin/cos 指纹向量直接<strong>加到对应 token 的 embedding 上</strong>。即「最终输入向量 = token embedding + position embedding」。</p>
+<p>为什么是「加」而不是「拼接」？因为加法不增加维度，结构上更省事。神经网络强大到可以从相加的结果里把这两部分信息「自动解开」。</p>
+<p>sin/cos 编码的优点是显而易见的：</p>
+<ul>
+<li><strong>零参数</strong>：完全是数学公式算出来的，不占模型参数</li>
+<li><strong>泛化性看起来不错</strong>：理论上 sin/cos 可以算到任意位置的指纹</li>
+</ul>
+<p>但它的致命问题是<strong>长上下文外推能力差</strong>。</p>
+<p>虽然理论上 sin/cos 可以算任意长度，但实际效果会在训练时见过的最长位置之外迅速恶化。如果模型只在 2K 长度上训练过，推理时给它 4K 输入，模型表现会断崖下跌。原因是模型在训练时只学过「2K 以内的相对位置关系」，超出 2K 的相对距离它从来没见过，注意力权重的分布会乱掉。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_04_comparison_be8724b7__4b13fec0ed.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>所以 sin/cos 编码在小模型时代还行，到了大模型时代（要支持几十 K 甚至上百 K 长上下文）就明显不够用了。</p>
+<h3 id="绝对位置-vs-相对位置-模型真正想要什么">绝对位置 vs 相对位置：模型真正想要什么</h3>
+<p>在讨论 RoPE 之前，先想一个特别生活化的问题：<strong>你跟别人介绍你坐在哪儿，是说「我坐在前排第 3 个座位」，还是说「我坐在 XX 旁边」？</strong></p>
+<p>大部分时候你会选第二种，因为「相对位置」比「绝对位置」更有信息量。同样在 NLP 里，模型理解语言时关心的也是相对位置，不是绝对位置。</p>
+<p>举个例子。中文里「主语动词宾语」这种句法关系，关键的不是「主语在第 3 位、动词在第 5 位」这种绝对编号，而是「主语和动词之间隔了 2 个词」这种相对距离。一句话不管前面加了多少修饰语、语气词，主语和动词的相对关系是稳定的。同样的「我吃饭」，不管你前面加「今天」「中午」「饿了所以」，主谓宾的相对距离都没变。</p>
+<p>绝对位置编码（比如 sin/cos）的问题就在这里。它给每个位置发一个独立的「身份证」，要让模型自己从「位置 3 的身份证」和「位置 5 的身份证」推断出「相对距离是 2」。这个推断完全靠模型在训练里慢慢碰运气学到，没有显式的归纳偏置。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_05_analogy_bbd6c3f4__6537dfff2d.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>相对位置编码的思路就是把「相对距离」这个信息显式地编进注意力计算里，让模型不用自己算。具体做法是让两个 token 的位置编码只取决于它们的差值 m-n，跟 m 和 n 各自的绝对值无关。这就是 RoPE 和 ALiBi 共同的出发点，它们走的是不同的实现路线，但目标一致。</p>
+<h3 id="rope-用旋转把相对位置编进点积">RoPE：用旋转把相对位置编进点积</h3>
+<p>RoPE（Rotary Position Embedding，旋转位置编码）是 2021 年中国学者苏剑林（@bojone）提出的，现在已经是大模型的标配。核心思路一句话：<strong>不把位置信息加到 embedding 上，而是旋转 Q 和 K 向量</strong>。</p>
+<p>什么意思？</p>
+<p>在 Attention 计算里，每个 token 都会被投影成 Q（Query）和 K（Key）。RoPE 在这一步动手脚：每个 token 的 Q/K 向量根据它的位置 m，被旋转一个对应角度 mθ（θ 是预设常数）。位置 0 的 token 不旋转，位置 1 的旋转 θ，位置 2 的旋转 2θ，依此类推。</p>
+<p>类比一下：把 Q/K 向量想象成钟表的指针，每个位置对应一个不同时刻的指针朝向。位置越靠后，指针转得越多。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_06_flow_56f3e415__239c6a235a.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>为什么旋转能表达位置？关键的数学性质是：<strong>两个旋转后的向量做点积，结果只依赖于它们的「旋转角度差」</strong>。</p>
+<p>具体说，位置 m 的 Q 和位置 n 的 K 做点积，旋转之后的点积结果只跟 (m-n) 这个相对距离有关，跟 m 和 n 各自的绝对值无关。这就把「相对位置」信息天然地编进了 Attention 计算里，模型不用自己学。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_07_analogy_3c95a399__bf2bcd2057.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>RoPE 的优点非常突出，几个层面叠加起来才让它成为现在的标配。</p>
+<p>最直观的优点是<strong>天然的相对位置编码</strong>，不用模型自己学相对关系，直接编进点积。这是 RoPE 区别于 sin/cos 的核心。然后是<strong>零参数</strong>，整个操作就是数学上的旋转，不引入任何可学习参数，对模型容量没有额外开销。还有一个被忽视的细节是<strong>保留 token 向量的长度</strong>，旋转操作不改变向量的模长只改变方向，所以不会破坏原本 embedding 的数值范围，训练稳定性更好。最后是<strong>和现代推理优化的兼容性</strong>，RoPE 是在 Q/K 上做的旋转，跟 KV Cache、Flash Attention、MQA/GQA 这些主流推理优化都能无缝叠加，不会产生冲突。</p>
+<p>更关键的是 RoPE 的<strong>长上下文外推能力</strong>远好于 sin/cos。原因是 RoPE 的旋转是连续的角度变化，本身没有「训练截止」这个概念。即使训练时只见过 2K，推理时来了 4K，多出来的位置也只是更大的旋转角度而已，模型不会「彻底懵」，效果衰减比 sin/cos 平缓很多。</p>
+<p>再加上后来发明的 NTK Scaling、YaRN、Position Interpolation 等扩展技巧（核心都是调整 RoPE 的频率参数），可以把训练时的 2K 推到 32K、100K 甚至更长。但这里别说成「几乎无损」的银弹，外推效果取决于模型、任务、长度倍率和是否做过继续训练。推得越远，越需要专门评测长文检索、多跳推理和位置敏感任务。</p>
+<p>谁在用 RoPE？基本上 2023 年之后所有主流开源大模型都用：</p>
+<ul>
+<li><strong>Llama 1/2/3</strong> 全系</li>
+<li><strong>Qwen 1/2/3</strong> 全系</li>
+<li><strong>DeepSeek V1/V2/V3/R1</strong> 全系</li>
+<li><strong>Mistral / Mixtral</strong> 全系</li>
+<li><strong>GLM 系列</strong></li>
+</ul>
+<p>可以说 RoPE 已经是大模型架构的事实标准。</p>
+<h3 id="alibi-直接给注意力加距离惩罚">ALiBi：直接给注意力加距离惩罚</h3>
+<p>ALiBi（Attention with Linear Biases）是另一种相对位置编码方案，2022 年提出，思路比 RoPE 更暴力：<strong>根本不动 Q、K、V，直接在注意力分数里加一个「距离惩罚项」</strong>。</p>
+<p>具体做法：在 <code>softmax(QK^T)</code> 这一步之前，给每对 token 的注意力分数加上一个偏置项，偏置值是 <code>-m × |i-j|</code>，其中 |i-j| 是两个 token 之间的距离，m 是一个固定的斜率（每个 head 不同）。</p>
+<p>直观理解：离得越远，注意力分数被扣得越多，模型越倾向于关注近邻的 token。每个 head 用不同的斜率，等于让不同的 head 关注不同范围的距离（有的 head 关注近邻，有的 head 关注远处）。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_08_comparison_2f739339__69072afd7e.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>ALiBi 的优点：</p>
+<ul>
+<li><strong>零参数</strong>：和 RoPE 一样不引入可学习参数</li>
+<li><strong>极简实现</strong>：就是加一个偏置矩阵，比 RoPE 还简单</li>
+<li><strong>天然支持长上下文外推</strong>：因为距离惩罚是线性的，不存在训练截止，理论上多长都行</li>
+</ul>
+<p>但 ALiBi 也有明显短板：</p>
+<ul>
+<li><strong>表达力弱</strong>：所有位置信息都靠「距离惩罚」这一个机制传递，对精细的位置关系（比如「主语动词宾语的语序」）建模不如 RoPE 灵活</li>
+<li><strong>过强的局部偏置</strong>：线性距离惩罚会让模型过度关注近邻，对需要捕捉长距离依赖的任务不利</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_09_architecture_3e116fd9__479674e2ea.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>谁用过 ALiBi？</p>
+<ul>
+<li><strong>MosaicML 的 MPT 系列</strong></li>
+<li><strong>BLOOM 的某些版本</strong></li>
+</ul>
+<p>但这些模型都不是主流大模型，ALiBi 没能在大厂主力模型上推广开。</p>
+<h3 id="三种方案对比-为什么-rope-赢了">三种方案对比：为什么 RoPE 赢了</h3>
+<p>把三种方案放到一起比较：</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>维度</th>
+<th>sin/cos</th>
+<th>ALiBi</th>
+<th>RoPE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>编码类型</td>
+<td>绝对位置</td>
+<td>相对位置（距离惩罚）</td>
+<td>相对位置（旋转）</td>
+</tr>
+<tr>
+<td>是否可学习参数</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>注入方式</td>
+<td>加到 token embedding</td>
+<td>加到注意力分数</td>
+<td>旋转 Q/K 向量</td>
+</tr>
+<tr>
+<td>长上下文外推</td>
+<td>较差（容易断崖）</td>
+<td>好（线性外推）</td>
+<td>很强（配合 NTK/YaRN，常需校准或继续训练）</td>
+</tr>
+<tr>
+<td>表达力</td>
+<td>中等</td>
+<td>弱（过强局部偏置）</td>
+<td>强</td>
+</tr>
+<tr>
+<td>主流采用</td>
+<td>原始 Transformer</td>
+<td>MPT、BLOOM</td>
+<td>Llama / Qwen / DeepSeek 全系</td>
+</tr>
+</tbody>
+</table></div><p>为什么 RoPE 最终赢了？三个理由。</p>
+<p><strong>第一，长上下文外推能力</strong>。这是 2023 年之后最重要的需求之一。RoPE 配合 NTK/YaRN 这套生态，外推能力很强，但真正上线前还要看长上下文评测，不是把参数一改就天然无损。</p>
+<p><strong>第二，相对位置 + 表达力的平衡</strong>。ALiBi 虽然外推也好，但表达力不够；sin/cos 表达力够，但外推差。RoPE 是唯一兼顾两者的方案。</p>
+<p><strong>第三，工程兼容性</strong>。RoPE 只在 Q/K 上做旋转，不改变其他计算，和 KV Cache、Flash Attention、MQA/GQA 都能无缝叠加。这一点对工业界部署至关重要。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_10_flow_e869a658__719fa11090.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="拓展-长上下文外推-ntk-yarn-简介">拓展：长上下文外推（NTK / YaRN 简介）</h3>
+<p>最后简单提一下 RoPE 的外推扩展技巧，因为这一块面试时容易被追问。</p>
+<p>RoPE 训练时见过 2K，怎么推到 100K？直接喂 100K 输入是不行的，因为旋转角度超过 2K 之外，模型从来没见过那么大的角度，效果还是会衰减。所以业界搞出了几个「调整 RoPE 频率参数」的技巧：</p>
+<ul>
+<li><strong>Position Interpolation（PI）</strong>：把 100K 的位置「等比例缩小」到 2K 范围，比如位置 50000 当作位置 1000 处理。简单粗暴但有效，代价是「精细距离信息被压缩」</li>
+<li><strong>NTK-aware Scaling</strong>：调整 RoPE 不同维度的频率，让高频维度（精细位置）几乎不动，低频维度（粗略位置）按比例缩小。比 PI 更精细</li>
+<li><strong>YaRN（Yet another RoPE extensioN）</strong>：在 NTK 基础上做了进一步精细化，引入温度参数和分段策略，目前是大厂用得最多的方案</li>
+</ul>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/position_encoding_11_comparison_597d111f__94526f9edf.webp" alt="大模型的位置编码是干什么用的？sin/cos、RoPE、ALiBi 有什么区别？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>需要强调的是，这些外推技巧有些可以在推理时直接改 RoPE 参数就看到收益，但要做到稳定的 100K+ 长上下文，很多模型还会配合长上下文继续训练、校准数据或专门的评测筛选。RoPE 在长上下文时代地位稳固，不是因为它能无成本无限外推，而是因为它给了社区一个很好调、很好扩展的基础。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回到开头那段对话，问到位置编码，最重要的是先讲清楚为什么需要它。Self-Attention 是「位置盲」的，「我打你」和「你打我」算出来的注意力是一样的，所以必须显式注入位置信息。而且不能直接用 1, 2, 3, 4 这种序号，因为数值范围会破坏 embedding，长序列还没法泛化。这一句铺垫先讲到，面试官就知道你理解为什么需要位置编码这件事。</p>
+<p>讲完铺垫之后，再把三种主流方案的设计哲学讲明白。sin/cos 是绝对位置编码，加到 token embedding 上，简单但长上下文外推差；RoPE 是相对位置编码，通过旋转 Q/K 向量把相对距离编进点积，外推能力强，是当前主流；ALiBi 是另一种相对位置编码，直接在注意力分数上加距离惩罚，零参数极简，但表达力弱、局部偏置过强，没成主流。三种方案的设计哲学和工业界采用情况都点出来，体现你对这条技术路线有完整的视角。</p>
+<p>最关键的一句话是：<strong>RoPE 赢在「相对位置 + 长上下文扩展 + 工程兼容性」三个维度的均衡</strong>。配合 NTK Scaling、YaRN 等扩展技巧，再加上必要的长上下文训练或校准，能把上下文扩到很长，所以 Llama、Qwen、DeepSeek、Mistral 等主流开源模型大量使用 RoPE。</p>
+<p>如果还想再加分，可以提一句长上下文外推的具体方案（PI / NTK / YaRN），或者点出 RoPE 兼容 KV Cache、Flash Attention、MQA/GQA 等现代推理优化，这才是它能在工业界站稳脚跟的关键。能讲到这一层，面试官基本就没什么追问的了。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么-attention-必须有位置编码">为什么 Attention 必须有位置编码</a><a class="toc-level-3" href="#sin-cos-绝对位置编码-原始-transformer-的方案">sin/cos 绝对位置编码：原始 Transformer 的方案</a><a class="toc-level-3" href="#绝对位置-vs-相对位置-模型真正想要什么">绝对位置 vs 相对位置：模型真正想要什么</a><a class="toc-level-3" href="#rope-用旋转把相对位置编进点积">RoPE：用旋转把相对位置编进点积</a><a class="toc-level-3" href="#alibi-直接给注意力加距离惩罚">ALiBi：直接给注意力加距离惩罚</a><a class="toc-level-3" href="#三种方案对比-为什么-rope-赢了">三种方案对比：为什么 RoPE 赢了</a><a class="toc-level-3" href="#拓展-长上下文外推-ntk-yarn-简介">拓展：长上下文外推（NTK / YaRN 简介）</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/llm/mha_mqa_gqa_flash_attention.html"><span>上一篇 · 大模型工程</span><strong>多头注意力（MHA）有哪些局限？MQA、GQA、Flash Attention 怎么解决？</strong></a>
+      <a class="pagination-card next" href="../../articles/llm/tokenizer.html"><span>下一篇 · 大模型工程</span><strong>什么是大模型项目的分词器？原理是什么？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

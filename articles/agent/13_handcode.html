@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="我的感受是框架用起来快，但有几个实际痛点。">
+  <meta name="keywords" content="AI产品经理面试题,在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/13_handcode.html">
+  <title>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？｜AI产品经理面试题">
+  <meta property="og:description" content="我的感受是框架用起来快，但有几个实际痛点。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/13_handcode.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？｜AI产品经理面试题">
+  <meta name="twitter:description" content="我的感受是框架用起来快，但有几个实际痛点。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/13_handcode.html#article","headline":"在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？｜AI产品经理面试题","description":"我的感受是框架用起来快，但有几个实际痛点。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/13_handcode.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/13_handcode.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="is-active" href="#article-top"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="" href="./29_context_compression_threshold.html"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 13 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 10 分钟阅读</span>
+            <span>4,168 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</h1>
+          <div class="article-deck">
+            <span>题目 13</span>
+            <p>我的感受是框架用起来快，但有几个实际痛点。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你平时做 Agent 开发用什么框架？</p>
+<p>🙋‍♂️我：主要用 LangChain，功能很全，上手快，工具注册、ReAct loop、记忆管理都帮你封装好了，开发效率高很多。</p>
+<p>👔面试官：那如果线上出了 bug，你怎么排查？</p>
+<p>🙋‍♂️我：看报错日志，根据 stack trace 往上追，一层层找原因。</p>
+<p>👔面试官：LangChain 的 stack trace 动不动四五十层，你真的能靠这个快速定位吗？你有没有想过，框架的抽象层本身就是排查问题的障碍？</p>
+<p>🙋‍♂️我：……那我可以用 LangSmith 做 tracing，可观测性问题框架自己有方案。</p>
+<p>👔面试官：LangSmith 确实能帮你追踪调用链，但它解决不了框架升级带来的 breaking change 和隐性性能开销。你说说，什么场景下框架的通用性设计反而成了你的负担？</p>
+<p>好，被问到这里，只知道「框架好用」是不够的。这道题真正想考的，是你有没有想清楚框架和手搓各自的边界在哪里。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>我的感受是框架用起来快，但有几个实际痛点。</p>
+<p>第一是抽象层太多，调试的时候不知道哪步出了问题，得一层层往下扒；第二是版本升级经常有破坏性变更，线上稳定性难保证；第三是框架的通用设计往往和具体业务需求有偏差，定制起来反而更费劲。</p>
+<p>手搓的代码完全在自己掌控之内，可观测性好、出问题好排查，也更方便做性能优化。所以我现在的策略是核心逻辑手写，只在边缘功能上用框架的工具。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<p>想象一下，你从零开始搭一个 Agent。</p>
+<p>你需要定义工具的格式，让 LLM 能正确理解每个工具是什么、需要哪些参数；你需要解析 LLM 返回的工具调用结果；你需要在每次调用之间正确维护对话历史，不能丢消息也不能顺序错；你需要处理工具调用失败时的重试逻辑；你可能还需要接入向量数据库做知识检索……这些事情，每一个 Agent 项目都得做一遍，而且大同小异。</p>
+<p>框架的价值就在这里：把上面这些重复工作全部封装好，你直接用，不用每次都造轮子。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/3a1bce11e1ab6095183053889a388e6f__c74351ed1d.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>LangChain 里一个 <code>@tool</code> 装饰器就能注册工具，<code>AgentExecutor</code> 把整个 ReAct loop 封装进去（注意：<code>AgentExecutor</code> 在新版 LangChain 中已被废弃，官方推荐迁移到 LangGraph，这恰好印证了后面要说的框架升级痛点），还内置了 tracing、callback、记忆管理。早期上手快是真实的优势，两周的工作缩短到两天，特别是在快速验证 idea 的阶段，框架几乎没有明显的副作用。</p>
+<h3 id="痛点在什么时候开始出现">痛点在什么时候开始出现？</h3>
+<p>框架的问题不是一开始就暴露的，而是随着项目推进，在不同阶段逐渐浮出来的。</p>
+<p>探索期，框架真的很爽。你在做 POC，目标只是把流程跑通，几乎感受不到任何副作用。LangChain 帮你省掉了大量样板代码，几十行就搭起一个能用的 Agent，心情很好。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/399605292e35872f080e07546af8a3e7__2cc80d232a.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>第一个奇怪的 bug 出现之后，感觉就变了。Agent 在某个特定场景下输出了错误的工具参数，你开始排查。代码只有五十行，但报错的 stack trace 有四十层，往下追到了框架内部。</p>
+<p>你不知道问题出在你写的那五十行里，还是框架某个版本的逻辑变化，或者是 callback 触发时机的问题。你开始在 GitHub issue 里搜，或者一层层读框架源码。</p>
+<p>类比一下：老式车出了问题，打开引擎盖自己就能看到哪根管子漏油；现代豪华车出了问题，你打开引擎盖看到的是一堆你看不懂的电子设备，只能去 4S 店让诊断仪扫。框架的抽象层太多，排查问题需要穿透那些你没写、也不完全懂的层，这是实实在在的认知负担。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/01_debug_transparency__04178d2b49.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>版本升级踩坑，是另一个阶段的痛苦。线上跑了几个月，某次依赖升级，LangChain 改了接口，代码直接报错。你要么回滚，要么把代码改到兼容新版本，可能涉及十几处修改。</p>
+<p>LangChain 早期版本升级频率很高，breaking change 是常见的（后来 LangChain 采用了语义化版本控制 semver，版本稳定性已有改善，但早期的教训让很多团队对框架依赖保持了警惕）。把核心业务逻辑建立在第三方框架上，线上稳定性就会受到这种不确定性的影响。</p>
+<p>性能优化时发现了隐性开销，是到了规模化阶段才会碰到的问题。你开始关心 Agent 的调用延迟，发现某步 LLM 调用本身很快，但总耗时超预期。</p>
+<p>仔细 profile 之后，发现框架内部在每次调用时做了你根本不需要的事：序列化中间结果、触发一堆 callback、记录详细日志……这些逻辑是框架为了通用性设计进去的，对你的具体场景没有用，但每次调用都在跑。高流量下这些隐性开销累积起来，变成真实可见的延迟增加和费用浪费。</p>
+<h3 id="手搓的本质优势-完全掌控">手搓的本质优势：完全掌控</h3>
+<p>说清楚框架的痛点之后，手搓的价值就容易理解了。它的核心优势，就是「完全掌控」三个字。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/863a0c14f5da50caed520f6611147939__13dd1ab1b3.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>首先是链路透明、可观测性好。手搓的每一行代码你都知道在干什么，可以在任意位置加日志、打断点、插入监控，没有任何黑盒。线上出了问题，靠日志复现故障是最快的方式，链路越清晰，定位根因越快。这在生产环境里，是真实的时间和成本节省。</p>
+<p>其次是精确裁剪、没有多余开销。你只写你确实需要的逻辑，不带任何通用性包袱。工具调用、对话历史维护、错误重试，每一块都按照你的具体场景来实现，没有为了「兼容其他用法」而存在的冗余逻辑。在性能敏感的场景里，这意味着优化空间完全在自己手里，不用绕过框架的限制来做裁剪。</p>
+<p>第三是稳定可控、不受框架升级影响。你自己写的接口不会突然变，没有来自外部的 breaking change。依赖只有底层的 LLM SDK，相对稳定，生产环境可以长期运行，不用担心某次例行的依赖升级把线上跑坏。</p>
+<p>其实这个观点不只是个人经验，Anthropic 在官方的 Agent 构建指南里也明确提了类似的建议：不要一上来就用框架，先用最少的抽象把核心逻辑跑通。他们的原话大意是「框架的抽象层会让你离底层更远，一旦出了问题，调试成本比你省下的开发时间还高」。这和我们在实际项目里的感受完全一致，框架帮你快速搭起来的东西，往往也是后期最难排查的东西。</p>
+<p>有一个类比能很好地概括这个区别：框架是「租房」，装修好直接住，方便，但结构改不了，房东随时可能调整政策；手搓是「自建」，建起来慢，但所有结构都熟悉，改什么都能改，住着踏实。框架给你省了搭建时间，但你对这个「房子」的控制权始终有限。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/02_rent_vs_build__0f3893f2e5.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="同一个需求-框架写-vs-手搓写-差别在哪">同一个需求，框架写 vs 手搓写，差别在哪？</h3>
+<p>光说理论可能还不够直观，我们拿一个最常见的场景来对比：实现一个带工具调用的 Agent loop。</p>
+<p>用 LangChain 框架来写，大概是这样的：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">from langchain.agents import AgentExecutor, create_openai_tools_agent
+
+# 框架封装好了 Agent loop，一行搞定
+agent = create_openai_tools_agent(llm, tools, prompt)
+executor = AgentExecutor(agent=agent, tools=tools)
+# 整个 ReAct 循环、工具调用、消息维护，全在 executor 内部
+result = executor.invoke({&quot;input&quot;: &quot;帮我查一下今天的天气&quot;})
+</code></pre></div><p>代码确实简洁，三四行就跑起来了。但问题是，当你想知道「这次调用里 LLM 返回了什么、工具是怎么被选中的、消息列表是什么顺序」的时候，你得去读 <code>AgentExecutor</code> 的源码，它内部的调用链可能有十几层。</p>
+<p>手搓同样的功能，代码量多一些，但每一步都在你眼前：</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">messages = [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system_prompt}]
+messages.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input})
+
+for i in range(max_turns):  # 手动控制最大轮次
+    # 调用 LLM，拿到响应
+    response = client.chat.completions.create(
+        model=&quot;gpt-4&quot;, messages=messages, tools=tool_schemas
+    )
+    msg = response.choices[0].message
+    messages.append(msg)  # 把 LLM 响应加入对话历史
+
+    # 如果没有工具调用，说明 LLM 认为任务完成了
+    if not msg.tool_calls:
+        break
+
+    # 有工具调用，逐个执行并把结果写回消息列表
+    for tc in msg.tool_calls:
+        result = execute_tool(tc.function.name, tc.function.arguments)
+        messages.append({
+            &quot;role&quot;: &quot;tool&quot;,
+            &quot;tool_call_id&quot;: tc.id,
+            &quot;content&quot;: result
+        })
+        # 这里可以随意加日志、监控、重试逻辑
+        logger.info(f&quot;工具 {tc.function.name} 返回: {result}&quot;)
+</code></pre></div><p>你看，手搓版本里，消息列表怎么拼的、工具怎么选的、循环什么时候退出，每一个细节都摆在明面上。出了问题，你看这二十行代码就够了，不用去翻框架源码。这就是「完全掌控」的具体含义，不是说框架不好，而是当你需要理解和调试每一个环节时，手搓版本给你的确定性是框架给不了的。</p>
+<h3 id="什么时候用框架-什么时候手搓">什么时候用框架，什么时候手搓？</h3>
+<p>这不是非此即彼的选择，判断的关键是项目所处的阶段和对控制权的需求。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/03_project_stage_timeline__39c7c8a6c9.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>框架适合的时机：POC 阶段快速验证 idea，目标是跑通而不是优化；团队刚接触 Agent 开发，用框架能少踩一些基础性的坑；周边工具（文档解析、向量检索）依赖框架的生态，核心逻辑本身复杂度不高。这些场景里，框架带来的速度优势是真实的，值得用。</p>
+<p>手搓的时机：准备上生产，稳定性成为核心关切；流量开始上来，性能和成本变得敏感；业务逻辑高度定制，和框架的通用设计偏差很大，改起来反而麻烦；团队需要高可观测性，链路要能随时监控和回溯。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/36dc37caf6062ec80544ed105159db04__acd4ffbd2f.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>折中方案：核心手写，周边借用</strong></p>
+<p>实践中最常见也最务实的选择，是介于两者之间的折中：核心逻辑手写，周边工具性功能借用框架。</p>
+<p>控制边界的逻辑是这样的：工具调用的循环、对话历史的管理、错误处理和重试、任务状态的维护，这些是 Agent 的「心脏」，直接决定系统行为，必须百分百理解、百分百掌控，所以手写。而 LangSmith 的 tracing（调用链追踪）、LlamaIndex 的文档解析、某个向量库的 Python 客户端，这些是「工具性」的周边功能，出了问题一眼就能看出来，不会带来黑盒困境，用外部工具节省时间完全值得。</p>
+<p>就像盖房子：自己设计核心结构、承重墙在哪、房间怎么布局，你必须完全掌控；但门锁、插座面板、水龙头，完全可以买现成的，不必自己从头制造每一个零件。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/04_core_vs_peripheral__de1284d1d2.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p><strong>工程实践的清醒视角</strong></p>
+<p>最后有一点值得说清楚：手搓不是「比框架更好」，而是「在特定阶段有特定的价值」。</p>
+<p>很多真实项目的演进轨迹是这样的：先用框架快速跑通，验证了方向；遇到第一批线上问题之后，开始把排查困难的关键部分替换为手写；流量上来之后，把性能敏感的核心逻辑全部手写；最后，框架只保留做得很好的周边工具。这条路走下来，既享受了早期框架的速度，又在生产阶段拿回了掌控权。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/b3e7d18b766f4f6e7bdcc40f817138c9__a808442d7a.webp" alt="在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>有一个判断信号可以参考：如果你能清楚说出「框架在某个地方替我做了什么、我用的这个方法内部发生了什么」，说明你理解它，用起来有掌控感；如果你只是调了一个方法但完全不知道里面发生了什么，出了问题就是一个不透明的黑盒，这才是需要警惕的信号。框架本身不是问题，「不理解就依赖」才是。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回顾开头的对话，踩雷的地方其实很典型：只说「框架好用、效率高」，没有说清楚框架在什么阶段开始出问题、以及为什么手搓能解决这些问题。</p>
+<p>面试答这道题有几个要点要拿到。</p>
+<p>第一，框架的价值是真实的，POC 阶段省时省力，不要一开口就否定框架。</p>
+<p>第二，框架的痛点要说具体：抽象层太多导致排查困难、版本升级带来 breaking change、通用性设计产生隐性性能开销，这三个是实际生产中最常遇到的问题，泛泛说「框架有缺点」没有说服力。</p>
+<p>第三，手搓的核心价值是「完全掌控」，可观测性好、稳定不受外部升级影响、性能可以精确裁剪，这些在生产环境里是真实的成本节省。</p>
+<p>第四，最容易被忽略的是折中方案：核心逻辑手写，周边工具性功能借用框架，这才是实际项目里最常见也最务实的选择，面试官通常很认可这个答法。</p>
+<p>最后要记住一句：框架不是问题，「不理解就依赖」才是。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#痛点在什么时候开始出现">痛点在什么时候开始出现？</a><a class="toc-level-3" href="#手搓的本质优势-完全掌控">手搓的本质优势：完全掌控</a><a class="toc-level-3" href="#同一个需求-框架写-vs-手搓写-差别在哪">同一个需求，框架写 vs 手搓写，差别在哪？</a><a class="toc-level-3" href="#什么时候用框架-什么时候手搓">什么时候用框架，什么时候手搓？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/12_memcompress.html"><span>上一篇 · Agent</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/14_planning.html"><span>下一篇 · Agent</span><strong>如何赋予 LLM 规划能力？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

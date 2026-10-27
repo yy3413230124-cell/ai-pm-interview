@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。">
+  <meta name="keywords" content="AI产品经理面试题,请你详细说说 LangChain 和 LangGraph 的核心区别是什么？,LangChain,AI产品经理,LangChain 框架面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_langgraph.html">
+  <title>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？｜AI产品经理面试题">
+  <meta property="og:description" content="LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_langgraph.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？｜AI产品经理面试题">
+  <meta name="twitter:description" content="LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_langgraph.html#article","headline":"请你详细说说 LangChain 和 LangGraph 的核心区别是什么？｜AI产品经理面试题","description":"LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。","articleSection":"LangChain 框架面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_langgraph.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"LangChain 框架面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html"},{"@type":"ListItem","position":3,"name":"请你详细说说 LangChain 和 LangGraph 的核心区别是什么？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/langchain_vs_langgraph.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/langchain.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> LangChain 框架面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#1598c8"></i>
+            <span>LangChain</span>
+            <strong>12 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="LangChain 框架面试专题题目列表">
+            <a class="" href="./agent_frameworks.html"><span>01</span><strong>你了解过哪些 AI Agent 开发框架？</strong></a><a class="" href="./chain.html"><span>02</span><strong>请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。</strong></a><a class="" href="./langchain_architecture.html"><span>03</span><strong>LangChain 的底层架构与实现原理是什么？</strong></a><a class="" href="./build_agent.html"><span>04</span><strong>使用 LangChain 构建 Agent 的核心步骤是什么？</strong></a><a class="" href="./tool_registration.html"><span>05</span><strong>在 LangChain 中，如何为 Agent 注册工具？</strong></a><a class="" href="./memory.html"><span>06</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong></a><a class="" href="./langchain_vs_llamaindex.html"><span>07</span><strong>LangChain 和 LlamaIndex 有什么区别？</strong></a><a class="" href="./langchain4j.html"><span>08</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong></a><a class="is-active" href="#article-top"><span>09</span><strong>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</strong></a><a class="" href="./langgraph_advantages.html"><span>10</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong></a><a class="" href="./version_evolution.html"><span>11</span><strong>LangChain 大版本升级有哪些核心变化？</strong></a><a class="" href="./deep_research.html"><span>12</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/langchain.html">LangChain</a><span>/</span>
+            <span>第 9 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 18 分钟阅读</span>
+            <span>7,547 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</h1>
+          <div class="article-deck">
+            <span>题目 09</span>
+            <p>LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你说说 LangChain 和 LangGraph 有什么区别？</p>
+<p>🙋‍♂️我：LangChain 只能把步骤线性串起来，LangGraph 才能做分支和循环。</p>
+<p>👔面试官：这句话早就不准确了。LCEL 有分支和并行能力，LangChain v1 的 <code>create_agent</code> 本身也是带条件和循环的图。你把「能不能分支」当成两者边界，说明你还停留在旧版教程里。</p>
+<p>🙋‍♂️我：那 LangChain 负责开发，LangGraph 负责部署。需要持久化、流式输出和人工审批时，再把项目迁移到 LangGraph。</p>
+<p>👔面试官：也不对。现在 LangChain Agent 就运行在 LangGraph 上，能直接使用检查点、流式输出和人工审批中间件，并不是用了 LangChain 就没有这些能力。</p>
+<p>🙋‍♂️我：明白了，它们其实是一套东西，只是 LangGraph 换了一种图写法，选哪个都差不多。</p>
+<p>👔面试官：又走到另一个极端了。底层运行时可以相同，但抽象层级、控制权和开发成本完全不同。标准工具调用 Agent 和跨多个业务阶段的长流程，当然不能用同一个粒度去设计。</p>
+<p>比较 LangChain 和 LangGraph，先要分清「高层 Agent 框架」与「低层编排运行时」之间的关系。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先判断团队需要的是快速验证还是长期可控编排，再讨论框架抽象与运行时可观测性，避免只回答“用过某个 Chain”。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>LangChain 和 LangGraph 处在不同的抽象层。按照当前官方定位，LangChain v1 是高层 Agent 开发框架，负责提供模型、工具、结构化输出和 middleware 等常用能力。</p>
+<p>LangGraph 则是低层的 Agent 编排框架与运行时，让开发者直接设计状态、节点、路由、并行、中断和恢复。</p>
+<p>两者最关键的关系是，LangChain v1 的 <code>create_agent</code> 构建在 LangGraph 之上，返回一个编译后的图。也就是说，LangChain Agent 不是脱离 LangGraph 运行的另一套引擎，它已经继承了 LangGraph 的状态、持久化、流式输出、durable execution 和 human-in-the-loop 等运行能力。</p>
+<p>两者的区别在于开发者控制哪一层。若需求是常见的「模型判断 -&gt; 调用工具 -&gt; 返回模型」循环，我会优先用 LangChain，再借助 middleware 做提示词、重试、护栏和审批等定制。</p>
+<p>若业务需要显式控制多个阶段，让确定性步骤与 Agent 步骤混排，或者要处理复杂并行、长期暂停和多 Agent 协作，我会直接用 LangGraph。<code>create_agent</code> 生成的 Agent 仍然可以作为图中的节点或子图复用。</p>
+<p>LangChain 帮我快速得到一个好用的 Agent，LangGraph 帮我精确控制整个 Agent 系统怎么运行。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="两者处于同一层吗">两者处于同一层吗？</h3>
+<p>很多林友第一次看到这两个名字，会自然地问「哪个功能更多」。可这个问题就像在比较一台咖啡机和它内部的控制系统，能列出差异，却很容易忽略两者是上下层关系。</p>
+<p>用一句人话理解，LangChain 给我们一套装好的 Agent，LangGraph 让我们自己设计整条业务路线。</p>
+<p>截至 2026 年 7 月，官方也是按上下层来定位它们。LangChain 是高层 Agent 框架，提供模型、工具和常见的 Agent 循环；LangGraph 是更低层的编排框架与运行时，负责有状态流程如何执行、暂停和恢复。</p>
+<p>LangGraph 可以使用 LangChain 的模型和工具组件，但并不强制依赖 LangChain，也可以直接接其他模型 SDK 或普通 Python 函数。</p>
+<p>更关键的是，LangChain v1 的 <code>create_agent</code> 会构建一个基于 LangGraph 的图运行时。Agent 在模型节点和工具节点之间循环，直到模型给出最终答案或命中停止条件。因此正确的层次关系是：</p>
+<p><code>LangChain 高层 Agent API -&gt; 编译后的 LangGraph -&gt; 检查点、流式事件、中断与执行运行时</code></p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/bc2c2542_langchain-langgraph-coffee-machine__61de1b2fef.webp" alt="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这也解释了为什么两者既有重叠能力，又不能说「选哪个都一样」。用 LangChain 时，框架已经替你搭好了常见 Agent 的拓扑，你主要配置零件和生命周期钩子；用 LangGraph 时，节点怎么拆、状态怎么更新、下一步去哪，都由你来决定。</p>
+<h3 id="核心差异-抽象层级">核心差异：抽象层级</h3>
+<p>先把容易混淆的能力放进一张表里看，边界就清楚多了：</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/5ba0567f_high-level-kit-vs-graph-board__a0fbc10e4b.webp" alt="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>对比维度</th>
+<th>LangChain v1</th>
+<th>LangGraph</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>官方定位</td>
+<td>高层 Agent 开发框架</td>
+<td>低层 Agent 编排框架与运行时</td>
+</tr>
+<tr>
+<td>主要入口</td>
+<td><code>create_agent</code>、模型、工具、middleware、结构化输出</td>
+<td><code>StateGraph</code>、State、Node、Edge、<code>Command</code>、<code>Send</code>、Subgraph</td>
+</tr>
+<tr>
+<td>默认提供什么</td>
+<td>预构建的模型与工具调用循环，以及常用扩展点</td>
+<td>构建任意有状态工作流的编排原语，不替你规定 Prompt 或 Agent 架构</td>
+</tr>
+<tr>
+<td>控制流</td>
+<td>标准 Agent loop 已搭好，可通过 middleware 定制行为</td>
+<td>开发者显式定义顺序、条件路由、循环、并行、动态分发和子图</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>以 <code>AgentState</code> 和 <code>messages</code> 为默认核心，可扩展自定义字段</td>
+<td>可设计完整 State Schema、输入输出 Schema、内部通道与 reducer</td>
+</tr>
+<tr>
+<td>持久化与记忆</td>
+<td>通过底层 LangGraph 的 checkpointer 和 store 使用</td>
+<td>直接在图编译和运行层控制 checkpointer、store、thread 与状态历史</td>
+</tr>
+<tr>
+<td>durable execution</td>
+<td>可以继承底层运行能力，标准 Agent 也能暂停和恢复</td>
+<td>是核心定位之一，更适合显式设计长流程的恢复边界和副作用</td>
+</tr>
+<tr>
+<td>人工介入</td>
+<td>常用 <code>HumanInTheLoopMiddleware</code> 审批工具调用，也能组合自定义逻辑</td>
+<td>可在任意节点内用 <code>interrupt()</code> 暂停，用 <code>Command(resume=...)</code> 恢复</td>
+</tr>
+<tr>
+<td>流式输出</td>
+<td>直接从 Agent 输出消息 token、步骤更新和自定义进度</td>
+<td>除消息和状态外，还可观察 checkpoint、task、debug 等更底层事件</td>
+</tr>
+<tr>
+<td>扩展方式</td>
+<td>middleware 钩住 Agent、模型和工具生命周期</td>
+<td>节点、边、路由函数、<code>Command</code>、<code>Send</code>、子图和 Runtime</td>
+</tr>
+<tr>
+<td>部署与调试</td>
+<td>可接 LangSmith tracing、Studio 和 Deployment</td>
+<td>使用同一套 LangSmith 能力，并能更直接查看节点路径和状态变化</td>
+</tr>
+<tr>
+<td>更适合</td>
+<td>标准工具调用 Agent、客服助手、数据查询助手、快速原型</td>
+<td>长流程、多阶段审批、确定性与 Agent 混排、复杂并行、多 Agent 系统</td>
+</tr>
+</tbody>
+</table></div><p>表中的「持久化」「流式输出」「人工介入」同时出现在两列，因为这些能力由 LangGraph 运行时提供，也能从 LangChain Agent 的高层接口中使用。两者差别主要是封装层级和控制粒度，不是简单的有或没有。</p>
+<h3 id="langchain-只能线性执行吗">LangChain 只能线性执行吗？</h3>
+<p>为什么「LangChain 只能线性，LangGraph 才能分支」是错的？因为它混淆了三个不同概念。</p>
+<p>先看传统 Chain。它并不等于只能顺序执行，LCEL 除了 <code>RunnableSequence</code>，也能通过并行和分支 Runnable 表达并发与条件选择。固定的 Prompt、模型、解析器流水线确实常写成线性形式，但那是用法选择，不是框架能力上限。</p>
+<p>再看 LangChain v1 的 <code>create_agent</code>，它本身就不是一条直线。模型可能直接结束，也可能请求工具；工具执行后又会回到模型继续决策，这已经形成「条件路由 + 循环」。</p>
+<p>多个工具调用还可能被并行执行。因此，拿一条早期 <code>prompt | model | parser</code> 管道去代表当前 LangChain Agent，并不公平。</p>
+<p>LangGraph 把业务拓扑变成一等公民，这一点拉开了两者的差异。</p>
+<p>比如先做权限校验，再让三个研究节点并行检索，之后汇总，金额高时转人工，失败时走补偿节点，最后等待次日任务继续。这时开发者需要明确看到每个节点、状态字段和路由条件，图编排的价值才真正体现出来。</p>
+<p>所以更准确的边界应该是：LangChain 能表达分支和循环，但它的高层 Agent API 主要围绕通用模型与工具循环组织；LangGraph 则允许开发者直接拥有整个工作流的拓扑控制权。</p>
+<h3 id="middleware-与图编排有何不同">Middleware 与图编排有何不同？</h3>
+<p>看到 middleware 能在模型和工具前后执行代码，有些林友又会问：既然 middleware 什么都能插，为什么还要 LangGraph？</p>
+<p>关键要看我们是在「改造同一台机器」，还是「重新规划整条生产线」。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/fc840868_middleware-inside-langgraph__95284c3a74.webp" alt="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>LangChain middleware 很适合改造标准 Agent loop。例如，在模型调用前动态生成提示词、裁剪消息、选择模型和工具，在模型调用后做安全检查，或者给工具调用增加重试和人工审批。</p>
+<p>这些逻辑都围绕 Agent、Model、Tool 的生命周期展开，不需要重新设计整张图。</p>
+<p>LangGraph 节点和边处理的是更一般的流程结构。它可以让分类节点进入完全不同的子流程，让多个节点并行后再汇合，也可以把数据库写入、人工表单、规则引擎和一个完整 Agent 放在同一张图中。这里的每一步不一定是模型或工具调用，甚至可以完全不使用 LLM。</p>
+<p>当前官方文档特别说明，middleware 不是独立运行时，它会运行在 <code>create_agent</code> 返回的编译图内部。这个完整 Agent 还可以作为节点或子图放进更大的 <code>StateGraph</code>，middleware 会跟着它一起工作。这正是两层组合，而不是二选一。</p>
+<div class="code-shell"><div class="code-toolbar"><span>PYTHON</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-python">from typing import Literal
+
+from langchain.agents import AgentState, create_agent
+from langgraph.graph import END, START, StateGraph
+
+
+class WorkflowState(AgentState):
+    # route 是外层业务流程状态，不属于标准 Agent loop 的固定字段
+    route: Literal[&quot;research&quot;, &quot;reject&quot;]
+
+
+def classify_request(state: WorkflowState) -&gt; dict:
+    # 这里用确定性规则演示路由，实际项目也可以调用分类模型
+    text = str(state[&quot;messages&quot;][-1].content)
+    route = &quot;reject&quot; if &quot;删除生产数据&quot; in text else &quot;research&quot;
+    return {&quot;route&quot;: route}
+
+
+def choose_route(state: WorkflowState) -&gt; Literal[&quot;research_agent&quot;, &quot;reject&quot;]:
+    # 条件边根据外层业务状态选择下一节点
+    return &quot;research_agent&quot; if state[&quot;route&quot;] == &quot;research&quot; else &quot;reject&quot;
+
+
+def reject_request(state: WorkflowState) -&gt; dict:
+    # 确定性的拒绝节点不需要调用模型
+    return {&quot;messages&quot;: [{&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: &quot;该操作不在允许范围内。&quot;}]}
+
+
+# research_model 和 search_tool 由项目按实际模型、搜索服务实现
+# create_agent 返回编译后的 LangGraph，可直接嵌入外层图成为子图
+research_agent = create_agent(
+    model=research_model,
+    tools=[search_tool],
+)
+
+builder = StateGraph(WorkflowState)
+builder.add_node(&quot;classify&quot;, classify_request)
+builder.add_node(&quot;research_agent&quot;, research_agent)
+builder.add_node(&quot;reject&quot;, reject_request)
+builder.add_edge(START, &quot;classify&quot;)
+builder.add_conditional_edges(&quot;classify&quot;, choose_route)
+builder.add_edge(&quot;research_agent&quot;, END)
+builder.add_edge(&quot;reject&quot;, END)
+
+# 外层 LangGraph 管业务拓扑，内层 LangChain Agent 管模型与工具循环
+workflow = builder.compile()
+</code></pre></div><p>这段代码体现的是分工：内部研究 Agent 继续使用高层抽象，外部业务流程获得显式路由。真实项目还需要补上模型、工具、检查点和异常处理，这里只保留能说明层次关系的部分。</p>
+<h3 id="state-默认状态与自由建模">State：默认状态与自由建模</h3>
+<p>Agent 为什么需要状态？因为模型调用、工具结果、人工意见和中间产物不可能只靠函数局部变量一直传下去。两者都有状态，但使用姿势不同。</p>
+<p>LangChain 为常见 Agent 准备了 <code>AgentState</code>，默认核心是 <code>messages</code>。用户消息、模型的工具调用、工具结果和最终回复都追加到这份状态中。业务还可以用 <code>TypedDict</code> 扩展额外字段，官方更推荐让相关 middleware 声明自己需要的状态，这样能力和数据不会散落在各处。</p>
+<p>LangGraph 则让状态设计本身成为工作流架构的一部分。开发者可以定义整体 State，也可以区分输入、输出和内部 Schema。节点只返回局部更新，reducer 决定并行或多次更新如何合并。</p>
+<p>为什么需要 reducer？假如多个研究节点同时写入 <code>evidence</code>，我们希望追加结果，而不是让后写入的结果覆盖前一份证据。因此，合并语义必须在 State 中提前定义。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/695536d8_agentstate-vs-business-state__b6aefbbc28.webp" alt="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这不是说 LangChain 没有 State，因为它的 Agent State 就运行在 LangGraph 上。区别在于，用 LangChain 时通常接受一套为标准 Agent loop 设计好的状态骨架；直接使用 LangGraph 时，你要为整个业务工作流设计数据通道和更新规则，也因此拥有更大的自由度和责任。</p>
+<h3 id="谁提供持久化与记忆">谁提供持久化与记忆？</h3>
+<p>这一部分是面试里最容易说错的地方。有人会回答「LangChain 管记忆，LangGraph 管持久化」，也有人会说「只有 LangGraph 才能断点恢复」。两种说法都把上下层拆散了。</p>
+<p>当前 LangGraph 的持久化分成两套机制。Checkpointer 按 <code>thread_id</code> 保存图状态快照，适合线程内短期记忆、人工介入、时间旅行和故障恢复；Store 保存图状态之外、跨线程可读取的业务数据，适合用户偏好、事实和共享知识等长期记忆。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/c2b9adc2_three-day-checkpoint-recovery__157f3f784e.webp" alt="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>LangChain 的 <code>create_agent</code> 会把 <code>checkpointer</code> 和 <code>store</code> 交给底层图，因此 LangChain Agent 同样可以获得短期记忆、长期记忆和恢复能力。使用 Agent Server 时，持久化基础设施还可以由服务端处理。</p>
+<p>两者的差异在控制粒度：LangChain 给标准 Agent 暴露便利入口，LangGraph 让开发者在任意节点和子图层面设计状态保存与恢复边界。</p>
+<p>durable execution 也不只是「把数据存进数据库」。一个长流程中途失败后，如果从头重跑发邮件、扣款等副作用，状态虽然保存了，业务仍可能出事故。</p>
+<p>可靠恢复要求把非确定性操作和副作用放进可记录的任务边界，并保证可能重试的操作幂等。直接设计 LangGraph 时，这些边界会更显式；LangChain 标准 Agent 虽然能借用同一运行时，复杂业务副作用仍需要开发者认真建模。</p>
+<h3 id="人工介入有什么区别">人工介入有什么区别？</h3>
+<p>如果需求是「模型想发送邮件时先让人确认」，LangChain 的 <code>HumanInTheLoopMiddleware</code> 已经非常合适。它可以在工具真正执行前暂停，然后接受批准、修改、拒绝或人工直接回复。</p>
+<p>底层状态仍由 LangGraph 持久化，恢复时继续使用相同的 <code>thread_id</code>。</p>
+<p>但如果人工节点不只是审批工具呢？比如理赔流程要展示中间材料，让审核员补充字段；营销流程要等一周后再继续；多位审核人要分别填写意见，随后根据票数路由。</p>
+<p>这时，LangGraph 的 <code>interrupt()</code> 可以放在节点内部的任意业务位置，恢复时再把外部输入送回流程，更适合自定义人机协作。</p>
+<p>因此，不能说 LangChain 没有 human-in-the-loop。准确说法是，LangChain 提供了围绕 Agent 工具调用的高层审批体验，LangGraph 提供了更通用的中断与恢复原语。前者用起来省事，后者表达范围更广。</p>
+<h3 id="流式输出能看到多深">流式输出能看到多深？</h3>
+<p>用户界面逐字显示模型回答，只是流式输出最表面的一层。Agent 真正执行时，用户还想看到「正在搜索」「工具已返回」「等待审批」等进度，开发者则可能需要观察哪个节点更新了哪些状态、哪个任务失败、何时写入检查点。</p>
+<p>LangChain Agent 可以直接使用 <code>stream</code> 或 <code>stream_events</code>，输出模型消息、Agent 步骤和工具发出的自定义进度。因为 <code>create_agent</code> 返回编译图，它遵循 LangGraph 的流式接口。</p>
+<p>LangGraph 在更低层暴露 <code>values</code>、<code>updates</code>、<code>messages</code>、<code>custom</code>、<code>checkpoints</code>、<code>tasks</code> 和 <code>debug</code> 等事件类型，还能处理子图命名空间。两者都能流式输出，LangChain 优先提供常见 Agent 体验，LangGraph 则允许观察完整执行引擎。</p>
+<h3 id="部署与调试如何分工">部署与调试如何分工？</h3>
+<p>有些回答会把 LangSmith 当成 LangGraph 专属控制台，这也不准确。LangSmith 承担 tracing、evaluation、Studio 和 Deployment 等平台能力，可以观察 LangChain Agent，也可以观察直接编写的 LangGraph，甚至支持其他框架接入 tracing。</p>
+<p>由于 <code>create_agent</code> 本身就是图，LangChain Agent 也可以在 Studio 中查看节点、线程、状态和执行轨迹。</p>
+<p>直接使用 LangGraph 时，业务步骤被拆成更明确的节点，往往更容易看到复杂路由走了哪条路径，并使用 checkpoint 做状态回放和时间旅行调试。但这种可见性来自图的建模粒度，不代表 LangChain 无法部署或调试。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/2b83229f_shared-langsmith-platform__93f7e241fb.webp" alt="请你详细说说 LangChain 和 LangGraph 的核心区别是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>生产部署同样如此。LangChain Agent 和 LangGraph 工作流都能部署到 LangSmith 的 Agent Server 体系，也可以根据团队基础设施自行托管。是否使用托管平台，是部署选择；是否使用 LangChain 高层 Agent API，是开发抽象选择，别把这两个问题混成一个。</p>
+<h3 id="什么时候下沉-langgraph">什么时候下沉 LangGraph？</h3>
+<p>如果需求可以自然表达成「给模型一组工具，让它循环调用，直到完成任务」，优先从 LangChain <code>create_agent</code> 开始通常更省事。客服问答、数据库查询助手和内部知识助手，大量工作都属于这个范围。</p>
+<p>提示词动态化、模型切换、工具筛选、摘要、重试、护栏和敏感工具审批，可以先用 middleware 解决。</p>
+<p>当需求从一个 Agent loop 扩展成完整业务流程时，就应该考虑 LangGraph。典型信号包括：确定性规则与模型决策交替出现，多条路径要并行再汇合，任务要跨小时或跨天暂停恢复，需要多个 Agent 协作，或者必须精确控制失败补偿和人工节点。</p>
+<p>两者也可以渐进式组合。先用 LangChain 做出单个可用 Agent，等业务拓扑变复杂时，再把这个 Agent 作为 LangGraph 的节点或子图。官方当前也推荐「从高层开始，需要时下沉到细粒度控制」的路线。</p>
+<p>LangGraph 更底层，不代表它更高级、更适合所有项目。控制权越大，需要自己设计和测试的状态、路由、恢复与副作用就越多。一个标准 Agent 用几十个节点重新搭一遍，未必更可靠，反而可能增加维护成本。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>先把关系定准：LangChain v1 是高层 Agent 框架，LangGraph 是低层编排框架与运行时，<code>create_agent</code> 构建在 LangGraph 上。因此它们不是彼此隔离的两套引擎，也不是简单的替代关系。</p>
+<p>接着讲核心边界：LangChain 默认提供常见模型与工具循环，用模型、工具、结构化输出和 middleware 帮开发者快速完成 Agent；LangGraph 不替开发者规定 Agent 架构，而是把 State、Node、Edge、分支、循环、并行、子图、中断和恢复交出来，让开发者显式控制整个流程。</p>
+<p>常见误区也要避开：LangChain 不只支持线性流程，持久化、流式输出、记忆和人工审批也不是 LangGraph 独有。LangChain Agent 通过底层 LangGraph 同样能使用这些能力，两者不同的是控制粒度和使用成本。</p>
+<p>如果面试官追问选型，我会回答：标准工具调用 Agent 优先用 LangChain；复杂、长时间运行、状态丰富、需要精确路由的业务工作流用 LangGraph；很多真实项目最合适的方案，是用 LangChain 构建 Agent，再把它作为 LangGraph 的节点或子图。</p>
+<h2 id="参考资料">📚 参考资料</h2>
+<ul>
+<li><a href="https://docs.langchain.com/oss/python/langchain/overview" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Overview</a></li>
+<li><a href="https://docs.langchain.com/oss/python/concepts/products" target="_blank" rel="noreferrer noopener">LangChain 官方概念：Frameworks, runtimes, and harnesses</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/agents" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Agents</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/middleware/overview" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Middleware</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/human-in-the-loop" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Human-in-the-loop</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/streaming" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Streaming</a></li>
+<li><a href="https://reference.langchain.com/python/langchain-core/runnables" target="_blank" rel="noreferrer noopener">LangChain Core 官方参考：Runnables</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/overview" target="_blank" rel="noreferrer noopener">LangGraph 官方文档：Overview</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/graph-api" target="_blank" rel="noreferrer noopener">LangGraph 官方文档：Graph API</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langgraph/persistence" target="_blank" rel="noreferrer noopener">LangGraph 官方文档：Persistence</a></li>
+<li><a href="https://docs.langchain.com/oss/python/releases/langgraph-v1" target="_blank" rel="noreferrer noopener">LangGraph 官方发布说明：What's new in LangGraph v1</a></li>
+<li><a href="https://docs.langchain.com/langsmith/studio" target="_blank" rel="noreferrer noopener">LangSmith 官方文档：Studio</a></li>
+<li><a href="https://docs.langchain.com/oss/python/langchain/deploy" target="_blank" rel="noreferrer noopener">LangChain 官方文档：Deployment</a></li>
+</ul>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#两者处于同一层吗">两者处于同一层吗？</a><a class="toc-level-3" href="#核心差异-抽象层级">核心差异：抽象层级</a><a class="toc-level-3" href="#langchain-只能线性执行吗">LangChain 只能线性执行吗？</a><a class="toc-level-3" href="#middleware-与图编排有何不同">Middleware 与图编排有何不同？</a><a class="toc-level-3" href="#state-默认状态与自由建模">State：默认状态与自由建模</a><a class="toc-level-3" href="#谁提供持久化与记忆">谁提供持久化与记忆？</a><a class="toc-level-3" href="#人工介入有什么区别">人工介入有什么区别？</a><a class="toc-level-3" href="#流式输出能看到多深">流式输出能看到多深？</a><a class="toc-level-3" href="#部署与调试如何分工">部署与调试如何分工？</a><a class="toc-level-3" href="#什么时候下沉-langgraph">什么时候下沉 LangGraph？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a><a class="toc-level-2" href="#参考资料">📚 参考资料</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/langchain/langchain4j.html"><span>上一篇 · LangChain</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong></a>
+      <a class="pagination-card next" href="../../articles/langchain/langgraph_advantages.html"><span>下一篇 · LangChain</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

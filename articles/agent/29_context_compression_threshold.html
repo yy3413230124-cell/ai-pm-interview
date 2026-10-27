@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。">
+  <meta name="keywords" content="AI产品经理面试题,Agent 的上下文压缩阈值应该如何确定？,Agent,AI产品经理,Agent 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/29_context_compression_threshold.html">
+  <title>Agent 的上下文压缩阈值应该如何确定？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent 的上下文压缩阈值应该如何确定？｜AI产品经理面试题">
+  <meta property="og:description" content="压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/29_context_compression_threshold.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent 的上下文压缩阈值应该如何确定？｜AI产品经理面试题">
+  <meta name="twitter:description" content="压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/29_context_compression_threshold.html#article","headline":"Agent 的上下文压缩阈值应该如何确定？｜AI产品经理面试题","description":"压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。","articleSection":"Agent 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/29_context_compression_threshold.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"Agent 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/agent.html"},{"@type":"ListItem","position":3,"name":"Agent 的上下文压缩阈值应该如何确定？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/agent/29_context_compression_threshold.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/agent.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> Agent 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#4687f2"></i>
+            <span>Agent</span>
+            <strong>30 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="Agent 面试专题题目列表">
+            <a class="" href="./1_whatisagent.html"><span>01</span><strong>什么是 Agent？与大模型有什么本质不同？</strong></a><a class="" href="./2_components.html"><span>02</span><strong>Agent 的基本架构由哪些核心组件构成？</strong></a><a class="" href="./3_workflow_tools.html"><span>03</span><strong>Workflow，Agent，Tools 这三个的概念和区别介绍一下？</strong></a><a class="" href="./4_patterns.html"><span>04</span><strong>了解哪些其他的 Agent 设计范式？Agent 和 Workflow的区别是什么？</strong></a><a class="" href="./5_react.html"><span>05</span><strong>Agent 推理模式有哪些？ReAct 是啥？具体是怎么实现的？</strong></a><a class="" href="./6_three_patterns.html"><span>06</span><strong>ReAct、Plan-and-Execute、Reflection 三种范式有什么核心区别？实际项目中该如何选型？</strong></a><a class="" href="./7_tasksplit.html"><span>07</span><strong>复杂任务怎么做的任务拆分？为什么要拆分？效果如何提升？</strong></a><a class="" href="./8_memory.html"><span>08</span><strong>请你介绍一下 AI Agent 的记忆机制，并说明在实际开发中应该如何设计记忆模块？</strong></a><a class="" href="./9_memory_storage.html"><span>09</span><strong>Agent 的长短期记忆系统怎么做的？记忆是怎么存的？粒度是多少？怎么用的？</strong></a><a class="" href="./10_multiagent.html"><span>10</span><strong>什么是 Multi-Agent？</strong></a><a class="" href="./11_single_multi.html"><span>11</span><strong>说说 Single-Agent 和 Multi-Agent 的设计方案？</strong></a><a class="" href="./12_memcompress.html"><span>12</span><strong>Agent 记忆压缩通常有哪些方法？</strong></a><a class="" href="./13_handcode.html"><span>13</span><strong>在工程实践中，为什么有时候选择「手搓」Agent，而不是直接用成熟框架？</strong></a><a class="" href="./14_planning.html"><span>14</span><strong>如何赋予 LLM 规划能力？</strong></a><a class="" href="./15_reflection.html"><span>15</span><strong>讲讲 Agent 的反思机制？为什么要用反思？具体怎么实现？</strong></a><a class="" href="./16_collab.html"><span>16</span><strong>如何设计多 Agent 的协作与动态切换机制？</strong></a><a class="" href="./17_context_engineering.html"><span>17</span><strong>Agent 的上下文工程怎么设计？</strong></a><a class="" href="./18_session_state.html"><span>18</span><strong>Agent 的多轮对话状态如何管理？如何防止跑偏并支持中断恢复？</strong></a><a class="" href="./19_evaluation.html"><span>19</span><strong>如何评估一个 Agent 的效果？评测集和指标怎么设计？</strong></a><a class="" href="./20_loop_stability.html"><span>20</span><strong>Agent 为什么会出现路径震荡、重复调用和死循环？怎么检测和治理？</strong></a><a class="" href="./21_agent_latency_trace.html"><span>21</span><strong>线上 Agent 延迟明显升高时，如何通过 Trace 定位和优化？</strong></a><a class="" href="./22_multi_agent_resilience.html"><span>22</span><strong>Multi-Agent 系统如何处理子 Agent 超时、失联和并发修改冲突？</strong></a><a class="" href="./23_task_hallucination.html"><span>23</span><strong>Agent 的「任务幻觉」是什么？如何避免没有执行工具却声称任务已经完成？</strong></a><a class="" href="./24_database_security.html"><span>24</span><strong>大模型或 Agent 连接数据库时，如何防止越权、敏感数据泄漏和查询幻觉？</strong></a><a class="" href="./25_harness.html"><span>25</span><strong>Agent Harness 是什么？</strong></a><a class="" href="./26_harness_design.html"><span>26</span><strong>如何设计一个完整的 Agent Harness？</strong></a><a class="" href="./27_self_evolution.html"><span>27</span><strong>Agent 的自进化机制如何实现？</strong></a><a class="" href="./28_human_confirmation.html"><span>28</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a><a class="is-active" href="#article-top"><span>29</span><strong>Agent 的上下文压缩阈值应该如何确定？</strong></a><a class="" href="./30_execution_variance.html"><span>30</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/agent.html">Agent</a><span>/</span>
+            <span>第 29 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#4687f2;--soft:#eaf2ff">Agent</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,620 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Agent 的上下文压缩阈值应该如何确定？</h1>
+          <div class="article-deck">
+            <span>题目 29</span>
+            <p>压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你们的 Agent 什么时候压缩上下文，这个阈值是怎么确定的？</p>
+<p>🙋‍♂️我：用到上下文窗口的 80% 就压缩，剩下 20% 应该够了。</p>
+<p>👔面试官：为什么够？下一步工具返回一大份日志，模型还要生成回答，剩下的空间能装下吗？</p>
+<p>🙋‍♂️我：那等接近窗口上限再压缩，前面的信息就能多保留一点。</p>
+<p>👔面试官：模型输出也需要空间。等输入已经塞满，下一次调用可能直接超限，连生成摘要都来不及。</p>
+<p>🙋‍♂️我：那把阈值设低，早点压缩，总比超限好。</p>
+<p>👔面试官：压缩会丢细节，还要花时间和 Token。太早压缩，模型反复查回旧信息，任务效果可能更差。你准备怎么找到合适的时机？</p>
+<p>咱们从上下文为什么会越用越大开始，一步步算清楚压缩应该在哪个时刻发生。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说明业务目标与任务边界，再判断是否需要自主闭环、哪些动作必须审批，最后用成功率、任务完成时长、人工接管率和 Trace 证明有效。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>压缩阈值应该根据剩余空间和接下来要做的任务来确定，没有一个通用的 80%。当前输入除了聊天记录，还有指令、工具定义和工具结果，先把这些内容的实际 Token 占用算清楚，再给模型输出和下一步可能增加的内容留出空间。</p>
+<p>比如一个 Agent 接下来要读取大量测试日志，即使当前窗口还没用到 80%，剩余空间也可能不够；如果只是做一次短查询，后续增长很小，就可以保留更多原始信息。所以阈值更适合跟着任务动态调整。</p>
+<p>另外，压缩本身也有代价，太早会损失细节，太晚可能超限。具体的触发比例和压缩后的目标大小，要在实际任务上比较完成效果、关键信息保留、延迟和成本。压缩完还得检查目标、约束和未完成状态是否保留下来，不能只看 Token 降了多少。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="上下文为什么会越用越大">上下文为什么会越用越大？</h3>
+<p>假设你让一个 Coding Agent 排查接口超时。</p>
+<p>第一轮，你只给了一句需求。Agent 读取接口源码以后，上下文里多了一份代码；运行测试以后，又多了一段日志；修改代码再次测试，新的修改记录和报错继续加入。</p>
+<p>用户可能只说了几句话，整个输入却已经很长了。</p>
+<p>这是因为模型判断下一步时，需要获得当前任务的相关信息。应用通常会把指令、消息、工具调用及其结果组织起来，交给模型。如果历史一直累积，又没有筛选，下一轮输入就会比上一轮更大。</p>
+<p>模型能处理的上下文有容量限制。这里的容量用 Token 衡量，Token 是模型处理文本时使用的单位，不等于字数，也不等于聊天条数。一段源码和一段同样字数的中文，分成多少 Token 可能不同。</p>
+<p>到了容量边界，有些接口会拒绝请求，有些情况下输出会提前结束，具体取决于服务的规则。Agent 正在排查问题，突然无法继续调用模型，任务就会被打断。</p>
+<p>压缩的作用，是把已经积累的过程收敛成较短、仍然有用的信息，释放空间。比如多次排查最后确认是连接池配置的问题，后续可以保留这个结论和依据位置，不必每轮都携带全部旧日志。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/a887e0ba_context-growth__9e0c2e508c.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>不过，压缩不是没有损失的搬家。摘要可能保留了「发现连接池问题」，却漏了具体环境、配置值和用户限制。越早压缩，越可能提前丢掉之后仍然需要的细节。</p>
+<p>因此，阈值要解决的是一个取舍：既要给后续执行留空间，又要让仍然有用的原始信息保留得足够久。</p>
+<h3 id="在算阈值之前-先看窗口里到底装了什么">在算阈值之前，先看窗口里到底装了什么</h3>
+<p>如果只统计用户和模型说了多少话，预算很容易算少。</p>
+<p>实际请求里还可能包含系统指令、当前任务状态、工具说明、检索资料和工具结果。几十个工具的名称、描述和参数结构，即使没有被调用，也可能随请求进入上下文。</p>
+<p>有些任务还带图片、文档或模型的推理内容，这些也要按照当前接口的计数规则处理。不同模型和服务的规则有差异，不能把一次纯文本估算直接套到所有请求上。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/7dcccd1d_full-input-components__aed3be9923.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>所以，计数对象应该是已经装配好的请求。服务提供计数接口时，可以用它估算；否则使用匹配模型的分词器，并结合实际返回用量校准。估算和服务实际计数可能有差异，后面还需要留余量。</p>
+<p>这里还容易混淆缓存与容量。前缀缓存可以减少重复处理的开销，但命中缓存的内容仍然可能占着上下文窗口。费用下降，不代表模型多出了一块能装材料的空间。</p>
+<p>接下来为了把预算讲清楚，我们假设一个接口的输入和输出共享总窗口。同时记住，真实接口还可能有单独的输入、输出上限，实际请求要分别满足这些限制，推理内容怎样计入也要看接口规则。</p>
+<h3 id="窗口剩下的空间-还要留给模型输出">窗口剩下的空间，还要留给模型输出</h3>
+<p>假设可用总窗口是 32,000 Token，当前输入已经有 30,000 Token。</p>
+<p>看起来还剩 2,000，输入也没有超限。如果这次只需要一句短回复，可能够用；如果模型要生成一段修改后的代码，需要 4,000 Token，空间就不够了。</p>
+<p>上下文容量不能全部用来放输入。模型接下来生成的内容，也需要在接口允许的范围里安排空间。</p>
+<p>因此，先给输出留预算，再决定输入最多能放多少。假设这类任务预留 4,000 Token 输出，另留 2,000 Token 处理计数误差与意外增长，那么当前输入的预算就是：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">32,000 总窗口 - 4,000 输出预留 - 2,000 安全余量
+= 26,000 输入预算
+</code></pre></div><p>这些数字只是说明计算过程，不是模型配置推荐。输出预算也不是要求模型必须生成这么多，而是避免计划中的必要输出没有空间。</p>
+<p>当前输入达到 26,000 左右，就已经接近这套预算的边界。继续等待到 32,000 才处理，相当于把模型下一步工作的空间也占掉了。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/8d39a039_window-budget__1e6bb1929e.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>输出预留要跟任务走。提取一个字段和生成完整代码文件，所需空间不同。如果任务对推理预算另有要求，也要按接口的实际计入方式安排，不能只预留最后可见答案的长度。</p>
+<p>到这里，阈值已经不再是凭感觉设的比例，而是能从任务预算里算出来的一条边界。</p>
+<h3 id="工具结果突然变大-为什么要更早处理">工具结果突然变大，为什么要更早处理？</h3>
+<p>刚才算的是一次调用。Agent 还会继续调工具，下一轮输入可能突然增加。</p>
+<p>接口排查任务里，查询一个配置值只会返回几行内容；运行整套测试，可能返回几千行日志。两种动作虽然都叫工具调用，给上下文带来的增长却差很多。</p>
+<p>继续用刚才 32,000 Token 的假设。当前输入是 21,000，还没到 26,000 的输入预算，按静态阈值看似可以继续。</p>
+<p>但下一步预计会增加 6,000 Token 的工具结果和调用消息。再给随后的一次模型调用保留 4,000 输出和 2,000 余量，预计占用就变成：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">21,000 当前输入 + 6,000 预计新增内容
++ 4,000 后续输出预留 + 2,000 安全余量
+= 33,000 Token
+</code></pre></div><p>已经超过 32,000。当前输入只占窗口的约三分之二，却应该提前减小输入或限制工具返回。</p>
+<p>换个角度算，给这次增长预留以后，当前输入只能使用 20,000 Token：<code>32,000 - 6,000 - 4,000 - 2,000</code>。所以，这一步的触发边界比前面更低。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/580fcfc1_dynamic-tool-reserve__98b9ad55e4.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>预计新增内容要有清楚的计数范围。前一轮模型生成的工具调用消息，会在之后成为历史输入，这部分应算进增长；已经包含在当前输入里的消息不再重复计算，后续输出则只预留接下来那次生成所需的空间。</p>
+<p>增长估计可以参考同类工具过去的返回量。日志波动很大时，单看平均值容易低估异常情况，可以结合较大结果的分布和任务风险预留。工具实际返回以后，再重新计数，估计不能替代检查。</p>
+<p>如果工具本来就能返回无限长内容，仅降低压缩阈值也解决不了问题。把完整日志保存到外部，只返回摘要、命中位置或一部分内容，后续按需读取，才能让增长有可控制的范围。</p>
+<p><strong>固定比例只有在输出预留、工具增长和其他余量恰好适合时，才可能是一个合适的起点。</strong> 换模型、换任务、换工具以后，原来的比例需要重新检查。</p>
+<h3 id="还有空间-也可能值得压缩吗">还有空间，也可能值得压缩吗？</h3>
+<p>容量预算解决了「还能不能装下」。另一种问题是材料虽然装得下，当前任务却不再需要其中很多内容。</p>
+<p>比如 Agent 已经定位到连接池参数，前面几十轮都在排查 SQL 和网络。那些失败尝试可以留下结论，但原始过程如果一直跟着当前步骤走，就会增加阅读负担和处理成本。</p>
+<p>完成一个阶段时，通常更容易判断哪些内容已经可以收起。原因已经确认，接下来进入修改和验证，把排查过程整理成结论，比在还没找到原因时匆忙压缩更容易保留有效信息。</p>
+<p>因此，工程上可以把容量边界和提前整理分开。前者用于避免下一次请求超限，后者根据阶段结束、内容重复和实测质量决定是否更早处理。</p>
+<p>但不能看到模型重复调用，就断定上下文必须压缩。也可能是工具一直返回错误，或者任务本身缺少信息。需要结合执行记录判断，压缩不是所有卡顿和循环问题的解决办法。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/b74b44a3_compression-triggers__5bcc6a51d0.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>提前压缩也需要比较收益。当前任务还在依赖日志里的精确字段，过早把它们概括成「出现错误」，模型可能又得重新读取。输入变短了，工具调用却变多，最后总耗时和成本未必下降。</p>
+<h3 id="触发以后压到哪里-决定下一轮会不会又压缩">触发以后压到哪里，决定下一轮会不会又压缩</h3>
+<p>有了触发边界，还差一个问题：这次要释放多少空间？</p>
+<p>假设某类任务在输入超过 26,000 Token 时触发整理，处理后只降到 25,800。下一轮增加 500 Token，又触发一次。</p>
+<p>这样，Agent 可能反复总结几乎相同的历史。每次摘要都花时间，还可能逐次损失细节。触发边界只决定「什么时候开始」，压缩后的目标决定「这次释放多少」。</p>
+<p>可以把两者分开。例如某套实验配置在 26,000 附近触发，目标降到 20,000 左右，让后续几步有可用空间。这组数字同样只是示意，目标要结合预计增长和任务需要确定。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/e256bcb7_compression-hysteresis__2f4f1ed1e3.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>释放空间时，用户目标、硬约束、关键参数和当前进度需要保留下来。比如「不能修改接口字段」，不能被压成「尽量兼容接口」；一次工具超时但结果未知，也不能总结成已经失败。</p>
+<p>消息协议同样有约束。工具请求和返回通常要通过调用编号关联，不能删掉请求却留下孤立结果。已结束的旧工具链，只有在接口允许时才能整体收敛成摘要；仍需保留的调用与内容块，要满足对应接口要求。</p>
+<p>所以，压缩完成后要检查两件事：大小是否回到合适预算，继续任务所需的信息与消息结构是否还完整。Token 降了很多，只能证明内容变短，不能证明摘要可用。</p>
+<p>而且压缩过程本身也需要空间。若使用同一个受限模型生成摘要，等窗口彻底满了再提交整段历史，压缩调用同样可能失败。提前触发、分段处理和保留外部原始记录，都能给恢复留下余地。</p>
+<h3 id="怎样知道这个阈值真的适合当前任务">怎样知道这个阈值真的适合当前任务？</h3>
+<p>预算能够推导容量边界，但哪些内容仍然有用、压缩损失会不会影响后面的判断，不能只靠公式回答。</p>
+<p>这就需要把候选策略放到实际任务上比较。可以准备短查询、长代码修改和大日志分析等不同任务，固定模型、资料版本与初始状态，再运行较早压缩、较晚压缩和按增长动态触发的策略。</p>
+<p>每类任务最好重复运行，观察结果是否稳定。一个策略偶然成功一次，不足以说明它比另一个更适合。</p>
+<p>比较时先看任务有没有完成、用户约束有没有违反，以及关键信息能否继续使用。随后才看输入大小、压缩次数、重复读取、总延迟和费用。</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>观察到的现象</th>
+<th>需要检查的方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工具结果到达后经常超限</td>
+<td>增长估计是否不足，返回内容是否缺少上限</td>
+</tr>
+<tr>
+<td>压缩后反复重读同一份资料</td>
+<td>关键细节是否丢失，触发是否过早</td>
+</tr>
+<tr>
+<td>每一两步就再次压缩</td>
+<td>压缩目标是否离触发边界太近</td>
+</tr>
+<tr>
+<td>Token 明显下降，但任务失败增加</td>
+<td>摘要是否破坏约束、进度或消息关系</td>
+</tr>
+</tbody>
+</table></div><p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/4ae0c1c9_strategy-evaluation__03f10f78d9.webp" alt="Agent 的上下文压缩阈值应该如何确定？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这些现象需要结合记录核实，不能只看一项指标就调整阈值。比如压缩后又读取文件，可能是在补回丢失细节，也可能是任务自然进入新的代码位置，两者处理不同。</p>
+<p>最后得到的往往是一套按任务类型配置的策略，而非所有 Agent 共用一个数字。模型容量、工具输出或任务分布变化以后，再用同样的方法检查，原来的预算是否仍然成立。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头回答 80% 时漏掉了后续增长，等到上限再处理又没有给输出留下空间，盲目提前压缩则忽略了信息损失。这三个问题，都需要放回一次具体任务里计算和验证。</p>
+<p>先明确窗口与接口限制，统计实际输入，再预留后续输出、工具增长和安全余量，就能推导当前步骤的容量边界。阶段完成时是否更早整理，则取决于信息价值和实际收益。</p>
+<p>触发时机、压缩目标和内容保留要一起考虑。通过任务回放检查效果、约束、延迟和成本，才能知道这套阈值是否适合当前场景。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#上下文为什么会越用越大">上下文为什么会越用越大？</a><a class="toc-level-3" href="#在算阈值之前-先看窗口里到底装了什么">在算阈值之前，先看窗口里到底装了什么</a><a class="toc-level-3" href="#窗口剩下的空间-还要留给模型输出">窗口剩下的空间，还要留给模型输出</a><a class="toc-level-3" href="#工具结果突然变大-为什么要更早处理">工具结果突然变大，为什么要更早处理？</a><a class="toc-level-3" href="#还有空间-也可能值得压缩吗">还有空间，也可能值得压缩吗？</a><a class="toc-level-3" href="#触发以后压到哪里-决定下一轮会不会又压缩">触发以后压到哪里，决定下一轮会不会又压缩</a><a class="toc-level-3" href="#怎样知道这个阈值真的适合当前任务">怎样知道这个阈值真的适合当前任务？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/agent/28_human_confirmation.html"><span>上一篇 · Agent</span><strong>Agent 应该在什么情况下请求人工确认？</strong></a>
+      <a class="pagination-card next" href="../../articles/agent/30_execution_variance.html"><span>下一篇 · Agent</span><strong>相同输入为什么会得到不同的 Agent 执行结果？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

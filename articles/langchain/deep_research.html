@@ -1,0 +1,294 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 opendeepresearch 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者…">
+  <meta name="keywords" content="AI产品经理面试题,Deep Research 的实现逻辑和适用场景是什么？,LangChain,AI产品经理,LangChain 框架面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/deep_research.html">
+  <title>Deep Research 的实现逻辑和适用场景是什么？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Deep Research 的实现逻辑和适用场景是什么？｜AI产品经理面试题">
+  <meta property="og:description" content="Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 opendeepresearch 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者…">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/deep_research.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Deep Research 的实现逻辑和适用场景是什么？｜AI产品经理面试题">
+  <meta name="twitter:description" content="Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 opendeepresearch 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者…">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/deep_research.html#article","headline":"Deep Research 的实现逻辑和适用场景是什么？｜AI产品经理面试题","description":"Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 opendeepresearch 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者…","articleSection":"LangChain 框架面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/deep_research.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"LangChain 框架面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/langchain.html"},{"@type":"ListItem","position":3,"name":"Deep Research 的实现逻辑和适用场景是什么？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/langchain/deep_research.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/langchain.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> LangChain 框架面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#1598c8"></i>
+            <span>LangChain</span>
+            <strong>12 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="LangChain 框架面试专题题目列表">
+            <a class="" href="./agent_frameworks.html"><span>01</span><strong>你了解过哪些 AI Agent 开发框架？</strong></a><a class="" href="./chain.html"><span>02</span><strong>请你谈谈对 LangChain 中核心概念「Chain」的理解，以及它的核心作用与设计理念。</strong></a><a class="" href="./langchain_architecture.html"><span>03</span><strong>LangChain 的底层架构与实现原理是什么？</strong></a><a class="" href="./build_agent.html"><span>04</span><strong>使用 LangChain 构建 Agent 的核心步骤是什么？</strong></a><a class="" href="./tool_registration.html"><span>05</span><strong>在 LangChain 中，如何为 Agent 注册工具？</strong></a><a class="" href="./memory.html"><span>06</span><strong>LangChain 如何实现短期记忆和长期记忆？</strong></a><a class="" href="./langchain_vs_llamaindex.html"><span>07</span><strong>LangChain 和 LlamaIndex 有什么区别？</strong></a><a class="" href="./langchain4j.html"><span>08</span><strong>请你谈谈 LangChain4j 这类 Java 生态的 LangChain 衍生框架，主要帮开发者解决了哪些核心问题？它的核心适用场景是什么？</strong></a><a class="" href="./langchain_vs_langgraph.html"><span>09</span><strong>请你详细说说 LangChain 和 LangGraph 的核心区别是什么？</strong></a><a class="" href="./langgraph_advantages.html"><span>10</span><strong>LangGraph 相比于 LangChain 有哪些核心优势？更适配哪些 Agent 场景？</strong></a><a class="" href="./version_evolution.html"><span>11</span><strong>LangChain 大版本升级有哪些核心变化？</strong></a><a class="is-active" href="#article-top"><span>12</span><strong>Deep Research 的实现逻辑和适用场景是什么？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/langchain.html">LangChain</a><span>/</span>
+            <span>第 12 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#1598c8;--soft:#e5f7ff">LangChain</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,583 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Deep Research 的实现逻辑和适用场景是什么？</h1>
+          <div class="article-deck">
+            <span>题目 12</span>
+            <p>Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 opendeepresearch 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者…</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：你了解 LangChain 生态里的 Deep Research 吗？</p>
+<p>🙋‍♂️我：就是多搜索几次，再让模型生成一篇更长的报告。</p>
+<p>👔面试官：搜索次数多不等于研究深入。研究范围如何确定？子课题如何拆分？资料冲突怎么办？什么时候停止？</p>
+<p>🙋‍♂️我：可以让十个 Agent 每人写一章，最后拼起来，Agent 越多速度越快。</p>
+<p>👔面试官：并行写章节容易重复和口径不一致。更合理的方式是并行收集独立子课题的证据，再由一个写作阶段统一综合。</p>
+<p>🙋‍♂️我：那只要搜索结果里带了很多链接，最终报告应该就算可靠了。</p>
+<p>👔面试官：链接多不代表证据可靠。来源是否独立、引用是否支持结论、冲突资料如何复核，这些才决定研究质量。</p>
+<p>面试官关注四件事：研究型 Agent 如何动态规划、控制上下文、核验证据，以及多 Agent 会带来哪些成本和风险。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先判断团队需要的是快速验证还是长期可控编排，再讨论框架抽象与运行时可观测性，避免只回答“用过某个 Chain”。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>Deep Research 不是 LangChain 核心包里的一个固定开关，而是一类面向开放问题的研究型 Agent 架构。LangChain 团队提供了 <code>open_deep_research</code> 参考实现，也提供了更通用的 Deep Agents SDK；前者是具体研究应用，后者是通用 Agent 开发框架，不能混为一谈。</p>
+<p>它的核心流程是：先澄清用户目标并生成 Research Brief，再由 Supervisor 把问题拆成相对独立的子课题。多个 Researcher 在隔离上下文中并行检索，并对来源进行筛选和压缩。</p>
+<p>Supervisor 会检查证据是否覆盖研究目标，发现空白就继续补搜，最后再由统一的写作阶段综合证据并生成带引用的报告。</p>
+<p>这种架构的价值不只是并行加速。子 Agent 可以隔离不同主题的上下文，避免大量搜索结果互相干扰；Supervisor 可以根据中间证据动态调整方向；统一写作则能减少章节重复和口径冲突。</p>
+<p>它适合竞品分析、技术调研、文献综述和供应商尽调等开放式、多来源、可拆分任务，不适合一次搜索就能回答的简单事实，也不适合子任务高度依赖的强耦合工作。</p>
+<p>生产环境必须限制并发、迭代、Token 和搜索预算，并对网页提示词注入、来源可信度和高风险结论进行人工复核。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="deep-research-是什么">Deep Research 是什么？</h3>
+<p>普通问答通常可以通过一次检索得到答案，而研究任务往往一开始就没有固定路径。例如，比较三家云厂商的 Agent 托管能力，需要分别查产品定位、价格、限制和区域差异，还要处理产品改名、资料过期和来源矛盾。</p>
+<p>Deep Research 会围绕研究目标动态决定：下一步搜索什么、哪些问题可以并行、证据是否充分，以及何时停止。搜索次数只是这个过程的结果。</p>
+<p>理解了研究任务需要动态调整，生态里的几个名字就不难区分了。LangChain 提供模型、工具和 Agent 等高层积木，LangGraph 负责有状态流程如何编排和运行。</p>
+<p>在这套基础之上，<code>open_deep_research</code> 展示了一套具体研究流程，而 Deep Agents 把规划、子 Agent 和上下文管理提炼成更通用的能力。</p>
+<p>回答面试题时说明这层区别即可，不需要背诵每个托管产品和仓库实现。</p>
+<h3 id="核心流程是什么">核心流程是什么？</h3>
+<p>一套典型的 Deep Research 流程可以拆成六步：</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">澄清问题并确定范围
+-&gt; 生成 Research Brief
+-&gt; Supervisor 拆分子课题
+-&gt; Researcher 并行检索与核验
+-&gt; 压缩证据并检查研究缺口
+-&gt; 统一生成最终报告
+</code></pre></div><p>第一步是范围澄清。用户只说「研究某家公司」时，系统需要确认是在关注投资价值、技术路线还是就业风险，否则后续搜索很容易跑偏。</p>
+<p>第二步是形成 Research Brief。它把用户目标、研究维度、时间范围、来源要求和最终交付形式整理成稳定的成功标准。</p>
+<p>第三步由 Supervisor 拆分子课题。只有相对独立的问题才适合并行，例如分别研究三家公司的定价；如果后一个问题依赖前一个结论，则应该串行执行。</p>
+<p>第四步由 Researcher 多轮使用搜索、企业检索或 MCP 工具。每个研究员只处理一个主题，并保留来源信息。</p>
+<p>第五步要把网页原文压缩成带出处的关键证据，再交给 Supervisor。Supervisor 检查 Brief 是否被覆盖，发现缺口或冲突时继续补搜。</p>
+<p>最后由一个写作阶段统一组织论证、处理重复内容，并将事实、推断和不确定性分开表达。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f1d4566a_deep-research-workflow__044960cb3f.webp" alt="Deep Research 的实现逻辑和适用场景是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="为什么需要子-agent">为什么需要子 Agent？</h3>
+<p>如果一个 Agent 同时研究多个主题，搜索结果会不断占用同一个上下文。A 公司的价格、B 公司的安全文档和 C 公司的失败请求混在一起，模型反而更难关注当前证据。</p>
+<p>所以，拆出子 Agent 首先是在隔离上下文。每个 Researcher 只处理一个子课题，最终只返回压缩后的结论和来源，主 Agent 不必背着全部搜索过程继续思考。</p>
+<p>课题隔离以后，并行才成为自然结果。相互独立的研究任务可以同时执行，整体等待时间会下降；彼此依赖的任务却仍要按顺序完成。Agent 数量越多，模型调用、搜索费用、限流和协调成本也越高，因此不能为了并行而并行，关键仍是子课题能否独立推进。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/d378a766_subagent-context-isolation__e0341e78e7.webp" alt="Deep Research 的实现逻辑和适用场景是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>为什么不让子 Agent 分别写报告章节？因为各章节可能重复背景、使用不同口径，甚至得出相互冲突的结论。并行搜证据、统一写报告，更容易保持全文一致性。</p>
+<h3 id="如何保证研究质量">如何保证研究质量？</h3>
+<p>研究报告很长、链接很多，并不代表质量高。判断质量时，可以沿着「来源 -&gt; 证据 -&gt; 结论」反向追查。</p>
+<p>先看来源是否值得信。官方文档、论文、监管文件和一手资料通常更接近原始事实，多篇转载却可能都来自同一篇文章，不能因为链接数量多就当成交叉验证。</p>
+<p>来源可靠以后，还要确认它真的支持当前结论。报告应把事实、推断和不确定性分开；遇到冲突时，继续追查发布时间、统计口径和原始出处，而不是挑一个最符合预期的答案。</p>
+<p>如果结论仍不稳，就回到研究过程检查原因。搜索词是否漏掉关键限定，子课题是否重复，停止条件是否过早，工具失败后有没有换用有效来源，这些过程问题最终都会反映到证据质量上。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/6972963c_evidence-verification-chain__146f9a8698.webp" alt="Deep Research 的实现逻辑和适用场景是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>评测时既要看最终答案，也要看研究轨迹、来源覆盖率、引用正确性、耗时和成本。通用 Benchmark 可以用于版本比较，但不能代替企业自己的业务数据集。</p>
+<h3 id="如何控制成本和安全">如何控制成本和安全？</h3>
+<p>Deep Research 的成本同时受到「宽度」和「深度」影响。宽度是并行研究单元数量，深度是每个研究员和 Supervisor 最多迭代多少轮。</p>
+<p>怎么控制这两个维度？先限制同时运行的研究单元，避免宽度无限扩大；再限制每个 Researcher 的工具调用次数和 Supervisor 的补搜轮数，避免深度失控。</p>
+<p>单个分支有上限还不够，整项任务还要设置总 Token、搜索费用和超时预算。失败重试、缓存、限流和取消策略也要配好，系统才知道什么时候继续、什么时候降级、什么时候停止。</p>
+<p>网页和外部文档都是不可信输入，可能包含诱导 Agent 泄露密钥或执行危险操作的提示词注入。因此研究工具应优先只读，内部数据遵循最小权限，密钥不要暴露给搜索或沙箱环境，高风险操作必须人工审批并保留 Trace。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/436c8e82_research-safety-budget__93265bb7c0.webp" alt="Deep Research 的实现逻辑和适用场景是什么？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>对于金融、医疗、法律和安全决策，Deep Research 只能辅助资料整理，不能因为报告带有引用就取消专家复核。</p>
+<h3 id="哪些场景适合">哪些场景适合？</h3>
+<p>判断一个任务是否值得使用 Deep Research，先看它是否需要多轮搜索和动态调整方向。如果一次权威检索就能回答，复杂研究流程只会增加成本。</p>
+<p>接着看任务能否拆出相对独立的子课题，否则并行 Researcher 会频繁等待和交换状态。最后还要看报告价值能不能覆盖多轮模型与搜索成本，三项都成立时才值得使用。</p>
+<p>典型场景包括竞品分析、技术路线调研、文献综述、供应商尽调、政策影响研究，以及企业内部资料与公开信息的联合分析。</p>
+<p>如果只是查询一个容易核验的实时事实，一次权威搜索更快、更便宜；如果多个子任务必须严格共享中间状态，强行并行只会增加冲突；如果数据源本身不可靠或没有访问权限，研究 Agent 也无法凭空得到正确答案。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>回答 Deep Research 时，先说明它是一类研究型 Agent 架构，而不是 LangChain 核心包中的一个开关。官方参考实现与通用 Deep Agents 框架定位不同，但它们都可以借助 LangChain 和 LangGraph 的模型、工具、状态与编排能力。</p>
+<p>核心流程是「明确范围、生成 Brief、拆分子课题、并行检索、压缩核验、统一写作」。Supervisor 负责规划和补缺，Researcher 负责隔离上下文中的多轮搜证，最终由一个写作阶段综合报告。</p>
+<p>使用边界也要说明：它适合开放、多来源、可拆分且报告价值较高的任务；上线时必须控制并发、迭代、Token、搜索费用和提示词注入风险，并保留来源追溯与人工复核。</p>
+<h2 id="参考资料">📚 参考资料</h2>
+<ul>
+<li><a href="https://www.langchain.com/blog/open-deep-research" target="_blank" rel="noreferrer noopener">LangChain 官方博客：Open Deep Research</a></li>
+<li><a href="https://github.com/langchain-ai/open_deep_research" target="_blank" rel="noreferrer noopener">LangChain 官方仓库：Open Deep Research</a></li>
+<li><a href="https://www.langchain.com/blog/deep-agents" target="_blank" rel="noreferrer noopener">LangChain 官方博客：Deep Agents</a></li>
+<li><a href="https://docs.langchain.com/oss/python/deepagents/overview" target="_blank" rel="noreferrer noopener">Deep Agents 官方文档：Overview</a></li>
+<li><a href="https://docs.langchain.com/oss/python/deepagents/subagents" target="_blank" rel="noreferrer noopener">Deep Agents 官方文档：Subagents</a></li>
+<li><a href="https://docs.langchain.com/oss/python/deepagents/context-engineering" target="_blank" rel="noreferrer noopener">Deep Agents 官方文档：Context Engineering</a></li>
+<li><a href="https://docs.langchain.com/langsmith/evaluation-approaches" target="_blank" rel="noreferrer noopener">LangSmith 官方文档：Evaluation Approaches</a></li>
+</ul>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#deep-research-是什么">Deep Research 是什么？</a><a class="toc-level-3" href="#核心流程是什么">核心流程是什么？</a><a class="toc-level-3" href="#为什么需要子-agent">为什么需要子 Agent？</a><a class="toc-level-3" href="#如何保证研究质量">如何保证研究质量？</a><a class="toc-level-3" href="#如何控制成本和安全">如何控制成本和安全？</a><a class="toc-level-3" href="#哪些场景适合">哪些场景适合？</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a><a class="toc-level-2" href="#参考资料">📚 参考资料</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/langchain/version_evolution.html"><span>上一篇 · LangChain</span><strong>LangChain 大版本升级有哪些核心变化？</strong></a>
+      <a class="pagination-card next" href="../../articles/coding/ai_programming_modes.html"><span>下一篇 · AI 编程</span><strong>AI 编程有哪些常见方式？代码补全、对话生成和 Agent 编程有什么区别？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#f5f6f7"/>
+  <rect x="34" y="34" width="1132" height="562" rx="28" fill="#ffffff" stroke="#050607" stroke-width="4"/>
+  <g transform="translate(74 82)">
+    <rect width="302" height="32" rx="16" fill="#eaf2ff" stroke="#050607" stroke-width="2"/>
+    <circle cx="18" cy="16" r="6" fill="#01f7f2" stroke="#050607" stroke-width="2"/>
+    <text x="34" y="21" fill="#075bf5" font-family="Arial, Microsoft YaHei, sans-serif" font-size="13" font-weight="700" letter-spacing="1.4">AI PM INTERVIEW ATLAS · 2026</text>
+  </g>
+  <text x="74" y="250" fill="#050607" font-family="Microsoft YaHei, Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="-5">AI产品经理</text>
+  <text x="74" y="346" fill="#075bf5" font-family="Microsoft YaHei, Arial, sans-serif" font-size="86" font-weight="800" letter-spacing="-5">面试题图谱</text>
+  <rect x="74" y="379" width="310" height="14" rx="7" fill="#d9ff69" stroke="#050607" stroke-width="2"/>
+  <text x="74" y="452" fill="#303745" font-family="Microsoft YaHei, Arial, sans-serif" font-size="25" font-weight="500">业务目标 · 方案取舍 · 失败兜底 · 评测迭代</text>
+  <g transform="translate(762 116)" stroke="#050607" stroke-width="3">
+    <rect y="0" width="322" height="346" rx="18" fill="#ffffff"/>
+    <rect width="322" height="72" rx="18" fill="#0a0a0f"/>
+    <rect y="54" width="322" height="18" fill="#0a0a0f"/>
+    <text x="24" y="44" fill="#ffffff" stroke="none" font-family="Arial, Microsoft YaHei, sans-serif" font-size="15" font-weight="700" letter-spacing="1.2">124 / INTERVIEW QUESTIONS</text>
+    <g stroke-width="2">
+      <rect x="24" y="102" width="274" height="48" rx="10" fill="#eaf2ff"/>
+      <text x="42" y="132" fill="#075bf5" stroke="none" font-family="Arial, Microsoft YaHei, sans-serif" font-size="20" font-weight="700">01  Agent 系统与边界</text>
+      <rect x="24" y="164" width="274" height="48" rx="10" fill="#fff0dd"/>
+      <text x="42" y="194" fill="#b45b0d" stroke="none" font-family="Arial, Microsoft YaHei, sans-serif" font-size="20" font-weight="700">02  RAG 检索与评测</text>
+      <rect x="24" y="226" width="274" height="48" rx="10" fill="#e2fbf1"/>
+      <text x="42" y="256" fill="#087453" stroke="none" font-family="Arial, Microsoft YaHei, sans-serif" font-size="20" font-weight="700">03  工具调用与权限</text>
+    </g>
+    <circle cx="275" cy="309" r="19" fill="#01f7f2"/>
+    <text x="269" y="316" fill="#050607" stroke="none" font-family="Arial, sans-serif" font-size="20" font-weight="800">✓</text>
+  </g>
+  <text x="74" y="548" fill="#6b7280" font-family="Arial, Microsoft YaHei, sans-serif" font-size="17" font-weight="600" letter-spacing="0.5">不是背答案，是把技术题讲成产品判断。</text>
+</svg>

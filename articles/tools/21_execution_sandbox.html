@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="核心是让代码只拿到当前任务需要的权限，并把资源消耗限制在预算里。模型生成的代码要按不可信代码处理，不能只靠 Prompt 约束，也不应该直接继承宿主的全部权限。">
+  <meta name="keywords" content="AI产品经理面试题,Agent 的代码执行沙箱应该如何设计？,工具调用,AI产品经理,工具调用面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/21_execution_sandbox.html">
+  <title>Agent 的代码执行沙箱应该如何设计？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="Agent 的代码执行沙箱应该如何设计？｜AI产品经理面试题">
+  <meta property="og:description" content="核心是让代码只拿到当前任务需要的权限，并把资源消耗限制在预算里。模型生成的代码要按不可信代码处理，不能只靠 Prompt 约束，也不应该直接继承宿主的全部权限。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/21_execution_sandbox.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Agent 的代码执行沙箱应该如何设计？｜AI产品经理面试题">
+  <meta name="twitter:description" content="核心是让代码只拿到当前任务需要的权限，并把资源消耗限制在预算里。模型生成的代码要按不可信代码处理，不能只靠 Prompt 约束，也不应该直接继承宿主的全部权限。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/21_execution_sandbox.html#article","headline":"Agent 的代码执行沙箱应该如何设计？｜AI产品经理面试题","description":"核心是让代码只拿到当前任务需要的权限，并把资源消耗限制在预算里。模型生成的代码要按不可信代码处理，不能只靠 Prompt 约束，也不应该直接继承宿主的全部权限。","articleSection":"工具调用面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/21_execution_sandbox.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"工具调用面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/tools.html"},{"@type":"ListItem","position":3,"name":"Agent 的代码执行沙箱应该如何设计？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/tools/21_execution_sandbox.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/tools.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> 工具调用面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#11a879"></i>
+            <span>工具调用</span>
+            <strong>22 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="工具调用面试专题题目列表">
+            <a class="" href="./1_function_calling.html"><span>01</span><strong>什么是 Function Calling ？原理是什么？</strong></a><a class="" href="./2_llm_tool_learning.html"><span>02</span><strong>LLM 是如何学会调用外部工具的？</strong></a><a class="" href="./3_fc_training.html"><span>03</span><strong>大模型的 Function Call 能力是怎么训练出来的？</strong></a><a class="" href="./4_what_is_mcp.html"><span>04</span><strong>什么是 MCP（模型上下文协议）？讲讲它的核心内容？</strong></a><a class="" href="./5_mcp_components.html"><span>05</span><strong>MCP 由哪几部分组成？</strong></a><a class="" href="./6_mcp_vs_fc.html"><span>06</span><strong>MCP 和 Function Calling 有什么区别？有没有实际跑过 MCP？</strong></a><a class="" href="./7_fc_vs_mcp_usage.html"><span>07</span><strong>Function Calling 也属于工具调用，请问什么场景下使用 Function Calling，什么场景下使用 MCP？</strong></a><a class="" href="./8_reasoning_no_mcp.html"><span>08</span><strong>为什么有些特定的推理模型不支持 MCP 协议？</strong></a><a class="" href="./9_skill.html"><span>09</span><strong>Skill 是什么？</strong></a><a class="" href="./10_mcp_vs_skill.html"><span>10</span><strong>MCP 和 Agent Skill 的区别是什么？</strong></a><a class="" href="./11_fc_skill_mcp.html"><span>11</span><strong>Function Calling、Skill、MCP 这三个有什么区别？</strong></a><a class="" href="./12_a2a_protocol.html"><span>12</span><strong>什么是 A2A 协议？它和 MCP 协议的区别是什么？</strong></a><a class="" href="./13_mcp_transport.html"><span>13</span><strong>MCP 协议通常采用什么通信方式？</strong></a><a class="" href="./14_sse_vs_websocket.html"><span>14</span><strong>说说 WebSocket 和 SSE 通信的区别及局限性？</strong></a><a class="" href="./15_webrtc_vs_ws.html"><span>15</span><strong>为什么要用 WebRTC 协议？它和 WebSocket（WS）在 AI 对话流中的核心差异是什么？</strong></a><a class="" href="./16_llm_gateway.html"><span>16</span><strong>有没有用过大模型的网关框架？网关层解决了什么问题？</strong></a><a class="" href="./17_tool_routing.html"><span>17</span><strong>工具很多时，Agent 如何做 Tool Routing，减少 Token 并避免选错工具？</strong></a><a class="" href="./18_tool_reliability.html"><span>18</span><strong>工具调用格式非法、参数错误、超时或失败时，Agent 如何容错？</strong></a><a class="" href="./19_cli_packaging.html"><span>19</span><strong>为什么要把 Agent 的工具执行流程封装成 CLI？</strong></a><a class="" href="./20_cli_vs_mcp.html"><span>20</span><strong>Agent 接入工具时应该如何选择 CLI 或 MCP？</strong></a><a class="is-active" href="#article-top"><span>21</span><strong>Agent 的代码执行沙箱应该如何设计？</strong></a><a class="" href="./22_skill_loading.html"><span>22</span><strong>Agent 的 Skill 加载机制是如何实现的？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/tools.html">工具调用</a><span>/</span>
+            <span>第 21 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#11a879;--soft:#e2fbf1">工具调用</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 11 分钟阅读</span>
+            <span>4,228 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>Agent 的代码执行沙箱应该如何设计？</h1>
+          <div class="article-deck">
+            <span>题目 21</span>
+            <p>核心是让代码只拿到当前任务需要的权限，并把资源消耗限制在预算里。模型生成的代码要按不可信代码处理，不能只靠 Prompt 约束，也不应该直接继承宿主的全部权限。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：Agent 能生成并执行代码，这个代码执行沙箱应该怎样设计？</p>
+<p>🙋‍♂️我：在 Prompt 里规定代码只能完成当前任务，不允许访问其他文件。</p>
+<p>👔面试官：文件访问发生时，操作系统会读取这段 Prompt 吗？代码写错了，真正拦住它的是什么？</p>
+<p>🙋‍♂️我：把代码放进 Docker 容器，和宿主隔离就行。</p>
+<p>👔面试官：如果你把宿主目录以可写方式挂进去，代码仍然可以改文件。容器到底隔离了哪些能力，又开放了哪些能力？</p>
+<p>🙋‍♂️我：那只开放任务目录，再给执行设一个超时。</p>
+<p>👔面试官：超时之前就可能耗尽内存，后台子进程也可能一直运行。资源怎么限制，任务结束后又怎样回收？</p>
+<p>咱们从代码怎样获得权限讲起，把沙箱的访问边界、资源预算和运行管理逐层拆开。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先说清模型负责决策、代码负责执行，再划分工具权限、参数校验、失败重试和人工确认，最后用工具成功率、误调用率与成本验证方案。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>核心是让代码只拿到当前任务需要的权限，并把资源消耗限制在预算里。模型生成的代码要按不可信代码处理，不能只靠 Prompt 约束，也不应该直接继承宿主的全部权限。</p>
+<p>执行环境可以只提供本次任务的输入，把输入设为只读，给临时目录和输出目录写权限，用低权限身份运行。网络按需开放，宿主凭据和管理接口不交给代码。资源限制则要覆盖 CPU、内存、进程数量和运行时间，并作用于整个任务的进程集合，而不只是启动的那个进程。</p>
+<p>容器可以作为实现，但需要检查挂载、权限和网络配置，而且普通 Linux 容器共享宿主内核。面对任意用户代码或更高的隔离要求，可以评估虚拟机等更强边界，同时考虑启动成本和兼容性。</p>
+<p>任务由沙箱外的运行器管理：准备输入，启动受限执行，超时或取消时终止整个执行单元，核对并导出允许的产物，最后清理环境。沙箱负责限制代码的影响范围，结果是否符合业务要求，还要另外验证。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="为什么要限制运行环境-而不是只检查代码">为什么要限制运行环境，而不是只检查代码？</h3>
+<p>模型生成了一段看起来正确的代码，就可以直接运行吗？这里容易漏掉一个事实：程序真正能做什么，取决于它运行时拥有的能力。</p>
+<p>操作系统处理文件读取、网络连接和进程创建时，检查的是进程身份、访问权限和系统规则。它不会因为代码来自一个「数据分析任务」，就自动只允许分析数据。</p>
+<p>如果程序使用宿主账号运行，它就可能获得该账号能访问的文件和服务。生成代码中的一个错误路径，或者依赖里的额外操作，都可能使用这些权限。</p>
+<p>Prompt 可以影响模型怎样生成代码，代码审查也可以发现问题，但它们不能代替运行时限制。一次真实访问发生时，必须有执行环境能够拒绝超出范围的操作。</p>
+<p>这就是沙箱要解决的核心问题：让代码在一个受限环境里运行，只获得完成任务所需的能力，即使它的行为偏离预期，影响范围也有边界。</p>
+<p>这个边界至少包含两方面。访问限制决定能接触哪些文件、网络和系统能力；资源限制决定能消耗多少计算、内存和其他资源。</p>
+<p>两者不能互相代替。代码看不到宿主文件，仍然可能占满内存；代码只运行几秒，也可能在几秒内读走敏感数据。因此，沙箱不能只做其中一项。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/966e81fd_sandbox-boundaries__1fc88ae55b.webp" alt="Agent 的代码执行沙箱应该如何设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<h3 id="按任务分配最小能力-建立真正的访问边界">按任务分配最小能力，建立真正的访问边界</h3>
+<p>设计访问边界，可以从一个问题开始：这段代码为了完成当前任务，实际需要什么？</p>
+<p>所需输入、可写产物位置、必要依赖和外部接口明确以后，只把这些能力交给执行环境。没有任务依据的能力，默认不开放。这就是最小权限的含义。</p>
+<p>文件是最容易理解的一部分。常见做法是给每个任务独立空间，分别准备只读输入、可写临时区和输出区。运行依赖预先准备，代码不必修改用户原始数据或宿主系统。</p>
+<p>但工作目录不等于文件边界。工作目录只决定相对路径从哪里开始计算，程序仍然可能访问绝对路径或父目录。</p>
+<p>真正的限制需要文件系统视图和访问权限配合。比如让环境只看到必要目录，再规定哪些路径可读、哪些可写。Linux 的 namespace 可以提供独立的挂载等视图，但挂进去的内容仍要按实际权限处理。</p>
+<p>如果把整个用户目录挂进去，沙箱就得到了这些文件的访问能力；如果以可写方式挂载，代码也可能修改它们。不是目录出现在容器里以后，就自然与宿主原文件断开了关系。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/a2735753_filesystem-permissions__b00495b33c.webp" alt="Agent 的代码执行沙箱应该如何设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>网络同样是一种能力。隔离出独立网络环境，只解决视图和连接环境的问题，不等于已经限制出站目标。</p>
+<p>任务不需要联网时，可以不提供外部网络访问；确实需要时，再通过网络策略或受控接口限制。只开放必要查询能力，通常比让代码任意连接所有外部和内部地址更容易检查。</p>
+<p>文件只读也不能防止数据外传。代码虽然不能修改输入，仍然可以读取内容；如果同时拥有任意网络访问，就可能把内容发出去。所以文件和网络权限要一起考虑。</p>
+<p>凭据尤其不应该无差别继承。宿主环境变量里的数据库密码、云端密钥和管理接口，不应因为启动子进程就全部进入代码环境。必须使用的外部能力，可以由沙箱外的工具代理，用受限身份执行，再返回必要结果。</p>
+<p>这样，权限是在任务开始前明确分配的。外部材料或生成代码即使写着「需要更多权限」，也不会自行改变执行环境的配置。</p>
+<h3 id="资源限制解决的是另一类问题">资源限制解决的是另一类问题</h3>
+<p>访问边界收紧以后，仍然需要控制资源消耗。无限循环、不断分配数组、持续创建子进程，都可能在不读取任何敏感文件的情况下影响其他任务。</p>
+<p>资源限制的对象应该是整项任务，而不是单个程序。</p>
+<p>假设主程序创建了几个后台进程，随后自己退出。如果只统计或停止主程序，后台进程仍可能继续占用机器。需要把它们归入同一个受控执行单元，一起计量、限制和终止。</p>
+<p>Linux 的 cgroup 就能把一组进程组织起来，按组管理 CPU、内存以及任务数量等资源。它提供的是资源账本和限额，不能代替文件访问控制。</p>
+<p>CPU 和时间也要区分。CPU 配额限制一段时间内占用多少计算资源；总运行时限限制从启动到结束可以持续多久。</p>
+<p>一个程序等待外部响应时，几乎不用 CPU，却可能一直不退出。另一个程序持续计算，即使只跑很短时间，也可能挤占其他工作。所以限 CPU 不等于限总时长，超时也不等于限制瞬时资源消耗。</p>
+<p>内存和进程数量同样要单独控制。内存可能在超时前迅速增长，限制一组进程与线程的数量则可以抑制无限创建任务。</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>限制对象</th>
+<th>主要约束什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CPU</td>
+<td>计算资源占用</td>
+</tr>
+<tr>
+<td>内存</td>
+<td>任务可使用的内存规模</td>
+</tr>
+<tr>
+<td>进程与线程数量</td>
+<td>任务不断创建执行单元的行为</td>
+</tr>
+<tr>
+<td>总运行时间</td>
+<td>等待或执行持续过久</td>
+</tr>
+<tr>
+<td>文件与输出大小</td>
+<td>临时数据、产物和日志无界增长</td>
+</tr>
+</tbody>
+</table></div><p>文件和输出大小不能只靠前几项间接限制。磁盘空间需要配额或其他存储控制，日志接收也要有上限，避免沙箱没耗尽资源，外面的运行器先被大量输出拖垮。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/f9203178_process-resource-limits__76e5bb80a8.webp" alt="Agent 的代码执行沙箱应该如何设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>具体额度要依据任务需要确定。过松可能影响其他任务，过紧会阻止正常执行；限制触发后应记录清楚原因，让调用方分辨是程序错误，还是预算不足。</p>
+<h3 id="容器是否够用-取决于隔离边界和代码可信程度">容器是否够用，取决于隔离边界和代码可信程度</h3>
+<p>最小权限和资源预算明确以后，才适合决定使用什么执行环境。</p>
+<p>普通 Linux 容器通过独立的文件、进程和网络等视图组织环境，并配合权限和资源机制运行任务。它比较轻，启动与部署通常方便，因此可以作为沙箱的一种基础实现。</p>
+<p>但容器里的进程最终仍然使用承载它的宿主内核。应用视图分开了，不代表底层已经变成两套独立操作系统。</p>
+<p>这会带来两类需要分别检查的问题。</p>
+<p>一类是配置把能力重新交了出去。例如开放敏感挂载、特权模式，或把能管理容器的高权限控制接口交给代码，都会扩大实际操作范围。环境看起来在容器里，程序却可能借这些入口影响宿主。</p>
+<p>另一类来自共享内核。即使配置合理，运行代码仍会与宿主内核交互，内核和隔离实现的漏洞需要纳入风险判断。</p>
+<p>用低权限身份运行、移除不需要的特权能力，并限制不必要的系统调用，可以收紧这条边界。系统调用是程序请求内核执行操作的入口，限制它就是减少代码能够直接请求的内核操作。</p>
+<p>这里不需要追求一个只允许极少操作、却连正常依赖都运行不了的配置。应该根据任务验证必要能力，保留需要的部分，而不是遇到兼容问题就把限制全部关闭。</p>
+<p>如果执行的是任意用户提交的代码，或者需要更强的任务间隔离，可以评估虚拟机等方案。虚拟机中有独立的客体内核，代码先与这套内核交互，再由虚拟化层连接宿主，与普通容器直接共享内核的边界不同。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/31ef54fa_kernel-isolation__a0056d553a.webp" alt="Agent 的代码执行沙箱应该如何设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>更强边界也有启动、资源和运维成本，而且依然需要正确配置。把宿主敏感文件共享给虚拟机，仍然是在授权它访问这些文件。选择环境不能替代前面的最小权限设计。</p>
+<p>因此，容器或虚拟机的选择，要结合代码来源、可接触的数据、任务间隔离要求和允许的成本。工具名称本身不是完整的安全结论。</p>
+<h3 id="沙箱外的运行器-要管理完整的执行生命周期">沙箱外的运行器，要管理完整的执行生命周期</h3>
+<p>环境配置正确以后，还需要一个沙箱外的运行器，负责准备、启动、观察、终止和回收任务。</p>
+<p>它应该处于生成代码不能修改的管理边界之外。否则代码可以改变自己的限制或回收逻辑，前面的设计就失去约束作用。</p>
+<p>启动前，运行器分配任务空间、放入允许的输入、应用权限与资源配置。配置没有成功时，不应退回到不受限的宿主执行，以免「为了让任务跑起来」直接绕过边界。</p>
+<p>执行中，运行器跟踪状态与预算，处理超时和用户取消。终止要覆盖整个执行单元，并确认相关进程已结束，不能只停止接收输出，让后台任务继续运行。</p>
+<p>代码运行结束，产生的文件也不能立即获得宿主权限。代码返回一个路径，运行器需要按约定检查真实产物，只导出允许范围内的文件，并限制类型、大小和数量。</p>
+<p>例如输出目录里有一个符号链接，指向目录外的文件。仅检查路径文字以 output 开头，仍然可能导出不该读取的内容。运行器需要核对实际对象，不能把代码给出的任意路径当成宿主读取指令。</p>
+<p>普通批处理任务可以先停止执行单元，再检查和复制产物，减少检查期间文件继续变化的问题。交付完成后，清理临时数据、撤销临时访问能力，保留必要且受控的诊断记录。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/3d5db806_sandbox-lifecycle__80d3d9ce02.webp" alt="Agent 的代码执行沙箱应该如何设计？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>任务之间也要隔开。复用基础运行环境可以减少启动开销，但不能因此继承上一任务的数据、后台进程或凭据。没有确认清理成功的环境，不应直接交给下一位用户。</p>
+<p>最后，沙箱验证的是操作是否在能力和资源边界内，并不直接证明计算结果正确。文件生成成功，只说明产物存在；内容是否满足任务要求，仍需要业务规则或测试检查。把隔离与结果验证分别落实，代码执行才有完整依据。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头依赖 Prompt，遗漏了实际访问由进程权限和运行环境决定；只说放进容器，又没有说明开放了哪些能力；只加超时，则没有控制瞬时资源消耗和后台执行。</p>
+<p>沙箱设计的重点，是按任务分配最小能力，并对整个执行单元设置资源预算。访问边界管能接触什么，资源预算管能消耗多少；容器可以组合这些机制，共享内核的边界是否满足要求，还要结合代码来源判断。</p>
+<p>运行器负责从输入准备到终止、产物检查和环境回收，避免任务结束后仍留下进程、数据或权限。沙箱限制执行影响，业务验证检查结果，两部分分别承担职责。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#为什么要限制运行环境-而不是只检查代码">为什么要限制运行环境，而不是只检查代码？</a><a class="toc-level-3" href="#按任务分配最小能力-建立真正的访问边界">按任务分配最小能力，建立真正的访问边界</a><a class="toc-level-3" href="#资源限制解决的是另一类问题">资源限制解决的是另一类问题</a><a class="toc-level-3" href="#容器是否够用-取决于隔离边界和代码可信程度">容器是否够用，取决于隔离边界和代码可信程度</a><a class="toc-level-3" href="#沙箱外的运行器-要管理完整的执行生命周期">沙箱外的运行器，要管理完整的执行生命周期</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/tools/20_cli_vs_mcp.html"><span>上一篇 · 工具调用</span><strong>Agent 接入工具时应该如何选择 CLI 或 MCP？</strong></a>
+      <a class="pagination-card next" href="../../articles/tools/22_skill_loading.html"><span>下一篇 · 工具调用</span><strong>Agent 的 Skill 加载机制是如何实现的？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

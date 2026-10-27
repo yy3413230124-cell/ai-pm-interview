@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f6f7">
+  <meta name="description" content="这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。">
+  <meta name="keywords" content="AI产品经理面试题,RAG 与 Agent 自主文件检索应该如何选型？,RAG,AI产品经理,RAG 面试专题">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <meta name="format-detection" content="telephone=no">
+  <link rel="canonical" href="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/23_rag_vs_file_search.html">
+  <title>RAG 与 Agent 自主文件检索应该如何选型？｜AI产品经理面试题</title>
+  <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="../../assets/site.webmanifest">
+  <link rel="stylesheet" href="../../styles/fonts.css">
+  <link rel="stylesheet" href="../../styles.css">
+  <meta property="og:locale" content="zh_CN">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="AI 产品经理面试图谱">
+  <meta property="og:title" content="RAG 与 Agent 自主文件检索应该如何选型？｜AI产品经理面试题">
+  <meta property="og:description" content="这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。">
+  <meta property="og:url" content="https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/23_rag_vs_file_search.html">
+  <meta property="og:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <meta property="og:image:alt" content="AI产品经理面试图谱：Agent、RAG 与技术面试题">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="RAG 与 Agent 自主文件检索应该如何选型？｜AI产品经理面试题">
+  <meta name="twitter:description" content="这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。">
+  <meta name="twitter:image" content="https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"TechArticle","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/23_rag_vs_file_search.html#article","headline":"RAG 与 Agent 自主文件检索应该如何选型？｜AI产品经理面试题","description":"这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。","articleSection":"RAG 面试专题","inLanguage":"zh-CN","dateModified":"2026-10-27","mainEntityOfPage":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/23_rag_vs_file_search.html","image":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png","author":{"@type":"Organization","name":"AI 产品经理面试图谱"},"publisher":{"@type":"Organization","@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#organization","name":"AI 产品经理面试图谱","url":"https://yy3413230124-cell.github.io/ai-pm-interview/","logo":"https://yy3413230124-cell.github.io/ai-pm-interview/assets/og-cover.png"},"isPartOf":{"@id":"https://yy3413230124-cell.github.io/ai-pm-interview/#website"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"首页","item":"https://yy3413230124-cell.github.io/ai-pm-interview/"},{"@type":"ListItem","position":2,"name":"RAG 面试专题","item":"https://yy3413230124-cell.github.io/ai-pm-interview/category/rag.html"},{"@type":"ListItem","position":3,"name":"RAG 与 Agent 自主文件检索应该如何选型？","item":"https://yy3413230124-cell.github.io/ai-pm-interview/articles/rag/23_rag_vs_file_search.html"}]}]}</script>
+</head>
+<body class="article-page" data-root="../../" >
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  
+    <header class="site-header" data-header>
+      <div class="nav-shell">
+        <a class="brand" href="../../index.html" aria-label="AI 产品经理面试图谱 首页">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+        </a>
+        <nav class="desktop-nav" aria-label="主导航">
+          <a href="../../index.html">首页</a>
+          <a class="is-active" href="../../index.html#library">面试题库</a>
+          <a href="../../index.html#topics">知识专题</a>
+          <a href="../../guide.html">备考指南</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button search-trigger" type="button" aria-label="搜索题目" data-search-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></button>
+          <button class="button button-small random-trigger" type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机抽题</span></button>
+          <a class="button button-small button-accent nav-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书应用</span></a>
+          <button class="icon-button menu-trigger" type="button" aria-label="打开菜单" data-menu-open><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h16"></path></svg></button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-drawer" data-mobile-drawer hidden>
+      <button class="drawer-backdrop" type="button" aria-label="关闭菜单" data-menu-close></button>
+      <aside class="drawer-panel">
+        <div class="drawer-head">
+          <span class="eyebrow">QUICK NAV</span>
+          <button class="icon-button" type="button" aria-label="关闭菜单" data-menu-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <nav>
+          <a href="../../index.html">首页 <span>01</span></a>
+          <a href="../../index.html#library">全部面试题 <span>02</span></a>
+          <a href="../../index.html#topics">六类专题 <span>03</span></a>
+          <a href="../../guide.html">备考指南 <span>04</span></a>
+        </nav>
+        <div class="drawer-topics">
+          <a href="../../category/agent.html"><i style="--cat:#4687f2"></i>Agent</a><a href="../../category/rag.html"><i style="--cat:#f08a24"></i>RAG</a><a href="../../category/tools.html"><i style="--cat:#11a879"></i>工具调用</a><a href="../../category/llm.html"><i style="--cat:#7a5af8"></i>大模型工程</a><a href="../../category/langchain.html"><i style="--cat:#1598c8"></i>LangChain</a><a href="../../category/coding.html"><i style="--cat:#e94f72"></i>AI 编程</a>
+        </div>
+        <a class="button drawer-feishu" href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">打开飞书学习应用 <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+      </aside>
+    </div>
+    <dialog class="search-dialog" aria-label="搜索全部面试题" data-search-dialog>
+      <div class="search-shell">
+        <div class="search-head">
+          <span class="search-icon"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg></span>
+          <input type="search" placeholder="搜索 Agent、RAG、MCP、LoRA…" autocomplete="off" data-search-input>
+          <kbd>Esc</kbd>
+          <button class="icon-button" type="button" aria-label="关闭搜索" data-search-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+        </div>
+        <div class="search-hint">输入关键词，从 124 道题中快速定位。</div>
+        <div class="search-results" data-search-results></div>
+      </div>
+    </dialog>
+    <dialog class="lightbox" data-lightbox>
+      <button class="lightbox-close icon-button" type="button" aria-label="关闭图片预览" data-lightbox-close><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 6 12 12M18 6 6 18"></path></svg></button>
+      <img alt="" data-lightbox-image>
+    </dialog>
+  <main id="main-content">
+    <div class="article-progress" data-reading-progress></div>
+    <section class="article-layout">
+      <aside class="article-sidebar">
+        <div class="sidebar-sticky">
+          <a class="sidebar-back" href="../../category/rag.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg> RAG 面试专题</a>
+          <div class="sidebar-title">
+            <i style="--cat:#f08a24"></i>
+            <span>RAG</span>
+            <strong>23 道题</strong>
+          </div>
+          <nav class="sidebar-list" aria-label="RAG 面试专题题目列表">
+            <a class="" href="./1_whatisrag.html"><span>01</span><strong>什么是 RAG？详细描述一个完整 RAG 系统的详细工作流程？</strong></a><a class="" href="./2_rag_problems.html"><span>02</span><strong>大模型的 RAG 主要用来解决什么问题？</strong></a><a class="" href="./3_rag_vs_finetune.html"><span>03</span><strong>相比直接微调 LLM，RAG 解决了什么问题？微调和 RAG 各自的优劣势是什么？</strong></a><a class="" href="./4_chunking.html"><span>04</span><strong>RAG 中的文档是怎么存的？粒度是多大？详细说说文档切割（Chunking）策略？</strong></a><a class="" href="./5_semantic_cuts.html"><span>05</span><strong>怎么规避语义被切割掉的问题？</strong></a><a class="" href="./6_embedding.html"><span>06</span><strong>在 RAG 中 Embedding 究竟是什么？如何选择和评估一个 Embedding 模型？</strong></a><a class="" href="./7_embedding_algos.html"><span>07</span><strong>Embedding 有哪几种算法你了解过吗？</strong></a><a class="" href="./8_vectordb.html"><span>08</span><strong>什么是向量数据库？有没有做过向量数据库的对比选型？</strong></a><a class="" href="./9_vectordb_practice.html"><span>09</span><strong>讲讲你用的向量数据库？数据量级是多大？性能如何？遇到过性能瓶颈吗？</strong></a><a class="" href="./10_online_workflow.html"><span>10</span><strong>你使用 RAG 给大模型一个输入，系统是怎样的工作流程？</strong></a><a class="" href="./11_retrieval_types.html"><span>11</span><strong>请你介绍一下向量检索和关键词检索的区别？</strong></a><a class="" href="./12_query_rewrite.html"><span>12</span><strong>如何润色用户的 Query（Query Rewrite）？目的是什么？</strong></a><a class="" href="./13_multi_retrieval.html"><span>13</span><strong>什么是多路召回？具体怎么做？</strong></a><a class="" href="./14_retrieval_opt.html"><span>14</span><strong>RAG 检索优化策略有哪些？</strong></a><a class="" href="./15_advanced_paradigms.html"><span>15</span><strong>了解哪些更复杂的 RAG 范式？</strong></a><a class="" href="./16_graph_db.html"><span>16</span><strong>在什么场景下，你会选择使用图数据库来增强传统的向量检索？</strong></a><a class="" href="./17_hallucination.html"><span>17</span><strong>如何规避 RAG 系统中大模型的幻觉？</strong></a><a class="" href="./18_evaluation.html"><span>18</span><strong>怎么量化你的 RAG 效果？</strong></a><a class="" href="./19_dynamic_update.html"><span>19</span><strong>RAG 知识库如何实现动态与持续更新？</strong></a><a class="" href="./20_hardest_parts.html"><span>20</span><strong>在实际落地中，你觉得 RAG 最难的地方是哪里？</strong></a><a class="" href="./21_knowledge_conflict.html"><span>21</span><strong>不同来源的文档发生知识冲突时，RAG 应该信谁？</strong></a><a class="" href="./22_rag_long_context.html"><span>22</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a><a class="is-active" href="#article-top"><span>23</span><strong>RAG 与 Agent 自主文件检索应该如何选型？</strong></a>
+          </nav>
+        </div>
+      </aside>
+
+      <article class="article-paper" id="article-top">
+        <header class="article-head">
+          <div class="article-breadcrumb">
+            <a href="../../index.html">首页</a><span>/</span>
+            <a href="../../category/rag.html">RAG</a><span>/</span>
+            <span>第 23 题</span>
+          </div>
+          <div class="article-meta-row">
+            <span class="topic-label topic-label-large" style="--cat:#f08a24;--soft:#fff0dd">RAG</span>
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg> 9 分钟阅读</span>
+            <span>3,679 字</span>
+            <time datetime="2026-10-27">更新于 2026-10-27</time>
+          </div>
+          <h1>RAG 与 Agent 自主文件检索应该如何选型？</h1>
+          <div class="article-deck">
+            <span>题目 23</span>
+            <p>这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。</p>
+          </div>
+          <button class="copy-link" type="button" data-copy-link><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"></rect><path d="M15 9V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h4"></path></svg> 复制本文链接</button>
+        </header>
+
+        <div class="interview-opening">
+          <div class="interview-heading">
+            <span><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.7 6.3L20 10l-6.3 1.7L12 18l-1.7-6.3L4 10l6.3-1.7z"></path></svg></span>
+            <div><strong>面试追问演练</strong><small>教学化作答情境，不代表真实公司面经</small></div>
+          </div>
+          <div class="interview-body"><p>👔面试官：Agent 可以自己搜索和读取文件，什么时候还需要预建索引的 RAG？</p>
+<p>🙋‍♂️我：RAG 能做语义匹配，文件搜索只能查关键词，所以应该优先用 RAG。</p>
+<p>👔面试官：明确的错误码可能更适合精确搜索。Agent 也可以调用语义检索，你比较的是搜索算法，还是取资料的流程？</p>
+<p>🙋‍♂️我：那让 Agent 全部自己找，就不用维护索引了，而且它能一直读到正确答案。</p>
+<p>👔面试官：它没想到的目录和关键词怎么办？每次重新探索要花多少轮，找到一个相关文件就足够了吗？</p>
+<p>🙋‍♂️我：固定问答用 RAG，复杂任务用自主搜索，两套互不干涉就行。</p>
+<p>👔面试官：索引可以先定位候选，Agent 再读原文、追踪引用。为什么一定要分开？你得先说明各自解决的环节。</p>
+<p>咱们先把搜索方式和检索流程分清，再看任务要求怎样决定选型。</p>
+</div>
+        </div>
+
+        <aside class="pm-lens-card">
+          <span>AI PRODUCT MANAGER LENS</span>
+          <h2>产品经理怎么答这道题？</h2>
+          <p>先拆清知识来源、用户问题与更新频率，再解释召回、生成和引用的取舍，最后用命中率、答案正确率、引用覆盖率和延迟定义上线标准。</p>
+          <div><strong>答题顺序</strong><span>业务目标 → 技术边界 → 风险兜底 → 评测迭代</span></div>
+        </aside>
+
+        <div class="article-content">
+          <h2 id="简要回答">💡 简要回答</h2>
+<p>这里比较的是常见的预建索引 RAG 和 Agent 在运行时自主查找文件，主要看任务是否需要根据中间结果继续探索。广义上，Agent 搜索外部资料再回答，也属于检索增强，二者并不是完全对立的技术。</p>
+<p>资料量大、同类问题多，且答案通常能从明确的知识范围里找到，预建索引更容易复用资料处理成本，也便于控制查询链路。需要沿引用、配置或代码关系逐步追查时，自主检索更灵活，读到什么就能决定下一步查什么，但探索轮数和成本也更容易波动。</p>
+<p>关键词还是语义匹配，是另一项选择。RAG 可以用关键词索引，Agent 也可以调用语义检索。实际可以让索引先定位候选文件，再由 Agent 读取原文、核对版本并补查关联材料。最终要比较任务完成情况、证据完整性和总开销；少量资料需要通读时，直接读取全文也可能最简单。</p>
+<h2 id="详细解析">📝 详细解析</h2>
+<h3 id="先区分搜索方式与取资料的流程">先区分搜索方式与取资料的流程</h3>
+<p>为什么一提到 RAG 和文件搜索，就容易变成「语义检索与关键词检索谁更强」？因为我们把实现中常用的工具，误当成了整个方案的定义。</p>
+<p>RAG 的基本含义是获取外部证据，再用这些证据辅助生成。它不要求只能用向量，也不要求所有任务都只检索一次。</p>
+<p>这道题里的 RAG，主要指常见的预建索引方案：提前处理资料，收到问题后检索候选、整理内容，再交给模型。</p>
+<p>自主文件检索强调的是运行过程。Agent 可以列目录、搜索内容、读取文件，然后根据新的观察继续决定取什么资料。</p>
+<p>所以有两个需要分开的维度。</p>
+<p>搜索方式决定怎样匹配内容。精确字符串、正则表达式、关键词索引和语义索引，都属于这一层。</p>
+<p>取资料的流程决定什么时候搜索、读到什么以后是否继续，以及下一步由谁选择。固定检索链路和由模型推动的探索循环，属于这一层。</p>
+<p>一个 Agent 完全可以先调用语义索引，再用精确名称搜索文件；一个预建索引也可以同时支持关键词和语义匹配。不能仅凭用了 grep 或向量库，就推断整个任务怎样运行。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/5a0358c2_search-vs-controlflow__db5122c6f1.webp" alt="RAG 与 Agent 自主文件检索应该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这也是选型的起点：先明确需要什么样的资料获取过程，再决定该给它配哪些搜索入口。</p>
+<h3 id="预建索引-把资料组织成本提前并复用">预建索引，把资料组织成本提前并复用</h3>
+<p>文件很多时，每个请求都从头浏览目录、读取正文，会重复做大量工作。预建索引把一部分组织工作放到问题到来之前。</p>
+<p>系统先解析资料，保留内容和来源，根据需要组织成章节或片段，再建立方便查找的索引。关键词索引帮助定位明确名称，语义索引帮助寻找用词不同但意思接近的内容。</p>
+<p>收到问题以后，系统在索引里找候选，按任务条件筛选、排序和整理，再把相关证据交给模型。</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">资料解析与组织 -&gt; 建立索引
+                       |
+用户问题 -&gt; 查询候选 -&gt; 整理证据 -&gt; 模型理解与回答
+</code></pre></div><p>它的价值首先是复用。资料解析和索引建立可以服务很多请求，不必让每个问题都重新探索相同集合。</p>
+<p>对于流程相对固定的问答，检索步骤也容易单独观察和改进。找不到正确材料，可以检查查询与索引；候选很多但选错，可以检查排序与范围。检索阶段和生成阶段有较明确的交接。</p>
+<p>不过，候选只是「值得阅读的材料」，不是已经证明的答案。相似度高不等于适用，索引中的摘要也可能省略条件。必要时仍要读取完整章节，并核对来源与版本。</p>
+<p>索引还要维护。资料已经改变，索引没有刷新，就可能继续返回旧内容。记录原始位置与版本，既方便补读，也方便识别当前候选是否过期。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/d58e0b95_shared-index-retrieval__f393a0170c.webp" alt="RAG 与 Agent 自主文件检索应该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>这条路线更适合把明确的资料集合做成可重复使用的查询入口。它能减少重复组织，却不能提前知道每个复杂任务后续会出现什么线索。</p>
+<h3 id="自主检索-把资料获取放进观察与决策循环">自主检索，把资料获取放进观察与决策循环</h3>
+<p>自主检索的关键，是下一次搜索能够由上一次观察决定。</p>
+<p>Agent 先取得目录或候选位置，调用搜索工具，读取命中内容。读到一个新名称、一条引用或一个异常，再据此继续查找。直到证据足够，或者发现当前范围内无法完成任务。</p>
+<div class="code-shell"><div class="code-toolbar"><span>TEXT</span><button class="copy-code" type="button" aria-label="复制代码">复制</button></div><pre><code class="language-text">当前问题与已知线索 -&gt; 选择搜索或读取动作 -&gt; 工具返回观察
+          ↑                                      |
+          +------ 判断还缺哪些证据 &lt;--------------+
+</code></pre></div><p>它获得的灵活性来自这个反馈过程。有些问题开始时只能描述症状，具体需要读哪些文件，要等取得部分材料以后才知道。把查找放进循环，就能随信息变化调整方向。</p>
+<p>例如一份说明引用另一份配置，配置又指向实际实现。下一份材料的入口来自刚读到的内容，未必直接出现在用户最初的问题里。</p>
+<p>但是，循环也会消耗时间。搜索、读取、判断可能需要多轮工具与模型调用，不同任务走的轮数不同，延迟和读取量就会波动。</p>
+<p>主动搜索也不天然完整。猜错关键词、忽略目录，或者找到一份相关材料就提前停止，都可能让必要证据一直没被读到。</p>
+<p>工具返回方式会影响探索质量。先提供路径、命中位置和必要片段，让 Agent 判断再读哪里，通常比一次返回几千行杂乱内容更容易继续。文件很长时可以分段读取，但要保留回查入口。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/eaaa6024_agent-search-loop__9a09edce07.webp" alt="RAG 与 Agent 自主文件检索应该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>搜索入口也要适合线索。grep 或 rg 做的是词面和模式匹配，明确错误码、字段名很适合这类工具。用户的模糊描述与资料用词不同，则可能需要语义候选定位，或者先从目录说明中获取真实术语。</p>
+<p>模型生成同义词，再交给 grep 搜索，是模型改变了搜索策略，不是 grep 本身获得了语义理解。把两层分清，才知道找不到资料时该改什么。</p>
+<h3 id="选型重点-任务的探索需求与重复处理成本">选型重点：任务的探索需求与重复处理成本</h3>
+<p>两条流程理解以后，选型可以先看任务所需的证据是否容易预先确定。</p>
+<p>如果问题集中在固定资料中的局部事实，通常有相对明确的知识范围，预建索引能快速提供候选。大量相似请求还可以共享准备与优化工作。</p>
+<p>如果任务需要沿关联不断追查，下一步材料取决于前一步结果，自主探索的反馈能力就更有价值。它允许中途改变方向，而不必把第一批召回内容当成全部范围。</p>
+<p>资料组织也会影响成本。目录和名称清楚时，主动搜索容易获得入口；资料规模很大、命名又不直观时，索引可以帮助缩小范围。</p>
+<p>更新方式同样重要。经常变化的工作区若要建索引，需要处理同步成本；直接读文件能够读取当前可见内容，但目录可能是旧副本、错误分支或未更新的挂载。因此，两种方式都要确认自己读的是哪份资料。</p>
+<p>接着比较响应要求。固定检索链路通常更容易给步骤设定上限；自主探索要限制搜索轮数、读取量和总预算。实际延迟还受索引、文件系统和外部服务影响，不能只按架构名称推断速度。</p>
+<div class="table-shell"><table><thead>
+<tr>
+<th>主要需求</th>
+<th>更值得评估的路线</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>大量资料上的高频局部问答</td>
+<td>预建索引与相对固定的检索链路</td>
+</tr>
+<tr>
+<td>依赖新观察、需要追踪关联的任务</td>
+<td>Agent 自主探索</td>
+</tr>
+<tr>
+<td>大范围里入口难找，找到后还要深入核查</td>
+<td>索引定位后继续探索</td>
+</tr>
+<tr>
+<td>少量资料，需要完整阅读与整体理解</td>
+<td>直接读取全文</td>
+</tr>
+</tbody>
+</table></div><p>证据完整性仍然是共同要求。查到一个答案，与证明已经检查所有文件，是两种任务。取排名靠前的几个候选，或者 Agent 搜了几轮，都不能自动证明范围没有遗漏。</p>
+<p>权限也不随方案变化。索引检索、路径搜索和原文读取，都应由程序按当前身份控制。一个文件能被搜索到，不代表用户就有权读取它。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/053b91f6_selection-dimensions__615d801e07.webp" alt="RAG 与 Agent 自主文件检索应该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>验证选型时，要比较整项任务是否完成、证据是否充分、总延迟和费用，而不是只看一次搜索快不快。多读几轮可能值得，也可能只是搜索策略反复走偏，需要结合记录判断。</p>
+<h3 id="索引定位与原文探索-可以共同完成资料获取">索引定位与原文探索，可以共同完成资料获取</h3>
+<p>常见的组合方式，是让索引负责找到候选入口，让 Agent 负责阅读原文并判断还缺什么。</p>
+<p>索引结果最好保留来源路径、位置和版本。这样 Agent 能从候选回到实际材料，检查摘要有没有省略条件，原文件是否已经变化。</p>
+<p>读完以后，如果证据足够，就可以回答；如果出现引用、相关配置或新的未知点，再调用文件搜索、语义检索或其他工具补查。</p>
+<p>两部分分别承担不同环节：提前组织资料可以减少盲搜，运行时观察则决定怎样继续阅读。</p>
+<p>第一批候选也不能成为后续探索的围墙。它们解释不了问题时，应允许改变查询或查找其他目录，而不是只在候选文件里反复寻找一个并不存在的答案。</p>
+<p><span class="article-figure"><button class="image-zoom" type="button" aria-label="放大查看配图"><img src="../../assets/images-redrawn/1be33712_hybrid-search-architecture__ddaf0c9c0e.webp" alt="RAG 与 Agent 自主文件检索应该如何选型？的知识结构配图" loading="lazy" decoding="async"></button></span></p>
+<p>组合后仍需要控制成本。一个本来能直接回答的短问题，不一定值得运行多轮探索；一个明确需要通读的任务，也不必先做一轮可能漏内容的检索。</p>
+<p>因此，选择的对象是资料获取流程。预建索引、自主探索和全文读取各有用途，可以按任务组合，重点是用合适的代价获得足够且可核对的证据。</p>
+<h2 id="面试总结">🎯 面试总结</h2>
+<p>开头把 RAG 与文件搜索当成语义和关键词的对立，混淆了搜索方式与运行流程。预建索引提前组织资料，自主探索根据新观察选择下一步；两种流程都可以使用不同搜索入口。</p>
+<p>索引的收益是复用与候选定位，代价是维护和召回遗漏；自主检索的收益是沿线索深入，代价是多轮开销与方向误判。资料规模、更新方式和任务是否需要探索，决定哪种路线更适合。</p>
+<p>索引先定位、Agent 再读原文并补查，可以结合两者的能力。最终仍要核对证据范围、资料版本和实际完成效果，不能把命中相似内容或搜索了很多轮，当成任务已经完成。</p>
+
+        </div>
+
+        <section class="feishu-endcap" data-article-feishu>
+          <span class="endcap-kicker">KEEP LEARNING</span>
+          <h2>继续练习与交流</h2>
+          <p>打开飞书学习应用，继续查看配套内容、参与互动，并把这篇题目的理解讲给同伴听。</p>
+          <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">
+            <span><small>飞书应用链接</small><strong>https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88</strong></span>
+            <svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg>
+          </a>
+        </section>
+      </article>
+
+      <aside class="toc-sidebar">
+        <div class="toc-sticky">
+          <span class="toc-kicker">ON THIS PAGE</span>
+          <nav data-toc><a class="toc-level-2" href="#简要回答">💡 简要回答</a><a class="toc-level-2" href="#详细解析">📝 详细解析</a><a class="toc-level-3" href="#先区分搜索方式与取资料的流程">先区分搜索方式与取资料的流程</a><a class="toc-level-3" href="#预建索引-把资料组织成本提前并复用">预建索引，把资料组织成本提前并复用</a><a class="toc-level-3" href="#自主检索-把资料获取放进观察与决策循环">自主检索，把资料获取放进观察与决策循环</a><a class="toc-level-3" href="#选型重点-任务的探索需求与重复处理成本">选型重点：任务的探索需求与重复处理成本</a><a class="toc-level-3" href="#索引定位与原文探索-可以共同完成资料获取">索引定位与原文探索，可以共同完成资料获取</a><a class="toc-level-2" href="#面试总结">🎯 面试总结</a></nav>
+          <div class="toc-progress-card">
+            <span>阅读进度</span>
+            <strong data-toc-progress>0%</strong>
+            <i><b data-toc-progress-bar></b></i>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="article-pagination">
+      <a class="pagination-card previous" href="../../articles/rag/22_rag_long_context.html"><span>上一篇 · RAG</span><strong>上下文窗口很大时为什么还需要 RAG？</strong></a>
+      <a class="pagination-card next" href="../../articles/tools/1_function_calling.html"><span>下一篇 · 工具调用</span><strong>什么是 Function Calling ？原理是什么？</strong><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m13 6 6 6-6 6"></path></svg></a>
+    </section></main>
+  
+    <footer class="site-footer">
+      <div class="footer-shell">
+        <div class="footer-brand">
+          <a class="brand brand-inverse" href="../../index.html">
+            <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="brand-copy"><strong>AI 产品经理面试图谱</strong><small>AI PM INTERVIEW ATLAS</small></span>
+          </a>
+          <p>用业务判断、技术取舍和评测指标，拆解 AI 产品经理面试追问。</p>
+        </div>
+        <div class="footer-links">
+          <div>
+            <h4>开始学习</h4>
+            <a href="../../index.html#library">全部面试题</a>
+            <a href="../../index.html#topics">六类专题</a>
+            <a href="../../guide.html">备考指南</a>
+          </div>
+          <div>
+            <h4>热门专题</h4>
+            <a href="../../category/agent.html">Agent</a>
+            <a href="../../category/rag.html">RAG</a>
+            <a href="../../category/tools.html">工具调用</a>
+          </div>
+          <div>
+            <h4>继续互动</h4>
+            <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener">飞书学习应用 ↗</a>
+            <a href="../../index.html#method">答题框架</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 AI 产品经理面试图谱</span>
+        <span>面试情境为教学化模拟，不代表真实公司、候选人、面试结果或业务效果。</span>
+      </div>
+    </footer>
+    <nav class="mobile-bottom-nav" aria-label="移动端快捷导航">
+      <a href="../../index.html"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21.5z"></path><path d="M4 5.5v16"></path><path d="M8 7h8M8 11h6"></path></svg><span>首页</span></a>
+      <a href="../../index.html#library"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-4-4"></path></svg><span>题库</span></a>
+      <button type="button" data-random><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"></path><path d="M4 20 21 3"></path><path d="M21 16v5h-5"></path><path d="m15 15 6 6"></path><path d="M4 4l5 5"></path></svg><span>随机</span></button>
+      <a href="https://v11enp9ok1h.feishuapp.com/app/app_17g2mxyqr88" target="_blank" rel="noreferrer noopener"><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"></path><path d="m20 4-9 9"></path><path d="M18 13v7H4V6h7"></path></svg><span>飞书</span></a>
+    </nav>
+    <button class="back-to-top" type="button" aria-label="返回顶部" data-back-top><svg class="icon " aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m5 14 7-7 7 7"></path><path d="M12 7v13"></path></svg></button>
+  <script src="../../assets/search-index.js"></script><script src="../../app.js" defer></script>
+</body>
+</html>

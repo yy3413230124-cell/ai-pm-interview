@@ -1,0 +1,15 @@
+{
+  "name": "ai-interview-atlas",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize-images": "python scripts/optimize_images.py",
+    "build": "node build.mjs",
+    "verify": "node verify.mjs",
+    "serve": "python -m http.server 8123"
+  },
+  "dependencies": {
+    "markdown-it": "^14.1.0"
+  }
+}
